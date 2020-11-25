@@ -1,0 +1,1 @@
+[07-Aug-2018 11:11:47 Asia/Jakarta] PHP Fatal error:  Call to a member function get_giro() on null in /home/penjualanlp3i/public_html/application/controllers/Penjualan.php on line 231
