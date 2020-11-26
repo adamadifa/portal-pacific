@@ -2883,4 +2883,36 @@ GROUP BY
 
 		return $this->db->query($query);
 	}
+
+	function rekapkendaraan($dari, $sampai, $kendaraan)
+	{
+		$query = "SELECT detail_dpb.kode_produk,isipcsdus,ROUND(SUM(jml_pengambilan),2) as jml_pengambilan,
+		ROUND(SUM(jml_pengembalian),2) as jml_pengembalian, 
+		jmlpenjualan,jmlgantibarang,jmlplhk,jmlpromosi,jmlttr,
+		dpb.no_kendaraan
+		FROM detail_dpb
+		
+		INNER JOIN dpb ON detail_dpb.no_dpb = dpb.no_dpb
+		LEFT JOIN master_barang ON detail_dpb.kode_produk = master_barang.kode_produk
+		LEFT JOIN (SELECT kode_produk,
+		ROUND(SUM(IF(jenis_mutasi = 'PENJUALAN',jumlah,0)),2) as jmlpenjualan,
+		ROUND(SUM(IF(jenis_mutasi = 'PL HUTANG KIRIM',jumlah,0)),2) as jmlplhk,
+		ROUND(SUM(IF(jenis_mutasi = 'PROMOSI',jumlah,0)),2) as jmlpromosi,
+		ROUND(SUM(IF(jenis_mutasi = 'TTR',jumlah,0)),2) as jmlttr,
+		ROUND(SUM(IF(jenis_mutasi = 'GANTI BARANG',jumlah,0)),2) as jmlgantibarang,
+		ROUND(SUM(IF(jenis_mutasi = 'RETUR',jumlah,0)),2) as jmlretur,
+		ROUND(SUM(IF(jenis_mutasi = 'PL TTR',jumlah,0)),2) as jmlplttr,
+		ROUND(SUM(IF(jenis_mutasi = 'HUTANG KIRIM',jumlah,0)),2) as jmlhk,
+		no_kendaraan
+		FROM detail_mutasi_gudang_cabang
+		INNER JOIN mutasi_gudang_cabang ON detail_mutasi_gudang_cabang.no_mutasi_gudang_cabang = mutasi_gudang_cabang.no_mutasi_gudang_cabang
+		INNER JOIN dpb ON mutasi_gudang_cabang.no_dpb = dpb.no_dpb
+		WHERE tgl_mutasi_gudang_cabang BETWEEN '$dari' AND '$sampai' AND no_kendaraan = '$kendaraan' 
+		GROUP BY kode_produk,no_kendaraan) penjualan ON (detail_dpb.kode_produk = penjualan.kode_produk)
+	
+		WHERE tgl_pengambilan BETWEEN '$dari' AND '$sampai' AND dpb.no_kendaraan = '$kendaraan'
+		GROUP BY kode_produk,dpb.no_kendaraan";
+
+		return $this->db->query($query);
+	}
 }

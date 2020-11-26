@@ -1201,4 +1201,25 @@ class Laporanpenjualan extends CI_Controller
       $this->load->view('penjualan/laporan/cetak_costratiocabang', $data);
     }
   }
+
+  function rekapkendaraan()
+  {
+    $data['cb']    = $this->session->userdata('cabang');
+    $data['cabang'] = $this->Model_cabang->view_cabang()->result();
+    $this->template->load('template/template', 'penjualan/laporan/rekapkendaraan.php', $data);
+  }
+
+  function cetak_rekapkendaraan()
+  {
+    $cabang = $this->input->post('cabang');
+    $kendaraan = $this->input->post('kendaraan');
+    $dari = $this->input->post('dari');
+    $sampai = $this->input->post('sampai');
+    $data['dari'] = $dari;
+    $data['sampai'] = $sampai;
+    $data['cabang'] = $cabang;
+    $data['kendaraan'] = $kendaraan;
+    $data['rekapkendaraan'] = $this->Model_laporanpenjualan->rekapkendaraan($dari, $sampai, $kendaraan)->result();
+    $this->load->view('penjualan/laporan/cetak_rekapkendaraan', $data);
+  }
 }
