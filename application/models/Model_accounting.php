@@ -255,7 +255,13 @@ class Model_accounting extends CI_Model
 
   function ledger($kode_akun = "", $bulan, $tahun)
   {
-
+    if ($kode_akun == "1-1201") {
+      $field = "ledger_bank.bank";
+      $value = "BNI";
+    } else {
+      $field = "ledger_bank.kode_akun";
+      $value = $kode_akun;
+    }
     return $this->db->query("SELECT buku_besar.no_bukti AS ceknobukti,ledger_bank.kode_akun,coa.nama_akun,tgl_ledger,ledger_bank.no_bukti,jumlah,status_dk,ledger_bank.keterangan,ledger_bank.no_ref,
     bank,buku_besar.debet,buku_besar.kredit
     FROM ledger_bank 
@@ -264,7 +270,7 @@ class Model_accounting extends CI_Model
     WHERE MONTH(tgl_ledger) = '$bulan' 
     AND YEAR(tgl_ledger) = '$tahun' 
     AND coa.sub_akun != '0' 
-    AND ledger_bank.kode_akun = '$kode_akun' 
+    AND $field = '$value' 
     ORDER BY bank,ledger_bank.tgl_ledger
     ");
   }
