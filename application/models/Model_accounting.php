@@ -2,6 +2,7 @@
 
 class Model_accounting extends CI_Model
 {
+  private  $akunbank = array("1-1201");
   public function getDataSaldoAwal($rowno, $rowperpage, $kode_saldoawal_bb = "", $tanggal = "", $bulan = "", $tahun = "")
   {
 
@@ -255,7 +256,8 @@ class Model_accounting extends CI_Model
 
   function ledger($kode_akun = "", $bulan, $tahun)
   {
-    if ($kode_akun == "1-1201") {
+    //$akunbank = array("1-1201");
+    if (in_array($kode_akun, $this->akunbank)) {
       $field = "ledger_bank.bank";
       $value = "BNI";
     } else {
@@ -271,7 +273,7 @@ class Model_accounting extends CI_Model
     AND YEAR(tgl_ledger) = '$tahun' 
     AND coa.sub_akun != '0' 
     AND $field = '$value' 
-    ORDER BY bank,ledger_bank.tgl_ledger
+    ORDER BY bank,ledger_bank.tgl_ledger,ledger_bank.no_bukti
     ");
   }
 
@@ -391,14 +393,21 @@ class Model_accounting extends CI_Model
       );
       $this->db->insert('buku_besar', $datakaskecli2);
     }
-
+    //Ledger
+    if (in_array($kode_akun, $this->akunbank)) {
+      $field = "ledger_bank.bank";
+      $value = "BNI";
+    } else {
+      $field = "ledger_bank.kode_akun";
+      $value = $kode_akun;
+    }
     $dataledger = $this->db->query("SELECT ledger_bank.kode_akun,coa.nama_akun,tgl_ledger,no_bukti,jumlah,status_dk,keterangan,ledger_bank.no_ref 
     FROM ledger_bank 
     INNER JOIN coa ON coa.kode_akun = ledger_bank.kode_akun
     WHERE MONTH(tgl_ledger) = '$bulan' 
     AND YEAR(tgl_ledger) = '$tahun' 
     AND coa.sub_akun != '0' 
-    AND ledger_bank.kode_akun = '$kode_akun' 
+    AND $field = '$value' 
     ORDER BY ledger_bank.tgl_ledger
     ")->result();
 
@@ -406,20 +415,31 @@ class Model_accounting extends CI_Model
       $ceknolast      = $this->db->query($qbukubesar)->row_array();
       $nobuktilast    = $ceknolast['no_bukti'];
       $nobukti        = buatkode($nobuktilast, 'GJ' . $bulan . $thn, 4);
-
-      if ($d->status_dk == "D") {
-        $debet = $d->jumlah;
-        $kredit = "0";
+      if (in_array($kode_akun, $this->akunbank)) {
+        if ($d->status_dk == "D") {
+          $kredit = $d->jumlah;
+          $debet = "0";
+        } else {
+          $debet = $d->jumlah;
+          $kredit = "0";
+        }
+        $kodeakun = $kode_akun;
       } else {
-        $kredit = $d->jumlah;
-        $debet = "0";
+        if ($d->status_dk == "D") {
+          $debet = $d->jumlah;
+          $kredit = "0";
+        } else {
+          $kredit = $d->jumlah;
+          $debet = "0";
+        }
+        $kode_akun = $d->kode_akun;
       }
       $dataledger2 = array(
         'no_bukti' => $nobukti,
         'tanggal' => $d->tgl_ledger,
         'sumber' => "Ledger",
         'keterangan' => $d->keterangan,
-        'kode_akun' => $d->kode_akun,
+        'kode_akun' => $kode_akun,
         'debet' => $debet,
         'kredit' => $kredit,
         'no_ref' => $d->no_bukti
@@ -565,19 +585,31 @@ class Model_accounting extends CI_Model
     $nobukti        = buatkode($nobuktilast, 'GJ' . $bulan . $thn, 4);
     if ($sumber == "Ledger") {
       $ledger = $this->db->get_where('ledger_bank', array('no_bukti' => $noref))->row_array();
-      if ($ledger['status_dk'] == "D") {
-        $debet = $ledger['jumlah'];
-        $kredit = 0;
+      if (in_array($kodeakun, $this->akunbank)) {
+        if ($ledger['status_dk'] == "D") {
+          $kredit = $ledger['jumlah'];
+          $debet = 0;
+        } else {
+          $kredit = 0;
+          $debet = $ledger['jumlah'];
+        }
+        $kode_akun = $kodeakun;
       } else {
-        $debet = 0;
-        $kredit = $ledger['jumlah'];
+        if ($ledger['status_dk'] == "D") {
+          $debet = $ledger['jumlah'];
+          $kredit = 0;
+        } else {
+          $debet = 0;
+          $kredit = $ledger['jumlah'];
+        }
+        $kode_akun = $ledger['kode_akun'];
       }
       $data = array(
         'no_bukti' => $nobukti,
         'tanggal' => $ledger['tgl_ledger'],
         'sumber' => $sumber,
         'keterangan' => $ledger['keterangan'],
-        'kode_akun' => $ledger['kode_akun'],
+        'kode_akun' => $kode_akun,
         'debet' => $debet,
         'kredit' => $kredit,
         'no_ref' => $noref
@@ -609,17 +641,28 @@ class Model_accounting extends CI_Model
     }
   }
 
-  function updatebukubesar($nobukti, $sumber, $noref)
+  function updatebukubesar($nobukti, $sumber, $noref, $kode_akun)
   {
     if ($sumber == "Ledger") {
       $ledger = $this->db->get_where('ledger_bank', array('no_bukti' => $noref))->row_array();
-      if ($ledger['status_dk'] == "D") {
-        $debet = $ledger['jumlah'];
-        $kredit = 0;
+      if (in_array($kode_akun, $this->akunbank)) {
+        if ($ledger['status_dk'] == "D") {
+          $kredit = $ledger['jumlah'];
+          $debet = 0;
+        } else {
+          $kredit = 0;
+          $debet = $ledger['jumlah'];
+        }
       } else {
-        $debet = 0;
-        $kredit = $ledger['jumlah'];
+        if ($ledger['status_dk'] == "D") {
+          $debet = $ledger['jumlah'];
+          $kredit = 0;
+        } else {
+          $debet = 0;
+          $kredit = $ledger['jumlah'];
+        }
       }
+
       $data = array(
         'debet' => $debet,
         'kredit' => $kredit

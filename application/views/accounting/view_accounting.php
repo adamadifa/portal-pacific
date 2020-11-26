@@ -91,7 +91,7 @@
                     <th>TGL</th>
                     <th>No Bukti</th>
                     <th>No Ref</th>
-                    <th>Keterangan</th>
+                    <th style="width:25%">Keterangan</th>
                     <th>Kode Akun</th>
                     <th>Debet</th>
                     <th>Kredit</th>

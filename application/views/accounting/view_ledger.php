@@ -6,15 +6,29 @@ $totalledger = 0;
 foreach ($ledger as $key => $l) {
   $bank  = @$ledger[$key + 1]->bank;
   $totalledger = $totalledger + $l->jumlah;
-  if ($l->status_dk == 'K') {
-    $kredit = $l->jumlah;
-    $debet  = 0;
-    $jumlah = $l->jumlah;
+
+  if (in_array($kode_akun, $akunbank)) {
+    if ($l->status_dk == 'K') {
+      $debet = $l->jumlah;
+      $kredit  = 0;
+      $jumlah = $l->jumlah;
+    } else {
+      $kredit  = $l->jumlah;
+      $debet = 0;
+      $jumlah = -$l->jumlah;
+    }
   } else {
-    $debet  = $l->jumlah;
-    $kredit = 0;
-    $jumlah = -$l->jumlah;
+    if ($l->status_dk == 'K') {
+      $kredit = $l->jumlah;
+      $debet  = 0;
+      $jumlah = $l->jumlah;
+    } else {
+      $debet  = $l->jumlah;
+      $kredit = 0;
+      $jumlah = -$l->jumlah;
+    }
   }
+
   $totaldebet = $totaldebet + $debet;
   $totalkredit = $totalkredit + $kredit;
   if (empty($l->ceknobukti)) {
@@ -29,6 +43,12 @@ foreach ($ledger as $key => $l) {
       $textcolor = "";
     }
   }
+
+  if (in_array($kode_akun, $akunbank)) {
+    $kodeakun = $kode_akun;
+  } else {
+    $kodeakun = $l->kode_akun;
+  }
 ?>
   <tr style="background-color: <?php echo $color; ?>; color:<?php echo $textcolor; ?>">
     <td><?php echo $no; ?></td>
@@ -36,7 +56,7 @@ foreach ($ledger as $key => $l) {
     <td><?php echo $l->no_bukti; ?></td>
     <td><?php echo $l->no_ref; ?></td>
     <td><?php echo $l->keterangan; ?></td>
-    <td><?php echo "'" . $l->kode_akun; ?></td>
+    <td><?php echo "'" . $kode_akun; ?></td>
     <!-- <td><?php echo $l->nama_akun; ?></td> -->
     <td align="right"><?php if ($debet != 0) {
                         echo number_format($debet, '0', '', '.');
@@ -164,6 +184,7 @@ foreach ($ledger as $key => $l) {
       var nobukti = $(this).attr("data-nobukti");
       var sumber = "Ledger";
       var noref = $(this).attr("data-noref");
+      var kode_akun = $('#kode_akun').val();
       $.ajax({
         type: "POST",
         url: "<?php echo base_url(); ?>accounting/updatebukubesar",
@@ -171,7 +192,8 @@ foreach ($ledger as $key => $l) {
         data: {
           nobukti: nobukti,
           sumber: sumber,
-          noref: noref
+          noref: noref,
+          kode_akun: kode_akun
         },
         success: function(respond) {
           console.log(respond);

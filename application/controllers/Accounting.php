@@ -2,6 +2,7 @@
 
 class Accounting extends CI_Controller
 {
+  private  $akunbank = array("1-1201");
   function __construct()
   {
     parent::__construct();
@@ -229,6 +230,8 @@ class Accounting extends CI_Controller
     $kode_akun      = $this->input->post('kode_akun');
     $bulan          = $this->input->post('bulan');
     $tahun          = $this->input->post('tahun');
+    $data['kode_akun'] = $kode_akun;
+    $data['akunbank'] = $this->akunbank;
     $data['ledger'] = $this->Model_accounting->ledger($kode_akun, $bulan, $tahun)->result();
     $this->load->view('accounting/view_ledger', $data);
   }
@@ -364,7 +367,8 @@ class Accounting extends CI_Controller
     $nobukti = $this->input->post('nobukti');
     $sumber = $this->input->post('sumber');
     $noref = $this->input->post('noref');
-    $simpan =  $this->Model_accounting->updatebukubesar($nobukti, $sumber, $noref);
+    $kode_akun = $this->input->post('kode_akun');
+    $simpan =  $this->Model_accounting->updatebukubesar($nobukti, $sumber, $noref, $kode_akun);
     echo $simpan;
   }
 }
