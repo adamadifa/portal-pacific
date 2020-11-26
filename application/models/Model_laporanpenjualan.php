@@ -444,6 +444,7 @@ GROUP BY
 		return $this->db->query($query);
 	}
 
+
 	function loadrekapkasbesar($bulan, $tahun)
 	{
 		// if($jenisbayar != ""){
@@ -2912,6 +2913,36 @@ GROUP BY
 	
 		WHERE tgl_pengambilan BETWEEN '$dari' AND '$sampai' AND dpb.no_kendaraan = '$kendaraan'
 		GROUP BY kode_produk,dpb.no_kendaraan";
+
+		return $this->db->query($query);
+	}
+
+	function rekapkasbesarsales($dari, $sampai, $jenisbayar, $cabang)
+	{
+		if ($jenisbayar != "") {
+
+			$jenisbayar = "AND historibayar.jenisbayar = '" . $jenisbayar . "'";
+		}
+
+		if ($cabang != "") {
+
+			$cabang = "AND karyawan.kode_cabang = '" . $cabang . "'";
+		}
+
+		$query = "SELECT historibayar.id_karyawan,nama_karyawan,SUM(bayar) as totalkasbesar FROM historibayar
+				INNER JOIN penjualan ON historibayar.no_fak_penj = penjualan.no_fak_penj
+				INNER JOIN pelanggan ON penjualan.kode_pelanggan = pelanggan.kode_pelanggan
+				INNER JOIN karyawan  ON penjualan.id_karyawan = karyawan.id_karyawan
+				INNER JOIN cabang ON karyawan.kode_cabang = cabang.kode_cabang
+				WHERE tglbayar BETWEEN '$dari' AND '$sampai'"
+			. $jenisbayar
+			. $cabang
+			. "
+				GROUP BY
+				historibayar.id_karyawan,
+				nama_karyawan
+
+				";
 
 		return $this->db->query($query);
 	}

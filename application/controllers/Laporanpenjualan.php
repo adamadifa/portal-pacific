@@ -333,13 +333,19 @@ class Laporanpenjualan extends CI_Controller
       header("Content-Disposition: attachment; filename=Laporan KAS BESAR.xls");
     }
     if (!empty($cabang)) {
-      $data['pelanggan']  = $this->Model_pelanggan->get_pelanggan($pelanggan)->row_array();
-      $data['salesman']    = $this->Model_sales->get_sales($salesman)->row_array();
-      $data['cb']          = $this->Model_cabang->get_cabang($cabang)->row_array();
-      $data['kasbesar']    = $this->Model_laporanpenjualan->kasbesar($dari, $sampai, $cabang, $salesman, $pelanggan, $jenisbayar)->result();
-      $statusbayar         = "voucher";
-      $data['sb']          = $this->Model_laporanpenjualan->voucher($dari, $sampai, $cabang, $salesman, $pelanggan, $statusbayar)->result();
-      $this->load->view('penjualan/laporan/cetak_kasbesar', $data);
+      if (empty($salesman)) {
+        $data['cabang'] = $cabang;
+        $data['rekapkasbesarsales'] = $this->Model_laporanpenjualan->rekapkasbesarsales($dari, $sampai, $jenisbayar, $cabang)->result();
+        $this->load->view('penjualan/laporan/cetak_rekapkasbesarsales', $data);
+      } else {
+        $data['pelanggan']  = $this->Model_pelanggan->get_pelanggan($pelanggan)->row_array();
+        $data['salesman']    = $this->Model_sales->get_sales($salesman)->row_array();
+        $data['cb']          = $this->Model_cabang->get_cabang($cabang)->row_array();
+        $data['kasbesar']    = $this->Model_laporanpenjualan->kasbesar($dari, $sampai, $cabang, $salesman, $pelanggan, $jenisbayar)->result();
+        $statusbayar         = "voucher";
+        $data['sb']          = $this->Model_laporanpenjualan->voucher($dari, $sampai, $cabang, $salesman, $pelanggan, $statusbayar)->result();
+        $this->load->view('penjualan/laporan/cetak_kasbesar', $data);
+      }
     } else {
       $data['rekapkasbesarcabang'] = $this->Model_laporanpenjualan->rekapkasbesarcabang($dari, $sampai, $jenisbayar)->result();
       $this->load->view('penjualan/laporan/cetak_rekapkasbesarcabang', $data);
