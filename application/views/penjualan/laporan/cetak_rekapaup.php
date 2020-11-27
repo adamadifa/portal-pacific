@@ -74,14 +74,15 @@ if ($pelanggan['kode_pelanggan'] != "") {
 			<th rowspan="2">Keterangan</th>
 
 
-			<th colspan="8">Saldo Piutang</th>
+			<th colspan="9">Saldo Piutang</th>
 			<th rowspan="2">Total</th>
 
 		</tr>
 		<tr bgcolor="#024a75" style="color:white; font-size:12;">
 			<th> 1 s/d 15 Hari</th>
 			<th> 16 Hari s/d 1 Bulan</th>
-			<th> > 1 Bulan s/d 2 Bulan</th>
+			<th> > 1 Bulan s/d 46 Hari</th>
+			<th> > 46 Hari s/d 2 Bulan</th>
 			<th> > 2 Bulan s/d 3 Bulan </th>
 			<th> > 3 Bulan s/d 6 Bulan </th>
 			<th> > 6 Bulan s/d 1 Tahun </th>
@@ -109,6 +110,7 @@ if ($pelanggan['kode_pelanggan'] != "") {
 		$totalsisabayar         		= 0;
 		$duaminggu 									= 0;
 		$satubulan 									= 0;
+		$satubulan15								= 0;
 		$satusetengahbulan 					= 0;
 		$duabulan 									= 0;
 		$lebihtigabulan 						= 0;
@@ -128,32 +130,32 @@ if ($pelanggan['kode_pelanggan'] != "") {
 			$totalpiutang 			= $totalpiutang + $a->totalpiutang;
 			$totalbayar   			= $totalbayar + $a->jmlbayar;
 			$totalsisabayar 		= $totalpiutang - $totalbayar;
-			$duaminggu 				+= $a->duaminggu;
-			$satubulan 				+= $a->satubulan;
+			$duaminggu 					+= $a->duaminggu;
+			$satubulan 					+= $a->satubulan;
+			$satubulan15 				+= $a->satubulan15;
 			//$satusetengahbulan += $a->satusetengahbulan;
 			$duabulan 					+= $a->duabulan;
-			$lebihtigabulan		+= $a->lebihtigabulan;
-			$enambulan 				+= $a->enambulan;
-			$duabelasbulan   	+= $a->duabelasbulan;
-			$duatahun          += $a->duatahun;
-			$lebihduatahun 		+= $a->lebihduatahun;
-			$total 						= $duaminggu + $satubulan + $duabulan + $lebihtigabulan + $enambulan + $duabelasbulan + $lebihduatahun + $duatahun;
-
-
-
+			$lebihtigabulan			+= $a->lebihtigabulan;
+			$enambulan 					+= $a->enambulan;
+			$duabelasbulan   		+= $a->duabelasbulan;
+			$duatahun         	+= $a->duatahun;
+			$lebihduatahun 			+= $a->lebihduatahun;
+			$total 							= $duaminggu + $satubulan + $satubulan15 + $duabulan + $lebihtigabulan + $enambulan + $duabelasbulan + $lebihduatahun + $duatahun;
 
 			if ($pel != $a->salesbarunew) {
 
 				$totalallduaminggu 					= $totalallduaminggu + $duaminggu;
 				$totalallsatubulan 	   			= $totalallsatubulan + $satubulan;
+				$totalallsatubulan15				= $totalsatubulan15 + $satubulan15;
 				//$totalallsatusetengahbulan 	= $totalallsatusetengahbulan + $satusetengahbulan;
 				$totalallduabulan 	   			= $totalallduabulan + $duabulan;
 				$totalalllebih3bulan   			= $totalalllebih3bulan + $lebihtigabulan;
 				$totalallenambulan 		 			= $totalallenambulan + $enambulan;
 				$totalallduabelasbulan 			= $totalallduabelasbulan + $duabelasbulan;
-				$totalallduatahun 	         = $totalallduatahun + $duatahun;
+				$totalallduatahun 	        = $totalallduatahun + $duatahun;
 				$totalalllebihduatahun 			= $totalalllebihduatahun + $lebihduatahun;
-				$totalcabang 		   = $totalcabang + $total;
+				$totalcabang 		   					= $totalcabang + $total;
+
 
 		?>
 				<tr>
@@ -167,7 +169,9 @@ if ($pelanggan['kode_pelanggan'] != "") {
 					<td align="right"><?php if ($satubulan != 0) {
 															echo uang($satubulan);
 														} ?></td>
-
+					<td align="right"><?php if ($satubulan15 != 0) {
+															echo uang($satubulan15);
+														} ?></td>
 					<td align="right"><?php if ($duabulan != 0) {
 															echo uang($duabulan);
 														} ?></td>
@@ -192,6 +196,7 @@ if ($pelanggan['kode_pelanggan'] != "") {
 					<td><b>PERSENTASE</b></td>
 					<td style="text-align: right"><?php echo round($duaminggu / $total * 100) . "%";  ?></td>
 					<td style="text-align: right"><?php echo round($satubulan / $total * 100) . "%"; ?></td>
+					<td style="text-align: right"><?php echo round($satubulan15 / $total * 100) . "%"; ?></td>
 					<td style="text-align: right"><?php echo round($duabulan / $total * 100) . "%";  ?></td>
 					<td style="text-align: right"><?php echo round($lebihtigabulan / $total * 100) . "%";   ?></td>
 					<td style="text-align: right"><?php echo round($enambulan / $total * 100) . "%";   ?></td>
@@ -205,7 +210,7 @@ if ($pelanggan['kode_pelanggan'] != "") {
 				if ($cab != $a->cabangbarunew) {
 
 					echo "<tr bgcolor='#024a75' style='color:white; font-size:12;'>
-							<td colspan='11'>TOTAL</td>
+							<td colspan='12'>TOTAL</td>
 							<td align='right'>" . uang($totalcabang) . "</td>
 						  </tr>";
 
@@ -219,6 +224,7 @@ if ($pelanggan['kode_pelanggan'] != "") {
 
 				$duaminggu 									= 0;
 				$satubulan 									= 0;
+				$satubulan15 									= 0;
 				$satusetengahbulan 					= 0;
 				$duabulan 									= 0;
 				$lebihtigabulan 						= 0;
@@ -233,14 +239,14 @@ if ($pelanggan['kode_pelanggan'] != "") {
 			$no++;
 		}
 
-		$totalall 	= $totalallduaminggu + $totalallsatubulan  + $totalallduabulan + $totalalllebih3bulan + $totalallenambulan +
+		$totalall 	= $totalallduaminggu + $totalallsatubulan  + $totalallsatubulan15 + $totalallduabulan + $totalalllebih3bulan + $totalallenambulan +
 			$totalallduabelasbulan + $totalallduatahun + $totalalllebihduatahun;
 		?>
 		<tr bgcolor="#024a75" style="color:white; font-size:12;">
 			<td colspan="3"><b>TOTAL</b></td>
 			<td style="text-align: right"><a href="<?php echo base_url(); ?>laporanpenjualan/cetak_detailaup/<?php echo $cbg . "/" . $sales . "/" . $plg . "/" . $tanggal . "/duaminggu"; ?>" target="_blank"><?php echo number_format($totalallduaminggu, '0', '', '.');  ?></a></td>
 			<td style="text-align: right"><a href="<?php echo base_url(); ?>laporanpenjualan/cetak_detailaup/<?php echo $cbg . "/" . $sales . "/" . $plg . "/" . $tanggal . "/satubulan"; ?>" target="_blank"><?php echo number_format($totalallsatubulan, '0', '', '.');  ?></a></td>
-
+			<td style="text-align: right"><a href="<?php echo base_url(); ?>laporanpenjualan/cetak_detailaup/<?php echo $cbg . "/" . $sales . "/" . $plg . "/" . $tanggal . "/satubulan15"; ?>" target="_blank"><?php echo number_format($totalallsatubulan15, '0', '', '.');  ?></a></td>
 			<td style="text-align: right"><a href="<?php echo base_url(); ?>laporanpenjualan/cetak_detailaup/<?php echo $cbg . "/" . $sales . "/" . $plg . "/" . $tanggal . "/duabulan"; ?>" target="_blank"><?php echo number_format($totalallduabulan, '0', '', '.');  ?></a></td>
 			<td style="text-align: right"><a href="<?php echo base_url(); ?>laporanpenjualan/cetak_detailaup/<?php echo $cbg . "/" . $sales . "/" . $plg . "/" . $tanggal . "/tigabulan"; ?>" target="_blank"><?php echo number_format($totalalllebih3bulan, '0', '', '.');  ?></a></td>
 			<td style="text-align: right"><a href="<?php echo base_url(); ?>laporanpenjualan/cetak_detailaup/<?php echo $cbg . "/" . $sales . "/" . $plg . "/" . $tanggal . "/enambulan"; ?>" target="_blank"><?php echo number_format($totalallenambulan, '0', '', '.');  ?></a></td>
@@ -254,7 +260,7 @@ if ($pelanggan['kode_pelanggan'] != "") {
 			<td colspan="3"><b>PERSENTASE</b></td>
 			<td style="text-align: right"><?php echo round($totalallduaminggu / $totalall * 100) . "%";  ?></td>
 			<td style="text-align: right"><?php echo round($totalallsatubulan / $totalall * 100) . "%"; ?></td>
-
+			<td style="text-align: right"><?php echo round($totalallsatubulan15 / $totalall * 100) . "%"; ?></td>
 			<td style="text-align: right"><?php echo round($totalallduabulan / $totalall * 100) . "%";  ?></td>
 			<td style="text-align: right"><?php echo round($totalalllebih3bulan / $totalall * 100) . "%";   ?></td>
 			<td style="text-align: right"><?php echo round($totalallenambulan / $totalall * 100) . "%";   ?></td>

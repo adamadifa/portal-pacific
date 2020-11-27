@@ -820,10 +820,13 @@ GROUP BY
 		WHEN datediff('$tanggal', tgltransaksi) <= 15 THEN
 				((IFNULL(penjualan.total,0))-(IFNULL(retur.total,0)))-(ifnull(jmlbayar,0) ) END AS duaminggu,
 		CASE		
-		WHEN datediff('$tanggal', tgltransaksi) <= 30  AND datediff('$tanggal', tgltransaksi) > 15 THEN
+		WHEN datediff('$tanggal', tgltransaksi) <= 31  AND datediff('$tanggal', tgltransaksi) > 15 THEN
 				((IFNULL(penjualan.total,0))-(IFNULL(retur.total,0)))-(ifnull(jmlbayar,0) ) END AS satubulan,
 		CASE		
-		WHEN datediff('$tanggal', tgltransaksi) <= 60  AND datediff('$tanggal', tgltransaksi) > 30 THEN
+		WHEN datediff('$tanggal', tgltransaksi) <= 46  AND datediff('$tanggal', tgltransaksi) > 31 THEN
+				((IFNULL(penjualan.total,0))-(IFNULL(retur.total,0)))-(ifnull(jmlbayar,0) ) END AS satubulan15,
+		CASE		
+		WHEN datediff('$tanggal', tgltransaksi) <= 60  AND datediff('$tanggal', tgltransaksi) > 46 THEN
 				((IFNULL(penjualan.total,0))-(IFNULL(retur.total,0)))-(ifnull(jmlbayar,0) ) END AS duabulan,
 		CASE		
 		WHEN datediff('$tanggal', tgltransaksi) > 60 AND datediff('$tanggal', tgltransaksi) <= 90 THEN
@@ -930,9 +933,11 @@ GROUP BY
 		if ($lama == "duaminggu") {
 			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) <=15";
 		} else if ($lama == "satubulan") {
-			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >15 AND datediff( '" . $tanggal . "', tgltransaksi ) <=30";
+			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >15 AND datediff( '" . $tanggal . "', tgltransaksi ) <=31";
+		} else if ($lama == "satubulan15") {
+			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >31 AND datediff( '" . $tanggal . "', tgltransaksi ) <=46";
 		} else if ($lama == "duabulan") {
-			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >30 AND datediff( '" . $tanggal . "', tgltransaksi ) <=60";
+			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >46 AND datediff( '" . $tanggal . "', tgltransaksi ) <=60";
 		} else if ($lama == "tigabulan") {
 			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >60 AND datediff( '" . $tanggal . "', tgltransaksi ) <=90";
 		} else if ($lama == "enambulan") {
@@ -1992,10 +1997,13 @@ GROUP BY
 		WHEN datediff('$tanggal', tgltransaksi) <= 15 THEN
 				((IFNULL(penjualan.total,0))-(IFNULL(retur.total,0)))-(ifnull(jmlbayar,0) ) END AS duaminggu,
 		CASE		
-		WHEN datediff('$tanggal', tgltransaksi) <= 30  AND datediff('$tanggal', tgltransaksi) > 15 THEN
+		WHEN datediff('$tanggal', tgltransaksi) <= 31  AND datediff('$tanggal', tgltransaksi) > 15 THEN
 				((IFNULL(penjualan.total,0))-(IFNULL(retur.total,0)))-(ifnull(jmlbayar,0) ) END AS satubulan,
 		CASE		
-		WHEN datediff('$tanggal', tgltransaksi) <= 60  AND datediff('$tanggal', tgltransaksi) > 30 THEN
+		WHEN datediff('$tanggal', tgltransaksi) <= 46  AND datediff('$tanggal', tgltransaksi) > 31 THEN
+				((IFNULL(penjualan.total,0))-(IFNULL(retur.total,0)))-(ifnull(jmlbayar,0) ) END AS satubulan15,
+		CASE		
+		WHEN datediff('$tanggal', tgltransaksi) <= 60  AND datediff('$tanggal', tgltransaksi) > 46 THEN
 				((IFNULL(penjualan.total,0))-(IFNULL(retur.total,0)))-(ifnull(jmlbayar,0) ) END AS duabulan,
 		CASE		
 		WHEN datediff('$tanggal', tgltransaksi) > 60 AND datediff('$tanggal', tgltransaksi) <= 90 THEN

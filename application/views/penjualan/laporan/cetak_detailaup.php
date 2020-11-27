@@ -21,20 +21,25 @@ error_reporting(0);
 		echo "PACIFIC ALL CABANG";
 	}
 
-	if ($lama == "bulanberjalan") {
-
-		$lama = "BULAN BERJALAN";
+	if ($lama == "duaminggu") {
+		$lama = "2 MINGGU";
 	} else if ($lama == "satubulan") {
-
-		$lama = "SATU BULAN";
+		$lama = "1 BULAN";
+	} else if ($lama == "satubulan15") {
+		$lama = "> 1 BULAN s/d 46 HARI";
 	} else if ($lama == "duabulan") {
-
-		$lama = "2 BULAN";
-	} else if ($lama == "lebihtigabulan") {
-
-		$lama = "LEBIH TIGA BULAN";
+		$lama = "> 46 HARI s/d 2 BULAN";
+	} else if ($lama == "tigabulan") {
+		$lama = "> 2 BULAN s/d 3 BULAN";
+	} else if ($lama == "enambulan") {
+		$lama = "> 3 BULAN s/d 6 BULAN";
+	} else if ($lama == "duabelasbulan") {
+		$lama = "> 6 BULAN s/d 1 TAHUN";
+	} else if ($lama == "duatahun") {
+		$lama = "> 1 TAHUN s/d 2 TAHUN";
+	} else if ($lama == "lebihduatahun") {
+		$lama = "> 2 TAHUN";
 	} else {
-
 		$lama = "";
 	}
 	?>
@@ -108,38 +113,38 @@ if ($pelanggan['kode_pelanggan'] != "") {
 		$total = 0;
 		foreach ($detail_aup as $r) {
 
-		
-				$total = $total + $r->jumlah;
-				$jatuhtempo = date('Y-m-d', strtotime('+' . $r->jt . 'day', strtotime($r->tgltransaksi)));
-				$hariini = date('Y-m-d');
-				if ($jatuhtempo > $hariini or empty($r->jt)) {
-					$color = "white";
-					$bg = "#c72c2c";
-				} else {
-					$color = "";
-					$bg = "";
-				}
+
+			$total = $total + $r->jumlah;
+			$jatuhtempo = date('Y-m-d', strtotime('+' . $r->jt . 'day', strtotime($r->tgltransaksi)));
+			$hariini = date('Y-m-d');
+			if ($jatuhtempo > $hariini or empty($r->jt)) {
+				$color = "white";
+				$bg = "#c72c2c";
+			} else {
+				$color = "";
+				$bg = "";
+			}
 		?>
-				<tr style="color:<?php echo $color; ?>; background-color:<?php echo $bg; ?>">
-					<td><?php echo $r->no_fak_penj; ?></td>
-					<td><?php echo DateToIndo2($r->tgltransaksi); ?></td>
-					<td>
-						<?php
-						if (!empty($r->jt)) {
-							echo DateToIndo2($jatuhtempo);
-						} else {
-							echo '<span style="color:white; background-color:#f1881c; font-weight:bold">Belum Di Ajukan</span>';
-						}
-						?></td>
-					<td><?php echo $r->kode_pelanggan; ?></td>
-					<td><?php echo $r->nama_pelanggan; ?></td>
-					<td><?php echo $r->nama_karyawan; ?></td>
-					<td><?php echo $r->pasar; ?></td>
-					<td><?php echo $r->hari; ?></td>
-					<td style="text-align: right"><?php echo number_format($r->jumlah, '0', '', '.'); ?></td>
-				</tr>
+			<tr style="color:<?php echo $color; ?>; background-color:<?php echo $bg; ?>">
+				<td><?php echo $r->no_fak_penj; ?></td>
+				<td><?php echo DateToIndo2($r->tgltransaksi); ?></td>
+				<td>
+					<?php
+					if (!empty($r->jt)) {
+						echo DateToIndo2($jatuhtempo);
+					} else {
+						echo '<span style="color:white; background-color:#f1881c; font-weight:bold">Belum Di Ajukan</span>';
+					}
+					?></td>
+				<td><?php echo $r->kode_pelanggan; ?></td>
+				<td><?php echo $r->nama_pelanggan; ?></td>
+				<td><?php echo $r->nama_karyawan; ?></td>
+				<td><?php echo $r->pasar; ?></td>
+				<td><?php echo $r->hari; ?></td>
+				<td style="text-align: right"><?php echo number_format($r->jumlah, '0', '', '.'); ?></td>
+			</tr>
 		<?php
-			
+
 		}
 		?>
 		<tr bgcolor="#024a75" style="color:white; font-size:12;">
