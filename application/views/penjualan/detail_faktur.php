@@ -399,17 +399,19 @@
                             } ?></td>
                         <td>
                           <?php
-                          if ($y->jenisbayar == "giro" or $y->jenisbayar == "transfer" or $y->jenisbayar == 'tunai') {
+                          if ($faktur['jenistransaksi'] != "tunai") {
+                            if ($y->jenisbayar == "giro" or $y->jenisbayar == "transfer") {
                           ?>
-                            <a href="#" data-nobukti="<?php echo $y->nobukti; ?>" class="btn btn-green btn-sm editbayar"><i class="fa fa-pencil"></i></a>
-                            <a href="#" class="btn btn-red btn-sm hapus" data-href="<?php echo base_url(); ?>Pembayaran/hapus/<?php echo $y->nobukti; ?>/<?php echo $y->no_fak_penj; ?>"><i class="fa fa-trash-o"></i></a>
-                          <?php
-                          } else {
-                          ?>
-                            <a href="#" data-nobukti="<?php echo $y->nobukti; ?>" class="btn btn-green btn-sm editbayar"><i class="fa fa-pencil"></i></a>
-                            <a href="#" class="btn btn-red btn-sm hapus" data-href="<?php echo base_url(); ?>Pembayaran/hapus/<?php echo $y->nobukti; ?>/<?php echo $y->no_fak_penj; ?>">
-                              <i class="fa fa-trash-o"></i></a>
-                          <?php } ?>
+                              <a href="#" data-nobukti="<?php echo $y->nobukti; ?>" class="btn btn-green btn-sm editbayar"><i class="fa fa-pencil"></i></a>
+                              <a href="#" class="btn btn-red btn-sm hapus" data-href="<?php echo base_url(); ?>Pembayaran/hapus/<?php echo $y->nobukti; ?>/<?php echo $y->no_fak_penj; ?>"><i class="fa fa-trash-o"></i></a>
+                            <?php
+                            } else {
+                            ?>
+                              <a href="#" data-nobukti="<?php echo $y->nobukti; ?>" class="btn btn-green btn-sm editbayar"><i class="fa fa-pencil"></i></a>
+                              <a href="#" class="btn btn-red btn-sm hapus" data-href="<?php echo base_url(); ?>Pembayaran/hapus/<?php echo $y->nobukti; ?>/<?php echo $y->no_fak_penj; ?>">
+                                <i class="fa fa-trash-o"></i></a>
+                          <?php }
+                          } ?>
                         </td>
                       </tr>
 

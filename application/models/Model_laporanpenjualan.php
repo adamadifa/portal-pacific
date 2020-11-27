@@ -2954,4 +2954,13 @@ GROUP BY
 
 		return $this->db->query($query);
 	}
+
+	function historikendaraan($dari, $sampai, $nokendaraan)
+	{
+		$query = "SELECT dpb.tgl_pengambilan, no_kendaraan,COUNT(no_dpb) as jmlpengambilan
+		FROM dpb 
+		WHERE no_kendaraan = '$nokendaraan' AND tgl_pengambilan BETWEEN '$dari' AND '$sampai'
+		GROUP BY tgl_pengambilan";
+		return $this->db->query($query);
+	}
 }

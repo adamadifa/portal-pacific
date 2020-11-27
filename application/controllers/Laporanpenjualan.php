@@ -1225,6 +1225,7 @@ class Laporanpenjualan extends CI_Controller
     $data['sampai'] = $sampai;
     $data['cabang'] = $cabang;
     $data['kendaraan'] = $kendaraan;
+    $data['histori'] = $this->Model_laporanpenjualan->historikendaraan($dari, $sampai, $kendaraan)->result();
     $data['rekapkendaraan'] = $this->Model_laporanpenjualan->rekapkendaraan($dari, $sampai, $kendaraan)->result();
     $this->load->view('penjualan/laporan/cetak_rekapkendaraan', $data);
   }
