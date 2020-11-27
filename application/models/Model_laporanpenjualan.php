@@ -2940,7 +2940,7 @@ GROUP BY
 		$query = "SELECT historibayar.id_karyawan,nama_karyawan,SUM(bayar) as totalkasbesar FROM historibayar
 				INNER JOIN penjualan ON historibayar.no_fak_penj = penjualan.no_fak_penj
 				INNER JOIN pelanggan ON penjualan.kode_pelanggan = pelanggan.kode_pelanggan
-				INNER JOIN karyawan  ON penjualan.id_karyawan = karyawan.id_karyawan
+				INNER JOIN karyawan  ON historibayar.id_karyawan = karyawan.id_karyawan
 				INNER JOIN cabang ON karyawan.kode_cabang = cabang.kode_cabang
 				WHERE tglbayar BETWEEN '$dari' AND '$sampai'"
 			. $jenisbayar

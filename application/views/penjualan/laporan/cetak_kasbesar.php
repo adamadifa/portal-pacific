@@ -34,7 +34,7 @@
 			<th rowspan="2">Tgl Pembayaran</th>
 			<th rowspan="2">No Faktur</th>
 			<th rowspan="2">Tgl Faktur</th>
-			<th rowspan="2">Sales Faktur</th>
+			<th rowspan="2">Sales Penagih</th>
 			<th rowspan="2">Kode Pel.</th>
 			<th rowspan="2">Nama Pelanggan</th>
 			<th rowspan="2">TUNAI</th>
