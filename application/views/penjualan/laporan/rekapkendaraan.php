@@ -35,7 +35,7 @@
                   <?php } ?>
                   <div class="mb-3">
                     <select name="kendaraan" id="kendaraan" class="form-select">
-                      <option value="">-- Semua Kendaraan --</option>
+                      <option value="">-- Pilih Kendaraan --</option>
                     </select>
                   </div>
 
