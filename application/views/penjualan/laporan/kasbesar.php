@@ -60,6 +60,17 @@
                       </div>
                     </div>
                   </div>
+                  <div class="row mb-3" id="jenislap">
+                    <div class="col-md-12">
+                      <div class="form-group">
+                        <select id="jenislaporan" name="jenislaporan" class="form-select">
+                          <option value="">Jenis Laporan</option>
+                          <option value="rekap">Rekap</option>
+                          <option value="detail">Detail</option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
                   <div class="mb-3 form-group">
                     <div class="row">
                       <div class="col-md-6">
@@ -270,6 +281,20 @@
     // });
 
 
+    function loadjenislaporan() {
+      var pelanggan = $("#pelanggan").val();
+      var salesman = $("#salesman").val();
+      if (pelanggan != "" || salesman != "") {
+        $("#jenislap").hide();
+      } else {
+        $("#jenislap").show();
+      }
+    }
+
+    $("#pelanggan").change(function() {
+      loadjenislaporan();
+    });
+
 
     function loadSalesman() {
       var cabang = $("#cabang").val();
@@ -330,6 +355,7 @@
           $('#pelanggan').selectize()[0].selectize.destroy();
           $("#pelanggan").html(respond);
           $('#pelanggan').selectize({});
+          loadjenislaporan();
         }
       });
     });
