@@ -144,7 +144,7 @@ if ($pelanggan['kode_pelanggan'] != "") {
 			$duabelasbulan   	+= $a->duabelasbulan;
 			$duatahun         += $a->duatahun;
 			$lebihduatahun 		+= $a->lebihduatahun;
-			$total 						= $duaminggu + $satubulan + $duabulan + $lebihtigabulan + $enambulan + $duabelasbulan
+			$total 						= $duaminggu + $satubulan + $satubulan15 + $duabulan + $lebihtigabulan + $enambulan + $duabelasbulan
 				+ $lebihduatahun + $duatahun;
 
 
