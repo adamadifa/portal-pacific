@@ -2,6 +2,7 @@
   <input type="hidden" name="no_giro" value="<?php echo $giro['no_giro']; ?>">
   <input type="hidden" id="statusgiro" name="statusgiro" value="<?php echo $status; ?>">
   <input type="hidden" name="tgl_giro" value="<?php echo $giro['tgl_giro']; ?>">
+  <input type="hidden" name="jatuhtempo" value="<?php echo $giro['tglcair']; ?>">
   <input type="hidden" name="pelanggan" value="<?php echo $giro['nama_pelanggan']; ?>">
   <input type="hidden" name="page" value="<?php echo $page; ?>">
   <table class="table">

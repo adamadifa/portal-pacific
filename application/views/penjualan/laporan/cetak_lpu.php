@@ -216,7 +216,7 @@ function uang($nilai)
           FROM giro
           INNER JOIN penjualan ON giro.no_fak_penj = penjualan.no_fak_penj
           LEFT JOIN historibayar ON  giro.id_giro = historibayar.id_giro
-          WHERE giro.id_karyawan = '$s->id_karyawan' AND MONTH(tgl_giro) <= '$bulanlast' AND YEAR(tgl_giro)<='$tahunlast' AND MONTH(tglbayar) = '$bulanskrg' AND YEAR(tglbayar)='$tahunskrg' GROUP BY id_karyawan";
+          WHERE giro.id_karyawan = '$s->id_karyawan' AND MONTH(tgl_giro) <= '$bulanlast' AND YEAR(tgl_giro)<='$tahunlast' AND MONTH(tglbayar) = '$bulanskrg' AND YEAR(tglbayar)='$tahunskrg' AND omset_tahun='$tahunskrg' AND omset_bulan='$bulanskrg' GROUP BY id_karyawan";
         $gmlast = $this->db->query($qgmlast)->row_array();
         $totalgmlast = $totalgmlast + $gmlast['jumlah'];
       ?>
@@ -318,7 +318,7 @@ function uang($nilai)
           FROM giro
           INNER JOIN penjualan ON giro.no_fak_penj = penjualan.no_fak_penj
           LEFT JOIN historibayar ON  giro.id_giro = historibayar.id_giro
-          WHERE giro.id_karyawan = '$s->id_karyawan' AND MONTH(tgl_giro) <= '$bulanlast' AND YEAR(tgl_giro)<='$tahunlast' AND MONTH(tglbayar) = '$bulanskrg' AND YEAR(tglbayar)='$tahunskrg' GROUP BY id_karyawan";
+          WHERE giro.id_karyawan = '$s->id_karyawan' AND MONTH(tgl_giro) <= '$bulanlast' AND YEAR(tgl_giro)<='$tahunlast' AND MONTH(tglbayar) = '$bulanskrg' AND YEAR(tglbayar)='$tahunskrg' AND omset_tahun='$tahunskrg' AND omset_bulan='$bulanskrg' GROUP BY id_karyawan";
         $gmlast = $this->db->query($qgmlast)->row_array();
 
         $qgmnow = "SELECT

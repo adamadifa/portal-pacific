@@ -2946,7 +2946,7 @@ class Model_penjualan extends CI_Model
     return $setpenj;
   }
 
-  function getsetoranpusat($dari, $sampai, $cabang,$bulan,$tahun)
+  function getsetoranpusat($dari, $sampai, $cabang, $bulan, $tahun)
   {
     // if ($bulan == 1) {
     //   $bulan = 12;
@@ -3308,7 +3308,6 @@ class Model_penjualan extends CI_Model
         $this->db->where('kacab is null');
         //$this->db->where('kacab !=','2');
       }
-
     } else if ($level == 'manager marketing') {
       if ($status != "" and $status != "-") {
         $this->db->where('mm IS NOT NULL');
@@ -3316,8 +3315,6 @@ class Model_penjualan extends CI_Model
         $this->db->where('mm is null');
         //$this->db->where('gm !=','2');
       }
-
-
     } else if ($level == 'general manager') {
       if ($status != "" and $status != "-") {
         $this->db->where('gm IS NOT NULL');
@@ -3325,7 +3322,6 @@ class Model_penjualan extends CI_Model
         $this->db->where('gm is null');
         //$this->db->where('gm !=','2');
       }
-
     } else if ($level == 'Administrator') {
       if ($status != "" and $status != "-") {
         $this->db->where('dirut IS NOT NULL');
@@ -3334,7 +3330,6 @@ class Model_penjualan extends CI_Model
         $this->db->where('gm IS NOT NULL');
         //$this->db->where('dirut !=','2');
       }
-
     }
 
     $this->db->select('no_pengajuan,
@@ -3401,7 +3396,6 @@ class Model_penjualan extends CI_Model
         $this->db->where('kacab is null');
         //$this->db->where('kacab !=','2');
       }
-
     } else if ($level == 'manager marketing') {
       if ($status != "" and $status != "-") {
         $this->db->where('mm IS NOT NULL');
@@ -3409,8 +3403,6 @@ class Model_penjualan extends CI_Model
         $this->db->where('mm is null');
         //$this->db->where('gm !=','2');
       }
-
-
     } else if ($level == 'general manager') {
       if ($status != "" and $status != "-") {
         $this->db->where('gm IS NOT NULL');
@@ -3418,7 +3410,6 @@ class Model_penjualan extends CI_Model
         $this->db->where('gm is null');
         //$this->db->where('gm !=','2');
       }
-
     } else if ($level == 'Administrator') {
       if ($status != "" and $status != "-") {
         $this->db->where('dirut IS NOT NULL');
@@ -3427,7 +3418,6 @@ class Model_penjualan extends CI_Model
         $this->db->where('gm IS NOT NULL');
         //$this->db->where('dirut !=','2');
       }
-
     }
     $this->db->select('count(*) as allcount');
     $this->db->from('pengajuan_limitkredit_v2');
@@ -4871,7 +4861,7 @@ class Model_penjualan extends CI_Model
 
       if ($status == 1) {
         $this->db->update('setoran_pusat', $dataditerima, array('no_ref' => $no_giro));
-      } else {
+      } else if ($status == 2) {
         $this->db->update('setoran_pusat', $dataditolak, array('no_ref' => $no_giro));
       }
     }

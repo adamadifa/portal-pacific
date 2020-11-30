@@ -1,6 +1,6 @@
 <form autocomplete="off" class="formValidate" id="setorgiroform" method="POST" action="<?php echo base_url(); ?>penjualan/setorgiro">
   <input type="hidden" name="no_giro" value="<?php echo $giro['no_giro']; ?>">
-  <input type="hidden" id="statusgiro" name="statusgiro" value="<?php echo $status; ?>">
+  <input type="text" id="statusgiro" name="statusgiro" value="<?php echo $status; ?>">
   <input type="hidden" id="tglbayar" name="tglbayar" value="<?php echo $tglbayar; ?>">
   <input type="hidden" name="tgl_giro" value="<?php echo $giro['tgl_giro']; ?>">
   <input type="hidden" name="pelanggan" value="<?php echo $giro['nama_pelanggan']; ?>">

@@ -547,6 +547,10 @@ class Model_pembayaran extends CI_Model
     $pelanggan  = $this->input->post('pelanggan');
     $bulan        = $this->input->post('bulan');
     $tahunomset   = $this->input->post('tahun');
+    $jatuhtempo = $this->input->post('jatuhtempo');
+    $jt = explode("-", $jatuhtempo);
+    $bulanjt = $jt[1];
+    $tahunjt = $jt[0];
     if ($status == 1) {
       $tglcair    = $this->input->post('tglcair');
     } else if ($status == 2) {
@@ -650,9 +654,12 @@ class Model_pembayaran extends CI_Model
       'tgl_diterimapusat'  => $tglcair,
       'bank'              => $bankpenerima,
       'status'            => '2',
-      'omset_bulan'       => 0,
-      'omset_tahun'       => ''
+      'omset_bulan'       => $bulanjt,
+      'omset_tahun'       => $tahunjt
     );
+
+    // var_dump($dataditolak);
+    // die;
 
     $datapending = array(
       'tgl_diterimapusat'  => NULL,
@@ -755,8 +762,8 @@ class Model_pembayaran extends CI_Model
             'tgl_ditolak'     => $tgltolak,
             'bank_penerima'   => $bankpenerima,
             'status'          => $status,
-            'omset_bulan'     => 0,
-            'omset_tahun'     => ''
+            'omset_bulan'     => $bulanjt,
+            'omset_tahun'     => $tahunjt
           );
         } else {
           $datagiro = array(
