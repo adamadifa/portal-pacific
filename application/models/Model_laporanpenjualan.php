@@ -18,7 +18,9 @@ class Model_laporanpenjualan extends CI_Model
 
 	function get_pelanggan($salesman)
 	{
-		$this->db->where('id_sales', $salesman);
+		if ($salesman != "") {
+			$this->db->where('id_sales', $salesman);
+		}
 		$this->db->select('DISTINCT(pelanggan.kode_pelanggan),nama_pelanggan');
 		$this->db->from('pelanggan');
 		return $this->db->get();
