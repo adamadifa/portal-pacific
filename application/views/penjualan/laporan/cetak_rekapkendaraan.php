@@ -126,7 +126,9 @@ function uang($nilai)
         </thead>
         <tbody>
           <?php $jmlhari = 0;
+          $totalpengambilan = 0;
           foreach ($histori as $h) {
+            $totalpengambilan += $h->jmlpengambilan;
           ?>
             <tr style="font-size:14px">
               <td><?php echo DateToIndo2($h->tgl_pengambilan); ?></td>
@@ -134,6 +136,10 @@ function uang($nilai)
             </tr>
           <?php $jmlhari++;
           } ?>
+          <tr bgcolor="#295ea9" style="color:white; font-size:16;">
+            <td><?= $jmlhari ?></td>
+            <td><?= $totalpengambilan ?></td>
+          </tr>
         </tbody>
       </table>
     </td>
@@ -148,12 +154,12 @@ function uang($nilai)
             <td align="right"><?php echo uang($grandtotalbarangkeluar); ?></td>
           </tr>
           <tr style="font-size:14">
-            <td style="background-color: #0b6ea9; color:white">JUMLAH HARI</td>
-            <td align="right"><?php echo $jmlhari; ?></td>
+            <td style="background-color: #0b6ea9; color:white">JUMLAH KEBERANGKATAN</td>
+            <td align="right"><?php echo $totalpengambilan; ?> x </td>
           </tr>
           <tr style="font-size:14">
             <td style="background-color: #0b6ea9; color:white">RATA RATA</td>
-            <td align="right"><?php echo uang($grandtotalbarangkeluar / $jmlhari); ?></td>
+            <td align="right"><?php echo uang($grandtotalbarangkeluar / $totalpengambilan); ?></td>
           </tr>
         </thead>
       </table>
@@ -169,12 +175,12 @@ function uang($nilai)
             <td align="right"><?php echo uang($totalpenjualan); ?></td>
           </tr>
           <tr style="font-size:14">
-            <td style="background-color: #a94211; color:white">JUMLAH HARI</td>
-            <td align="right"><?php echo $jmlhari; ?></td>
+            <td style="background-color: #a94211; color:white">JUMLAH KEBERANGKATAN</td>
+            <td align="right"><?php echo $totalpengambilan; ?> x</td>
           </tr>
           <tr style="font-size:14">
             <td style="background-color: #a94211; color:white">RATA RATA</td>
-            <td align="right"><?php echo uang($totalpenjualan / $jmlhari); ?></td>
+            <td align="right"><?php echo uang($totalpenjualan / $totalpengambilan); ?></td>
           </tr>
         </thead>
       </table>
