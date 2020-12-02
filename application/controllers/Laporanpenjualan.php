@@ -784,6 +784,7 @@ class Laporanpenjualan extends CI_Controller
 
   function uanglogam()
   {
+    $data['bulan'] = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember");
     $data['cb']    = $this->session->userdata('cabang');
     $data['cabang'] = $this->Model_cabang->view_cabang()->result();
     $this->template->load('template/template', 'penjualan/laporan/uang_logam', $data);
@@ -793,11 +794,22 @@ class Laporanpenjualan extends CI_Controller
   function cetak_uanglogam()
   {
     $cabang         = $this->input->post('cabang');
-    $dari           = $this->input->post('dari');
-    $sampai         = $this->input->post('sampai');
-    $data['dari']   = $dari;
-    $data['sampai'] = $sampai;
+    $bulan            = $this->input->post('bulan');
+    $tahun            = $this->input->post('tahun');
+    $data['bulan']    = $bulan;
+    $data['tahun']    = $tahun;
+    $dari             = $tahun . "-" . $bulan . "-" . "01";
+    $akhir             = $tahun . "-" . $bulan . "-" . "31";
+    $ceknextbulan     = $this->Model_laporanpenjualan->cekNextBulan($cabang, $bulan, $tahun)->row_array();
+    $data['dari']     = $dari;
+    $tglnextbulan     = $ceknextbulan['tgl_diterimapusat'];
+    if (empty($tglnextbulan)) {
+      $data['sampai'] = date("Y-m-t", strtotime($dari));
+    } else {
+      $data['sampai'] = $ceknextbulan['tgl_diterimapusat'];
+    }
 
+    $data['akhirlhp'] = $akhir;
     $saldo = $this->Model_laporanpenjualan->getSaldoAwalKasBesar($cabang, $dari)->row_array();
     $saldologam = $saldo['uang_logam'];
     $saldoawal = $saldologam;

@@ -45,7 +45,7 @@ function uang($nilai)
     $totalterima = 0;
     $totalkeluar = 0;
     while (strtotime($dari) <= strtotime($sampai)) {
-      $qpengeluaran    = "SELECT SUM(uang_logam) as totalsetoranpusat FROM setoran_pusat WHERE tgl_setoranpusat ='$dari' AND kode_cabang='$cb[kode_cabang]' GROUP BY tgl_setoranpusat";
+      $qpengeluaran    = "SELECT SUM(uang_logam) as totalsetoranpusat FROM setoran_pusat WHERE tgl_setoranpusat ='$dari' AND kode_cabang='$cb[kode_cabang]' AND omset_bulan ='$bulan' AND omset_tahun='$tahun' GROUP BY tgl_setoranpusat";
       $pengeluaran     = $this->db->query($qpengeluaran)->row_array();
       $qpenerimaan     = "SELECT SUM(setoran_logam) as totalsetoranlhp FROM setoran_penjualan WHERE tgl_lhp ='$dari' AND kode_cabang='$cb[kode_cabang]' GROUP BY tgl_lhp";
       $penerimaan      = $this->db->query($qpenerimaan)->row_array();
@@ -55,7 +55,14 @@ function uang($nilai)
       $kl_lb           = $this->db->query($qkl_lb)->row_array();
       $qgl             = "SELECT SUM(jumlah_logamtokertas) as jmlgantilogam FROM logamtokertas WHERE tgl_logamtokertas='$dari' AND kode_cabang='$cb[kode_cabang]' GROUP BY tgl_logamtokertas";
       $gl              = $this->db->query($qgl)->row_array();
-      $lhp             = $penerimaan['totalsetoranlhp'] + $kl_kb['kllogam'] - $kl_lb['kllogam'];
+      if ($dari < $akhirlhp) {
+        $logamlhp = $penerimaan['totalsetoranlhp'];
+      } else {
+        $logamlhp = 0;
+      }
+
+
+      $lhp             = $logamlhp + $kl_kb['kllogam'] - $kl_lb['kllogam'];
       $setoranpusat    = $pengeluaran['totalsetoranpusat'] + $gl['jmlgantilogam'];
       $saldo           = $saldo + ($lhp - $setoranpusat);
       $totalterima     = $totalterima + $lhp;
