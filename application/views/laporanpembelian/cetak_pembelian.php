@@ -136,8 +136,13 @@ function angka($nilai)
 				<td align="right"><?php echo uang($totalharga); ?></td>
 				<td align="right"><?php echo uang($debet); ?></td>
 				<td align="right"><?php echo uang($kredit); ?></td>
-				<td><?php echo $d->date_created; ?></td>
-				<td><?php echo $d->date_updated; ?></td>
+				<?php if($d->tgl_pembelian < "2020-12-02"){ ?>
+					<td><?php echo $d->date_created; ?></td>
+					<td><?php echo $d->date_updated; ?></td>
+				<?php }else{ ?>
+					<td><?php echo $d->detaildate_created; ?></td>
+					<td><?php echo $d->detaildate_updated; ?></td>
+				<?php } ?>
 			</tr><?php
 						$subtotal = $subtotal + $grandtotal;
 						if ($nobukti != $d->nobukti_pembelian) {
