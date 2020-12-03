@@ -254,11 +254,11 @@ function uang($nilai)
         WHERE
           giro.id_karyawan = '$s->id_karyawan' AND
           tgl_giro >= '$dari' AND tgl_giro <= '$sampai'
-          AND tglbayar IS NULL 
+          AND tglbayar IS NULL  AND omset_bulan >  '$bulanskrg' AND omset_tahun >= '$tahunskrg' 
           OR
           giro.id_karyawan = '$s->id_karyawan' AND
           tgl_giro >= '$dari' AND tgl_giro <= '$sampai'
-          AND tglbayar >  '$end'
+          AND tglbayar >=  '$end' AND omset_bulan >  '$bulanskrg' AND omset_tahun >= '$tahunskrg' 
 
 
           GROUP BY giro.id_karyawan";
@@ -331,11 +331,11 @@ function uang($nilai)
         WHERE
           giro.id_karyawan = '$s->id_karyawan' AND
           tgl_giro >= '$dari' AND tgl_giro <= '$sampai'
-          AND tglbayar IS NULL 
+          AND tglbayar IS NULL AND omset_bulan >  '$bulanskrg' AND omset_tahun >= '$tahunskrg'  
           OR
           giro.id_karyawan = '$s->id_karyawan' AND
           tgl_giro >= '$dari' AND tgl_giro <= '$sampai'
-          AND tglbayar >  '$end'
+          AND tglbayar >=  '$end' AND omset_bulan >  '$bulanskrg' AND omset_tahun >= '$tahunskrg' 
           GROUP BY giro.id_karyawan";
         $gmnow = $this->db->query($qgmnow)->row_array();
 
