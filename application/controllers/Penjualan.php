@@ -1331,7 +1331,7 @@ class Penjualan extends CI_Controller
     $cabang           = $this->input->post('cabang');
     $saldo             = $this->Model_laporanpenjualan->getSaldoAwalKasBesar($cabang, $dari)->row_array();
     $setoranpenjualan  = $this->Model_laporanpenjualan->getSetoranPenjualan($cabang, $dari)->row_array();
-    $setoranpusat      = $this->Model_laporanpenjualan->getSetoranPusat($cabang, $dari)->row_array();
+    $setoranpusat      = $this->Model_laporanpenjualan->getSetoranPusatLogam($cabang, $dari)->row_array();
     $ksetorpenjualan   = $this->Model_laporanpenjualan->getKLSetorpenjualan($cabang, $dari, $pembayaran = 1)->row_array();
     $lsetoranpenjualan = $this->Model_laporanpenjualan->getKLSetorpenjualan($cabang, $dari, $pembayaran = 2)->row_array();
     $gantilogam       = $this->Model_laporanpenjualan->getGantiLogam($cabang, $dari)->row_array();
@@ -1702,7 +1702,7 @@ class Penjualan extends CI_Controller
     } else {
       $saldo             = $this->Model_penjualan->getdetailsaldo($bulan, $tahun, $cabang)->row_array();
       $setoranpenjualan  = $this->Model_penjualan->getsetoranpenjualan($bulan, $tahun, $cabang)->row_array();
-      $setoranpusat      = $this->Model_penjualan->getsetoranpusat($dari, $data['sampai'], $cabang,$bulan,$tahun)->row_array();
+      $setoranpusat      = $this->Model_penjualan->getsetoranpusat($dari, $data['sampai'], $cabang, $bulan, $tahun)->row_array();
       $ksetorpenjualan   = $this->Model_penjualan->getKLSetorpenjualan($bulan, $tahun, $cabang, $pembayaran = 1)->row_array();
       $lsetoranpenjualan = $this->Model_penjualan->getKLSetorpenjualan($bulan, $tahun, $cabang, $pembayaran = 2)->row_array();
       $gantilogam       = $this->Model_penjualan->getGantiLogam($bulan, $tahun, $cabang)->row_array();

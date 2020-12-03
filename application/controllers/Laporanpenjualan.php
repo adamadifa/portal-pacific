@@ -784,6 +784,7 @@ class Laporanpenjualan extends CI_Controller
 
   function uanglogam()
   {
+    $data['bulan'] = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember");
     $data['cb']    = $this->session->userdata('cabang');
     $data['cabang'] = $this->Model_cabang->view_cabang()->result();
     $this->template->load('template/template', 'penjualan/laporan/uang_logam', $data);
@@ -793,24 +794,25 @@ class Laporanpenjualan extends CI_Controller
   function cetak_uanglogam()
   {
     $cabang         = $this->input->post('cabang');
-    $dari           = $this->input->post('dari');
-    $sampai         = $this->input->post('sampai');
-    $data['dari']    = $dari;
-    $data['sampai']  = $sampai;
+    $bulan            = $this->input->post('bulan');
+    $tahun            = $this->input->post('tahun');
+    $data['bulan']    = $bulan;
+    $data['tahun']    = $tahun;
+    $dari             = $tahun . "-" . $bulan . "-" . "01";
+    $akhir             = $tahun . "-" . $bulan . "-" . "31";
+    $ceknextbulan     = $this->Model_laporanpenjualan->cekNextBulan($cabang, $bulan, $tahun)->row_array();
+    $data['dari']     = $dari;
+    $tglnextbulan     = $ceknextbulan['tgl_diterimapusat'];
+    if (empty($tglnextbulan)) {
+      $data['sampai'] = date("Y-m-t", strtotime($dari));
+    } else {
+      $data['sampai'] = $ceknextbulan['tgl_diterimapusat'];
+    }
 
-    $saldo             = $this->Model_laporanpenjualan->getSaldoAwalKasBesar($cabang, $dari)->row_array();
-    $setoranpenjualan  = $this->Model_laporanpenjualan->getSetoranPenjualan($cabang, $dari)->row_array();
-    $setoranpusat      = $this->Model_laporanpenjualan->getSetoranPusat($cabang, $dari)->row_array();
-    $ksetorpenjualan   = $this->Model_laporanpenjualan->getKLSetorpenjualan($cabang, $dari, $pembayaran = 1)->row_array();
-    $lsetoranpenjualan = $this->Model_laporanpenjualan->getKLSetorpenjualan($cabang, $dari, $pembayaran = 2)->row_array();
-    $gantilogam       = $this->Model_laporanpenjualan->getGantiLogam($cabang, $dari)->row_array();
-    $saldologam        = $saldo['uang_logam'];
-    $setoranpenjlogam = $setoranpenjualan['uanglogam'];
-    $klogam            = $ksetorpenjualan['uanglogam'];
-    $llogam            = $lsetoranpenjualan['uanglogam'];
-    $gantikertas       = $gantilogam['gantikertas'];
-    $setoranpuslogam   = $setoranpusat['uanglogam'];
-    $saldoawal        = $saldologam + $setoranpenjlogam + $klogam - $llogam - $gantikertas - $setoranpuslogam;
+    $data['akhirlhp'] = $akhir;
+    $saldo = $this->Model_laporanpenjualan->getSaldoAwalKasBesar($cabang, $dari)->row_array();
+    $saldologam = $saldo['uang_logam'];
+    $saldoawal = $saldologam;
     $data['saldoawal'] = $saldoawal;
     $data['cb']      = $this->Model_cabang->get_cabang($cabang)->row_array();
     //$data['logam']	= $this->Model_laporanpenjualan->posisilogam($cabang,$dari,$sampai)->result();
@@ -881,45 +883,18 @@ class Laporanpenjualan extends CI_Controller
     //echo $data['tglakhirpenerimaan'];
     //die;
     $saldo                  = $this->Model_laporanpenjualan->getSaldoAwalKasBesar($cabang, $dari)->row_array();
-    $setoranpenjualan       = $this->Model_laporanpenjualan->getSetoranPenjualan($cabang, $dari)->row_array();
-    $setoranpusat           = $this->Model_laporanpenjualan->getSetoranPusat($cabang, $dari)->row_array();
-    $ksetorpenjualan        = $this->Model_laporanpenjualan->getKLSetorpenjualan($cabang, $dari, $pembayaran = 1)->row_array();
-    $lsetoranpenjualan      = $this->Model_laporanpenjualan->getKLSetorpenjualan($cabang, $dari, $pembayaran = 2)->row_array();
-    $gantilogam             = $this->Model_laporanpenjualan->getGantiLogam($cabang, $dari)->row_array();
+
 
     $saldokertas            = $saldo['uang_kertas'];
     $saldologam             = $saldo['uang_logam'];
     $saldogiro              = $saldo['giro'];
     $saldotransfer          = $saldo['transfer'];
 
-    $setoranpenjkertas      = $setoranpenjualan['uangkertas'];
-    $setoranpenjlogam       = $setoranpenjualan['uanglogam'];
-    $setoranpenjgiro        = $setoranpenjualan['giro'];
-    $girotocash             = $setoranpenjualan['girotocash'];
-    $setoranpenjtransfer    = $setoranpenjualan['transfer'];
-
-    $kkertas                = $ksetorpenjualan['uangkertas'];
-    $klogam                 = $ksetorpenjualan['uanglogam'];
-
-    $lkertas                = $lsetoranpenjualan['uangkertas'];
-    $llogam                 = $lsetoranpenjualan['uanglogam'];
-
-    $gantikertas            = $gantilogam['gantikertas'];
-    $setoranpuskertas       = $setoranpusat['uangkertas'];
-    $setoranpuslogam        = $setoranpusat['uanglogam'];
-    $setoranpusgiro         = $setoranpusat['giro'];
-    $setoranpustransfer     = $setoranpusat['transfer'];
-
-    $kertas                 = $saldokertas + $setoranpenjkertas + $kkertas - $lkertas + $gantikertas + $girotocash - $setoranpuskertas;
-    $logam                  = $saldologam + $setoranpenjlogam + $klogam - $llogam - $gantikertas - $setoranpuslogam;
-    $giro                   = $saldogiro + $setoranpenjgiro - $setoranpusgiro - $girotocash;
-    $transfer               = $saldotransfer + $setoranpenjtransfer - $setoranpustransfer;
-
-    $data['kertas']         = $kertas;
-    $data['logam']          = $logam;
-    $data['giro']           = $giro;
-    $data['transfer']       = $transfer;
-    $data['sa']             = $kertas + $logam + $giro + $transfer;
+    $data['kertas']         = $saldokertas;
+    $data['logam']          = $saldologam;
+    $data['giro']           = $saldogiro;
+    $data['transfer']       = $saldotransfer;
+    $data['sa']             = $saldokertas + $saldologam + $saldogiro + $saldotransfer;
     $data['cb']             = $this->Model_cabang->get_cabang($cabang)->row_array();
     //$data['logam']	= $this->Model_laporanpenjualan->posisilogam($cabang,$dari,$sampai)->result();
     if (isset($_POST['export'])) {

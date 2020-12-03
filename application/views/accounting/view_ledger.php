@@ -67,7 +67,7 @@ foreach ($ledger as $key => $l) {
     <td><?php echo $l->bank; ?></td>
     <td>
       <?php if (empty($l->ceknobukti)) { ?>
-        <a href="#" class="btn btn-success btn-sm tambah" data-nobukti="<?php echo $l->ceknobukti; ?>" data-noref="<?php echo $l->no_bukti;  ?>"><i class="fa fa-plus"></i></a>
+        <a href="#" class="btn btn-success btn-sm tambahledger" data-nobukti="<?php echo $l->ceknobukti; ?>" data-noref="<?php echo $l->no_bukti;  ?>"><i class="fa fa-plus"></i></a>
       <?php } else { ?>
         <a href="#" class="btn btn-danger btn-sm hapus" data-nobukti="<?php echo $l->ceknobukti; ?>"><i class="fa fa-close"></i></a>
         <?php
@@ -147,7 +147,7 @@ foreach ($ledger as $key => $l) {
       });
     });
 
-    $(".tambah").click(function(e) {
+    $(".tambahledger").click(function(e) {
       e.preventDefault();
       var bulan = $('#bulan').val();
       var tahun = $('#tahun').val();
@@ -170,7 +170,6 @@ foreach ($ledger as $key => $l) {
         success: function(respond) {
           console.log(respond);
           if (respond == 1) {
-
             //swal("Success", "Data Berhasil Disimpan !", "success");
             loadledger();
           } else {

@@ -2223,6 +2223,24 @@ GROUP BY
 		return $this->db->get();
 	}
 
+	function getSetoranPusatLogam($cabang, $dari)
+	{
+		$tanggal = explode("-", $dari);
+		$bulan 	 = $tanggal[1];
+		$tahun 	 = $tanggal[0];
+		$mulai   = $tahun . "-" . $bulan . "-" . "01";
+		$this->db->where('tgl_setoranpusat >=', $mulai);
+		$this->db->where('tgl_setoranpusat <', $dari);
+		$this->db->where('omset_bulan <', $bulan);
+		$this->db->where('omset_tahun <', $tahun);
+		$this->db->where('kode_cabang', $cabang);
+		$this->db->select('SUM(uang_logam) as uanglogam,SUM(uang_kertas) as uangkertas,SUM(giro) as giro,SUM(transfer) as transfer');
+		$this->db->from('setoran_pusat');
+		return $this->db->get();
+	}
+
+
+
 	function getKLSetorpenjualan($cabang, $dari, $pembayaran)
 	{
 		$tanggal = explode("-", $dari);
