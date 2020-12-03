@@ -35,6 +35,8 @@ function uang($nilai)
 <b style="font-size:16px; font-family:Calibri">
   MAKMUR PERMATA<br>
   REKAPITULASI PERSEDIAAN BARANG LOGISTIK<br>
+  BULAN <?php echo $bulan; ?><br>
+  TAHUN <?php echo $tahun; ?><br>
 </b>
 <br>
 <table class="" id="table-1" <?php if ($kategori == "K001") {

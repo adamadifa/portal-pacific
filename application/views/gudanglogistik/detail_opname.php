@@ -33,9 +33,5 @@
       </tr>
     <?php $no++;
     }  ?>
-    <tr>
-      <th colspan="3">TOTAL PEMBELIAN</th>
-      <td align="right"><b> <?php echo number_format($total, '2', ',', '.'); ?></b></td>
-    </tr>
   </tbody>
 </table>

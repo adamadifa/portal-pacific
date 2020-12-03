@@ -376,7 +376,7 @@ class Model_gudanglogistik extends CI_Model
   function insert_opname()
   {
 
-    $kode_opname_gl   = $this->input->post('kode_opname_gl');
+    $kode_opname_gl   = $this->input->post('kode_opname');
     $tanggal          = $this->input->post('tanggal');
     $bulan            = $this->input->post('bulan');
     $tahun            = $this->input->post('tahun');
@@ -451,7 +451,7 @@ class Model_gudanglogistik extends CI_Model
     $this->db->insert('saldoawal_gl_detail', $data);
   }
 
-  function insert_opnamestok()
+  function insert_prosesopname()
   {
 
     $kode_opname_gl   = $this->input->post('kode_opname_gl');
@@ -986,7 +986,7 @@ class Model_gudanglogistik extends CI_Model
   public function getDataopname($rowno, $rowperpage, $kode_opname_gl = "", $tanggal = "")
   {
 
-    $this->db->select('*');
+    $this->db->select('kode_opname_gl,kategori,opname_gl.tanggal,bulan,tahun');
     $this->db->from('opname_gl');
     $this->db->join('kategori_barang_pembelian', 'kategori_barang_pembelian.kode_kategori = opname_gl.kode_kategori');
     $this->db->order_by('opname_gl.tanggal', 'DESC');
