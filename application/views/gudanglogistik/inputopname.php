@@ -26,9 +26,9 @@
                       <span class="input-icon-addon">
                         <i class="fa fa-barcode"></i>
                       </span>
-                      <input type="text" readonly value="" id="kode_opname_gl" name="kode_opname_gl" class="form-control" placeholder="Kode Opname Awal" data-error=".errorTxt19" />
+                      <input type="text" readonly value="" id="kode_opname" name="kode_opname" class="form-control" placeholder="Kode Opname" data-error=".errorTxt19" />
                       <input type="hidden" readonly id="getsa" name="getsa" value="0" class="form-control" />
-                      <input type="hidden" readonly id="jumlahproduk" name="jumlahproduk" class="form-control" />
+                      <input type="hidden" name="jumlahproduk" id="jumlahproduk">
                     </div>
                   </div>
                   <div class="form-group mb-3">
@@ -80,11 +80,44 @@
                   </div>
                   <div class="form-group mb-3">
                     <div class="input-icon">
-                      <input type="submit" name="submit" class="btn btn-sm btn-primary" value="SIMPAN">
+                      <span class="input-icon-addon">
+                      </span>
+                      <a href="#" class="btn btn-success btn-block" id="getopname">GET OPNAME</a>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <table class="table table-bordered table-striped">
+                        <thead>
+                          <tr>
+                            <th style="text-align:left;width: 5px">No</th>
+                            <th style=" text-align:left;width: 150px">Kode Barang</th>
+                            <th style="text-align:left">Nama Barang</th>
+                            <th style="text-align:left;width: 150px">Qty</th>
+                            <th style="text-align:left;width: 150px">Aksi</th>
+                          </tr>
+                        </thead>
+                        <tbody id="loaddetailopname">
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group mb-3">
+            <div class="input-icon">
+              <input type="submit" name="submit" class="btn btn-block btn-primary" value="SIMPAN">
             </div>
           </div>
         </div>
@@ -99,30 +132,31 @@
 <script>
   flatpickr(document.getElementById('tanggal'), {});
 </script>
-
-
 <script type="text/javascript">
   $(function() {
 
     function loadNoMutasi() {
       var bulan = $("#bulan").val();
       var tahun = $("#tahun").val();
-      var kat = $("#kode_kategori").val();
       var status = "GL";
       var thn = tahun.substr(2, 2);
+      var kode_kategori = $("#kode_kategori").val();
       if (parseInt(bulan.length) == 1) {
         var bln = "0" + bulan;
       } else {
         var bln = bulan;
       }
-      var kode = status + bln + thn + kat;
-      $("#kode_opname_gl").val(kode);
+      var kode = status + bln + thn + kode_kategori;
+      $("#kode_opname").val(kode);
     }
 
-    function loaddetailOpname() {
+    $("#getopname").click(function(e) {
+      e.preventDefault();
       var bulan = $("#bulan").val();
+      var kode_opname_gl = $("#kode_opname").val();
       var tahun = $("#tahun").val();
       var kode_kategori = $("#kode_kategori").val();
+      var tanggal = $("#tanggal").val();
       var thn = tahun.substr(2, 2);
       if (bulan == "") {
         swal("Oops!", "Bulan Harus Diisi !", "warning");
@@ -133,32 +167,33 @@
       } else if (tanggal == "") {
         swal("Oops!", "Tanggal Harus Diisi !", "warning");
         return false;
+      } else if (kode_kategori == "") {
+        swal("Oops!", "Kategori Harus Diisi !", "warning");
+        return false;
       } else {
         $.ajax({
           type: 'POST',
-          url: '<?php echo base_url(); ?>gudanglogistik/getdetailopname',
+          url: '<?php echo base_url(); ?>gudanglogistik/getopnamestok',
           data: {
             bulan: bulan,
             tahun: tahun,
-            kode_kategori: kode_kategori
+            kode_kategori: kode_kategori,
+            kode_opname_gl: kode_opname_gl
           },
           cache: false,
           success: function(respond) {
             if (respond == 1) {
               $("#getsa").val(0);
-              swal("Oops!", "Opname Bulan Sebelumnya Belum Diset! Atau Opname Bulan Tersebut Sudah Ada", "warning");
+              swal("Oops!", "opname Bulan Sebelumnya Belum Diset! Atau opname Bulan Tersebut Sudah Ada", "warning");
             } else {
               $("#getsa").val(1);
-              $("#loaddetailOpname").html(respond);
+              $("#loaddetailopname").html(respond);
             }
           }
         });
       }
-    }
-    $("#getOpname").click(function(e) {
-      e.preventDefault();
-      loaddetailOpname();
     });
+
     $("#bulan").change(function() {
       loadNoMutasi();
     });
@@ -170,30 +205,32 @@
       loadNoMutasi();
     });
 
-    $(".formValidate").submit(function() {
-      var kode_opname_gl = $("#kode_opname_gl").val();
-      var cabang = $("#cabang").val();
-      var bulan = $("#bulan").val();
-      var tahun = $("#tahun").val();
-      var tanggal = $("#tanggal").val();
-      var getsa = $("#getsa").val();
-      if (kode_opname_gl == "") {
-        swal("Oops!", "Opname Awal Harus Diisi!", "warning");
-        return false;
-      } else if (cabang == "") {
-        swal("Oops!", "Cabang Harus Diisi !", "warning");
-        return false;
-      } else if (bulan == "") {
-        swal("Oops!", "Bulan Harus Diisi !", "warning");
-        return false;
-      } else if (tahun == "") {
-        swal("Oops!", "Tahun Harus Diisi !", "warning");
-        return false;
-      } else if (tanggal == "") {
-        swal("Oops!", "Tanggal Harus Diisi !", "warning");
-        return false;
-      }
-    });
+    // $(".formValidate").submit(function() {
+    //   var kode_opname = $("#kode_opname").val();
+    //   var kode_kategori = $("#kode_kategori").val();
+    //   var cabang = $("#cabang").val();
+    //   var bulan = $("#bulan").val();
+    //   var tahun = $("#tahun").val();
+    //   var tanggal = $("#tanggal").val();
+    //   var getsa = $("#getsa").val();
+    //   if (kode_opname == "") {
+    //     swal("Oops!", "Opname Harus Diisi!", "warning");
+    //     return false;
+    //   } else if (cabang == "") {
+    //     swal("Oops!", "Cabang Harus Diisi !", "warning");
+    //     return false;
+    //   } else if (bulan == "") {
+    //     swal("Oops!", "Bulan Harus Diisi !", "warning");
+    //     return false;
+    //   } else if (tahun == "") {
+    //     swal("Oops!", "Tahun Harus Diisi !", "warning");
+    //     return false;
+    //   } else if (tanggal == "") {
+    //     swal("Oops!", "Tanggal Harus Diisi !", "warning");
+    //     $("#tanggal").focus();
+    //     return false;
+    //   }
+    // });
 
     $('#mytable tbody').on('click', 'a', function() {
       $("#no_sj").val($(this).attr("data-nosj"));

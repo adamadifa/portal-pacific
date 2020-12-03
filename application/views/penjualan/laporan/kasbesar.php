@@ -337,7 +337,7 @@
       loadSalesman();
       loadpelanggan();
     });
-
+    // test
     $("#cabang2").change(function() {
       loadsalesman2();
     });

@@ -80,11 +80,45 @@
                   </div>
                   <div class="form-group mb-3">
                     <div class="input-icon">
-                      <input type="submit" name="submit" class="btn btn-sm btn-primary" value="SIMPAN">
+                      <span class="input-icon-addon">
+                      </span>
+                      <a href="#" class="btn btn-success btn-block" id="getsaldo">GET SALDO</a>
                     </div>
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                <div class="card-body">
+                  <div class="row">
+                    <div class="col-md-12">
+                      <table class="table table-bordered table-striped">
+                        <thead>
+                          <tr>
+                            <th style="text-align:left;width: 5px">No</th>
+                            <th style=" text-align:left;width: 150px">Kode Barang</th>
+                            <th style="text-align:left">Nama Barang</th>
+                            <th style="text-align:left;width: 150px">Qty</th>
+                            <th style="text-align:left;width: 150px">Harga</th>
+                            <th style="text-align:left;width: 150px">Aksi</th>
+                          </tr>
+                        </thead>
+                        <tbody id="loaddetailsaldo">
+
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="form-group mb-3">
+            <div class="input-icon">
+              <input type="submit" name="submit" class="btn btn-block btn-primary" value="SIMPAN">
             </div>
           </div>
         </div>
@@ -118,11 +152,13 @@
       $("#kode_saldoawal").val(kode);
     }
 
-    function loaddetailsaldo() {
+    $("#getsaldo").click(function(e) {
+      e.preventDefault();
       var bulan = $("#bulan").val();
-      var kode_saldoawal = $("#kode_saldoawal").val();
+      var kode_saldoawal_gl = $("#kode_saldoawal").val();
       var tahun = $("#tahun").val();
       var kode_kategori = $("#kode_kategori").val();
+      var tanggal = $("#tanggal").val();
       var thn = tahun.substr(2, 2);
       if (bulan == "") {
         swal("Oops!", "Bulan Harus Diisi !", "warning");
@@ -139,11 +175,12 @@
       } else {
         $.ajax({
           type: 'POST',
-          url: '<?php echo base_url(); ?>gudanglogistik/getdetailsaldo',
+          url: '<?php echo base_url(); ?>gudanglogistik/getsaldoawal',
           data: {
             bulan: bulan,
             tahun: tahun,
-            kode_kategori: kode_kategori
+            kode_kategori: kode_kategori,
+            kode_saldoawal_gl: kode_saldoawal_gl
           },
           cache: false,
           success: function(respond) {
@@ -157,12 +194,8 @@
           }
         });
       }
-    }
-    
-    $("#getsaldo").click(function(e) {
-      e.preventDefault();
-      loaddetailsaldo();
     });
+
     $("#bulan").change(function() {
       loadNoMutasi();
     });
@@ -174,32 +207,32 @@
       loadNoMutasi();
     });
 
-    $(".formValidate").submit(function() {
-      var kode_saldoawal = $("#kode_saldoawal").val();
-      var kode_kategori = $("#kode_kategori").val();
-      var cabang = $("#cabang").val();
-      var bulan = $("#bulan").val();
-      var tahun = $("#tahun").val();
-      var tanggal = $("#tanggal").val();
-      var getsa = $("#getsa").val();
-      if (kode_saldoawal == "") {
-        swal("Oops!", "Saldo Awal Harus Diisi!", "warning");
-        return false;
-      } else if (cabang == "") {
-        swal("Oops!", "Cabang Harus Diisi !", "warning");
-        return false;
-      } else if (bulan == "") {
-        swal("Oops!", "Bulan Harus Diisi !", "warning");
-        return false;
-      } else if (tahun == "") {
-        swal("Oops!", "Tahun Harus Diisi !", "warning");
-        return false;
-      } else if (tanggal == "") {
-        swal("Oops!", "Tanggal Harus Diisi !", "warning");
-        $("#tanggal").focus();
-        return false;
-      }
-    });
+    // $(".formValidate").submit(function() {
+    //   var kode_saldoawal = $("#kode_saldoawal").val();
+    //   var kode_kategori = $("#kode_kategori").val();
+    //   var cabang = $("#cabang").val();
+    //   var bulan = $("#bulan").val();
+    //   var tahun = $("#tahun").val();
+    //   var tanggal = $("#tanggal").val();
+    //   var getsa = $("#getsa").val();
+    //   if (kode_saldoawal == "") {
+    //     swal("Oops!", "Saldo Awal Harus Diisi!", "warning");
+    //     return false;
+    //   } else if (cabang == "") {
+    //     swal("Oops!", "Cabang Harus Diisi !", "warning");
+    //     return false;
+    //   } else if (bulan == "") {
+    //     swal("Oops!", "Bulan Harus Diisi !", "warning");
+    //     return false;
+    //   } else if (tahun == "") {
+    //     swal("Oops!", "Tahun Harus Diisi !", "warning");
+    //     return false;
+    //   } else if (tanggal == "") {
+    //     swal("Oops!", "Tanggal Harus Diisi !", "warning");
+    //     $("#tanggal").focus();
+    //     return false;
+    //   }
+    // });
 
     $('#mytable tbody').on('click', 'a', function() {
       $("#no_sj").val($(this).attr("data-nosj"));
