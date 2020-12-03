@@ -254,7 +254,7 @@ function uang($nilai)
         WHERE
           giro.id_karyawan = '$s->id_karyawan' AND
           tgl_giro >= '$dari' AND tgl_giro <= '$sampai'
-          AND tglbayar IS NULL  AND omset_bulan >  '$bulanskrg' AND omset_tahun >= '$tahunskrg' 
+          AND tglbayar IS NULL  AND omset_bulan =  '0' AND omset_tahun = ''   
           OR
           giro.id_karyawan = '$s->id_karyawan' AND
           tgl_giro >= '$dari' AND tgl_giro <= '$sampai'
@@ -331,7 +331,7 @@ function uang($nilai)
         WHERE
           giro.id_karyawan = '$s->id_karyawan' AND
           tgl_giro >= '$dari' AND tgl_giro <= '$sampai'
-          AND tglbayar IS NULL AND omset_bulan >  '$bulanskrg' AND omset_tahun >= '$tahunskrg'  
+          AND tglbayar IS NULL AND omset_bulan =  '0' AND omset_tahun = ''   
           OR
           giro.id_karyawan = '$s->id_karyawan' AND
           tgl_giro >= '$dari' AND tgl_giro <= '$sampai'
