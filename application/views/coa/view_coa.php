@@ -10,7 +10,7 @@
 	</div>
 	<!-- Content here -->
 	<div class="row">
-		<div class="col-md-12 col-xs-12">
+		<div class="col-md-10 col-xs-12">
 			<div class="card">
 				<div class="card-header">
 					<h4 class="card-title">Chart Of Accounting</h4>
@@ -115,6 +115,9 @@
 
 				</div>
 			</div>
+		</div>
+		<div class="col-md-2 col-xs-12">
+			<?php $this->load->view('menu/menu_accounting_administrator'); ?>
 		</div>
 	</div>
 </div>
