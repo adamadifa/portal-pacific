@@ -992,6 +992,7 @@ class Laporanpenjualan extends CI_Controller
 
   function rekapbg()
   {
+    $data['bulan'] = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember");
     $data['cb']      = $this->session->userdata('cabang');
     $data['cabang'] = $this->Model_cabang->view_cabang()->result();
     $this->template->load('template/template', 'penjualan/laporan/rekapbg', $data);
@@ -1001,12 +1002,21 @@ class Laporanpenjualan extends CI_Controller
   function cetak_rekapbg()
   {
     $cabang         = $this->input->post('cabang');
-    $dari           = $this->input->post('dari');
-    $sampai         = $this->input->post('sampai');
+    $bulan          = $this->input->post('bulan');
+    $tahun          = $this->input->post('tahun');
+    $dari           = $tahun . "-" . $bulan . "-01";
+    $sampai         = $tahun . "-" . $bulan . "-31";
+    $ceknextbulan     = $this->Model_laporanpenjualan->cekNextBulan($cabang, $bulan, $tahun)->row_array();
+    $tglnextbulan     = $ceknextbulan['tgl_diterimapusat'];
+    if (empty($tglnextbulan)) {
+      $sampaibayar = date("Y-m-t", strtotime($dari));
+    } else {
+      $sampaibayar = $ceknextbulan['tgl_diterimapusat'];
+    }
     $data['dari']    = $dari;
     $data['sampai']  = $sampai;
     $data['cb']      = $this->Model_cabang->get_cabang($cabang)->row_array();
-    $data['rekapbg'] = $this->Model_laporanpenjualan->rekapbg($cabang, $dari, $sampai)->result();
+    $data['rekapbg'] = $this->Model_laporanpenjualan->rekapbg($cabang, $dari, $sampai, $bulan, $tahun, $sampaibayar)->result();
     if (isset($_POST['export'])) {
       // Fungsi header dengan mengirimkan raw data excel
       header("Content-type: application/vnd-ms-excel");

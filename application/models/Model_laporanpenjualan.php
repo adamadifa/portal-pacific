@@ -1292,7 +1292,7 @@ GROUP BY
 		return $this->db->get();
 	}
 
-	function rekapbg($cabang, $dari, $sampai)
+	function rekapbg($cabang, $dari, $sampai, $bulan, $tahun, $sampaibayar)
 	{
 		$query = "SELECT tgl_giro,penjualan.id_karyawan,nama_karyawan,giro.no_fak_penj,nama_pelanggan,namabank,no_giro,tglcair as jatuhtempo,jumlah,tglbayar as tgl_pencairan
 							FROM giro
@@ -1302,10 +1302,11 @@ GROUP BY
 							ON penjualan.id_karyawan = karyawan.id_karyawan
 							INNER JOIN pelanggan
 							ON penjualan.kode_pelanggan = pelanggan.kode_pelanggan
-							LEFT JOIN (SELECT id_giro,tglbayar FROM historibayar WHERE tglbayar BETWEEN '$dari' AND '$sampai') as hb
+							LEFT JOIN (SELECT id_giro,tglbayar FROM historibayar WHERE tglbayar BETWEEN '$dari' AND '$sampaibayar') as hb
 							ON giro.id_giro = hb.id_giro
 							WHERE tgl_giro BETWEEN '$dari' AND '$sampai' AND pelanggan.kode_cabang='$cabang'
-							OR tglbayar BETWEEN '$dari' AND '$sampai' AND pelanggan.kode_cabang='$cabang'
+							OR omset_bulan ='$bulan' AND omset_tahun='$tahun' AND pelanggan.kode_cabang='$cabang'
+							OR tgl_giro < '$dari' AND omset_bulan > '$bulan' AND omset_tahun >='$tahun'   AND pelanggan.kode_cabang='$cabang'
 							ORDER BY tgl_giro,no_giro ASC
 							";
 		return $this->db->query($query);
