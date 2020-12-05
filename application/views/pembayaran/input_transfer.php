@@ -128,7 +128,7 @@
           }
         },
 
-        
+
         namabank: {
           validators: {
             notEmpty: {
@@ -189,8 +189,8 @@
     $("#tgltransfer").change(function() {
       cektutuplaporan();
     });
-    
-    
+
+
 
 
     $("form").submit(function() {
@@ -210,7 +210,7 @@
       }
 
     });
-    
+
 
     $("#jmlbayar").on('keyup keydown change', function() {
 

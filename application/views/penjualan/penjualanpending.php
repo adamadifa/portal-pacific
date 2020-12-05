@@ -131,6 +131,7 @@ function uang($nilai)
                       <td>
                         <a href="<?php echo base_url(); ?>penjualan/updatepenjualanpending/<?php echo $d['kode_pelanggan']; ?>/<?php echo $d['no_fak_penj']; ?>" class="btn btn-sm btn-success""><i class=" fa fa-refresh"></i></a>
                         <a href="#" class="btn btn-sm btn-primary detail" data-nofakpenj="<?php echo $d['no_fak_penj']; ?>"><i class="fa fa-list"></i></a>
+                        <a href="#" class="btn btn-sm btn-info inputtransfer" data-nofakpenj="<?php echo $d['no_fak_penj']; ?>" data-total="<?php echo $d['total']; ?>" data-kodepel="<?php echo $d['kode_pelanggan']; ?>"><i class="fa fa-money mr-2"></i> Bayar</a>
                         <a href="<?php echo base_url(); ?>penjualan/hapuspenjualanpending/<?php echo $d['no_fak_penj']; ?>" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></a>
                       </td>
                     </tr>
@@ -161,6 +162,21 @@ function uang($nilai)
       </div>
       <div class="modal-body">
         <div id="loadcontent"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-white mr-auto" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal modal-blur fade" id="inputbayar" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg  modal-dialog-centered" role="document">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <h5 class="modal-title">BAYAR</h5>
+      </div>
+      <div class="modal-body">
+        <div class="loadformbayar"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-white mr-auto" data-dismiss="modal">Close</button>
@@ -219,6 +235,35 @@ function uang($nilai)
           $("#loadcontent").html(respond);
         }
       });
+    });
+
+    $(".inputtransfer").click(function(e) {
+      var nofaktur = $(this).attr("data-nofakpenj");
+      var totalpiutang = $(this).attr("data-total");
+      var kodepel = $(this).attr("data-kodepel");
+      var totalbayar = 0;
+      // alert(totalbayar);
+      e.preventDefault();
+      $("#inputbayar").modal({
+        backdrop: "static", //remove ability to close modal with click
+        keyboard: false, //remove option to close with keyboard
+        show: true //Display loader!
+      });
+      $.ajax({
+        type: 'POST',
+        url: '<?php echo base_url(); ?>Pembayaran/inputtransfer',
+        data: {
+          nofaktur: nofaktur,
+          totalbayar: totalbayar,
+          totalpiutang: totalpiutang,
+          kodepel: kodepel
+        },
+        cache: false,
+        success: function(respond) {
+          $(".loadformbayar").html(respond);
+        }
+      });
+
     });
   });
 </script>
