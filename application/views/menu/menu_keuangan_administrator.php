@@ -13,6 +13,9 @@ if ($level == "Administrator") {
       <a href="<?php echo base_url(); ?>pembayaran/listtransfer" class="list-group-item list-group-item-action">
         <i class="fa fa-file-text mr-2"></i>Transfer
       </a>
+      <a href="<?php echo base_url(); ?>pembayaran/listtransferpenjpending" class="list-group-item list-group-item-action">
+        <i class="fa fa-file-text mr-2"></i>Transfer Penjualan Pending
+      </a>
     </div>
   </div>
   <div class="card">
@@ -264,11 +267,11 @@ if ($level == "Administrator") {
       <a href="<?php echo base_url(); ?>laporankaskecil/kaskecil" class="list-group-item list-group-item-action">
         <i class="fa fa-file-o mr-2"></i>Kas Kecil
       </a>
-      <?php if ($this->session->userdata('id_user') != "29"){ ?>
-      <a href="<?php echo base_url(); ?>laporankeuangan/ledger" class="list-group-item list-group-item-action">
-        <i class="fa fa-file-o mr-2"></i>Ledger / Mutasi Bank
-      </a>
-    <?php } ?>
+      <?php if ($this->session->userdata('id_user') != "29") { ?>
+        <a href="<?php echo base_url(); ?>laporankeuangan/ledger" class="list-group-item list-group-item-action">
+          <i class="fa fa-file-o mr-2"></i>Ledger / Mutasi Bank
+        </a>
+      <?php } ?>
     </div>
   </div>
 <?php } else if ($level == "kepala admin" || $level == "spv cabang") { ?>

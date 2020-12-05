@@ -368,6 +368,30 @@ class Pembayaran extends CI_Controller
 		}
 	}
 
+	function inputtransferpending()
+	{
+
+		if (isset($_POST['simpan'])) {
+			$nofaktur = $this->input->post('nofaktur');
+			$this->Model_pembayaran->inputtransfer();
+			$this->session->set_flashdata(
+				'msg',
+				'<div class="alert bg-green text-white alert-dismissible" role="alert">
+						<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+						<i class="fa fa-check" style="float:left; margin-right:10px"></i> Data Berhasil Disimpan !
+				</div>'
+			);
+			redirect('penjualan/detailfaktur/' . $nofaktur);
+		} else {
+			$data['nofaktur'] 		= $this->input->post('nofaktur');
+			$data['totalbayar']		= $this->input->post('totalbayar');
+			$data['totalpiutang']	= $this->input->post('totalpiutang');
+			$data['kodepel']			= $this->input->post('kodepel');
+			$data['salesman'] 		= $this->Model_sales->view_sales()->result();
+			$this->load->view('pembayaran/input_transferpending', $data);
+		}
+	}
+
 	function hapustransfer()
 	{
 
@@ -1225,6 +1249,30 @@ class Pembayaran extends CI_Controller
 		}
 	}
 
+	function editbayartransferpending()
+	{
+		if (isset($_POST['submit'])) {
+			$idtransfer   = $this->input->post('id_transfer');
+			$page 	  	  = $this->input->post('page');
+			$simpan = $this->Model_pembayaran->updatebayartransferpending($idtransfer);
+
+			$this->session->set_flashdata(
+				'msg',
+				'<div class="alert bg-green text-white alert-dismissible" role="alert">
+	              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	                 <i class="fa fa-check"></i> Data Berhasil Di Update !
+	          </div>'
+			);
+			redirect('pembayaran/' . $page);
+		} else {
+			$idtransfer 				= $this->input->post('id_transfer');
+			$data['transfer']		= $this->Model_pembayaran->viewtransferpending($idtransfer)->row_array();
+			$data['bank']				= $this->Model_pembayaran->listbank()->result();
+			$data['page']				= $this->input->post('page');
+			$data['bulan'] = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember");
+			$this->load->view('pembayaran/edit_bayartransferpending', $data);
+		}
+	}
 
 	function edittransfertolak()
 	{
@@ -1359,10 +1407,114 @@ class Pembayaran extends CI_Controller
 		$this->load->view('pembayaran/detailtransfer', $data);
 	}
 
+	function detailtransferpending()
+	{
+		$kode_transfer = $this->input->post('id_transfer');
+		$data['transfer'] = $this->Model_pembayaran->getdetailtransferpending($kode_transfer);
+		$this->load->view('pembayaran/detailtransfer', $data);
+	}
+
 	function detailsetoranpusat()
 	{
 		$kodesetoranpusat = $this->input->post('kode_setoran');
 		$data['setoranpusat'] = $this->Model_pembayaran->getdetailsetoranpusat($kodesetoranpusat);
 		$this->load->view('pembayaran/detailsetoranpusat', $data);
+	}
+
+	function listtransferpenjpending($rowno = 0)
+	{
+		//	error_reporting(0);
+		// Search text
+		$namapel 		= "";
+		$dari 			= "";
+		$sampai 		= "";
+		$status   	= "";
+
+		if ($this->input->post('submit') != NULL) {
+			$namapel 	= $this->input->post('namapel');
+			$dari 		= $this->input->post('dari');
+			$sampai 	= $this->input->post('sampai');
+			$status		= $this->input->post('status2');
+
+			$data 	= array(
+
+				'namapel'	 => $namapel,
+				'dari'		 => $dari,
+				'sampai'	 => $sampai,
+				'status'	 => $status
+
+
+			);
+			$this->session->set_userdata($data);
+		} else {
+			if ($this->session->userdata('namapel') != NULL) {
+				$namapel = $this->session->userdata('namapel');
+			}
+
+			if ($this->session->userdata('dari') != NULL) {
+				$dari = $this->session->userdata('dari');
+			}
+
+			if ($this->session->userdata('sampai') != NULL) {
+				$sampai = $this->session->userdata('sampai');
+			}
+
+			if ($this->session->userdata('status') != NULL) {
+				$status = $this->session->userdata('status');
+			}
+		}
+
+		// Row per page
+		$rowperpage = 10;
+
+		// Row position
+		if ($rowno != 0) {
+			$rowno = ($rowno - 1) * $rowperpage;
+		}
+
+		// All records count
+		$allcount 	  = $this->Model_pembayaran->getrecordTransferpenjualanpending($namapel, $dari, $sampai, $status);
+
+		// Get records
+		$users_record = $this->Model_pembayaran->getdataTransferpenjualanpending($rowno, $rowperpage, $namapel, $dari, $sampai, $status);
+
+
+
+		// Pagination Configuration
+		$config['base_url'] 				= base_url() . 'pembayaran/listtransferpenjpending';
+		$config['use_page_numbers'] = TRUE;
+		$config['total_rows'] 			= $allcount;
+		$config['per_page'] 				= $rowperpage;
+
+		$config['first_link']       = 'First';
+		$config['last_link']        = 'Last';
+		$config['next_link']        = 'Next';
+		$config['prev_link']        = 'Prev';
+		$config['full_tag_open']    = '<div class="pagging text-center"><nav><ul class="pagination justify-content-center">';
+		$config['full_tag_close']   = '</ul></nav></div>';
+		$config['num_tag_open']     = '<li class="page-item"><span class="page-link">';
+		$config['num_tag_close']    = '</span></li>';
+		$config['cur_tag_open']     = '<li class="page-item active"><span class="page-link">';
+		$config['cur_tag_close']    = '<span class="sr-only">(current)</span></span></li>';
+		$config['next_tag_open']    = '<li class="page-item"><span class="page-link">';
+		$config['next_tagl_close']  = '<span aria-hidden="true">&raquo;</span></span></li>';
+		$config['prev_tag_open']    = '<li class="page-item"><span class="page-link">';
+		$config['prev_tagl_close']  = '</span>Next</li>';
+		$config['first_tag_open']   = '<li class="page-item"><span class="page-link">';
+		$config['first_tagl_close'] = '</span></li>';
+		$config['last_tag_open']    = '<li class="page-item"><span class="page-link">';
+		$config['last_tagl_close']  = '</span></li>';
+		// Initialize
+		$this->pagination->initialize($config);
+
+		$data['pagination'] = $this->pagination->create_links();
+		$data['result'] 		= $users_record;
+		$data['row'] 				= $rowno;
+		$data['namapel'] 		= $namapel;
+		$data['dari']				= $dari;
+		$data['sampai']			= $sampai;
+		$data['status']			= $status;
+
+		$this->template->load('template/template', 'pembayaran/list_transferpenjpending', $data);
 	}
 }

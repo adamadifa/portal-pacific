@@ -339,6 +339,18 @@ class Model_pembayaran extends CI_Model
     return $this->db->get();
   }
 
+  function viewtransferpending($idtransfer)
+  {
+    $this->db->select('kode_transfer,tgl_transfer,v_penjualan_pending.kode_pelanggan,nama_pelanggan,namabank,SUM(jumlah) as jumlah,tglcair,karyawan.kode_cabang,omset_bulan,omset_tahun');
+    $this->db->from('transfer');
+    $this->db->join('v_penjualan_pending', 'transfer.no_fak_penj = v_penjualan_pending.no_fak_penj');
+    $this->db->join('karyawan', 'transfer.id_karyawan = karyawan.id_karyawan');
+    $this->db->join('pelanggan', 'v_penjualan_pending.kode_pelanggan = pelanggan.kode_pelanggan');
+    $this->db->group_by('kode_transfer,tgl_transfer,v_penjualan_pending.kode_pelanggan,nama_pelanggan,namabank,tglcair,karyawan.kode_cabang,omset_bulan,omset_tahun');
+    $this->db->where('kode_transfer', $idtransfer);
+    return $this->db->get();
+  }
+
   function viewtransferfaktur($idtransfer)
   {
 
@@ -1033,7 +1045,339 @@ class Model_pembayaran extends CI_Model
     }
   }
 
+  function updatebayartransferpending()
+  {
 
+    $id_transfer  = $this->input->post('id_transfer');
+    $status       = $this->input->post('status');
+    $tgl_transfer = $this->input->post('tgl_transfer');
+    $pelanggan    = $this->input->post('pelanggan');
+    $bulan        = $this->input->post('bulan');
+    $tahunomset   = $this->input->post('tahun');
+
+    // echo $tahun;
+    // die;
+    if ($status == 1) {
+      $tglcair    = $this->input->post('tglcair');
+    } else if ($status == 2) {
+      $tglcair    = $this->input->post('tglditolak');
+    } else {
+      $tglcair = "";
+    }
+
+    $tgltolak     = $this->input->post('tglditolak');
+    $jmlbayar     = $this->input->post('jmlbayar');
+    $norek        = $this->input->post('norek');
+    $namapemilik  = $this->input->post('namapemilik');
+    $id_admin     = $this->session->userdata('id_user');
+    $hariini      = date('ymd');
+
+    //Cek Cabang
+    $cekcabang    = $this->db->query("SELECT
+                      pelanggan.kode_cabang,
+                      pelanggan.nama_pelanggan,
+                      jenistransaksi
+                    FROM
+                      transfer
+                      INNER JOIN v_penjualan_pending ON transfer.no_fak_penj = v_penjualan_pending.no_fak_penj
+                      INNER JOIN pelanggan ON v_penjualan_pending.kode_pelanggan= pelanggan.kode_pelanggan
+                    WHERE
+                      kode_transfer = '$id_transfer'
+
+                    GROUP BY kode_transfer,pelanggan.kode_cabang,pelanggan.nama_pelanggan,jenistransaksi")->row_array();
+    $cabang         = $cekcabang['kode_cabang'];
+    // echo $cabang;
+    // die;
+    $tahunini       = date('y');
+    $jenistransaksi = $cekcabang['jenistransaksi'];
+    $bankpenerima   = $this->input->post('bank_penerima');
+
+    //Query Transfer
+    $querytransfer  = "SELECT id_transfer,tgl_transfer,transfer.no_fak_penj,v_penjualan_pending.total,namabank,bank_penerima,jumlah,tglcair,tgl_ditolak,norek,
+    namapemilikrek,kode_transfer,transfer.id_karyawan,transfer.status,ket
+    FROM transfer
+    INNER JOIN v_penjualan_pending ON transfer.no_fak_penj = v_penjualan_pending.no_fak_penj
+    WHERE kode_transfer = '$id_transfer'";
+    $datatransfer   = $this->db->query($querytransfer)->result();
+
+
+    // Kode Setoran Pusat
+    $qsb                 = "SELECT kode_setoranpusat FROM setoran_pusat
+                            WHERE LEFT(kode_setoranpusat,4) = 'SB$tahunini' ORDER BY kode_setoranpusat DESC LIMIT 1";
+    $sb                  = $this->db->query($qsb)->row_array();
+    $nomor_terakhir     = $sb['kode_setoranpusat'];
+    $kode_setoranpusat   = buatkode($nomor_terakhir, 'SB' . $tahunini, 5);
+
+
+    //Nobukti Ledger
+    $tanggal        = explode("-", $tglcair);
+    $tahun          = substr($tanggal[0], 2, 2);
+    $qledger        = "SELECT no_bukti FROM ledger_bank WHERE LEFT(no_bukti,7) ='LR$cabang$tahun'ORDER BY no_bukti DESC LIMIT 1 ";
+    $ceknolast      = $this->db->query($qledger)->row_array();
+    $nobuktilast    = $ceknolast['no_bukti'];
+    $no_bukti       = buatkode($nobuktilast, 'LR' . $cabang . $tahun, 4);
+
+    //getTransfer
+    $gettransfer        = $this->db->get_where('transfer', array('kode_transfer' => $id_transfer))->result();
+    $listnofaktur   = '';
+    foreach ($gettransfer as $t) {
+      $listnofaktur = $listnofaktur .= $t->no_fak_penj . ",";
+    }
+
+    if ($cabang == 'TSM') {
+      $akun = "1-1468";
+    } else if ($cabang == 'BDG') {
+      $akun = "1-1402";
+    } else if ($cabang == 'BGR') {
+      $akun = "1-1403";
+    } else if ($cabang == 'PWT') {
+      $akun = "1-1404";
+    } else if ($cabang == 'TGL') {
+      $akun = "1-1405";
+    } else if ($cabang == "SKB") {
+      $akun = "1-1407";
+    } else if ($cabang == "GRT") {
+      $akun = "1-1468";
+    } else if ($cabang == "SMR") {
+      $akun = "1-1488";
+    } else if ($cabang == "SBY") {
+      $akun = "1-1486";
+    } else if ($cabang == "PST") {
+      $akun = "1-1401";
+    }
+
+    // $data = array(
+    //   'kode_setoranpusat' => $kode_setoranpusat,
+    //   'tgl_setoranpusat'	=> $tglcair,
+    //   'kode_cabang'				=> $cabang,
+    //   'bank'							=> $bankpenerima,
+    //   'no_giro'				    => $id_transfer,
+    //   'transfer'					=> $jmlbayar,
+    //   'keterangan'				=> "TRANSFER PELANGGAN ".$cekcabang['nama_pelanggan'],
+    //   'status'						=> '1'
+
+    // );
+
+    $data = array(
+      'tgl_diterimapusat'  => $tglcair,
+      'bank'              => $bankpenerima,
+      'status'            => '1',
+      'omset_bulan'       => $bulan,
+      'omset_tahun'       => $tahunomset
+    );
+
+    $dataditolak = array(
+      'tgl_diterimapusat'  => $tglcair,
+      'bank'              => $bankpenerima,
+      'status'            => '2',
+      'omset_bulan'       => 0,
+      'omset_tahun'       => ''
+    );
+
+    $datapending = array(
+      'tgl_diterimapusat'  => NULL,
+      'bank'              => $bankpenerima,
+      'status'            => '0',
+      'omset_bulan'       => 0,
+      'omset_tahun'       => ''
+    );
+    $dataledger = array(
+      'no_bukti'        => $no_bukti,
+      'no_ref'          => $id_transfer,
+      'bank'            => $bankpenerima,
+      'tgl_ledger'      => $tglcair,
+      'tgl_penerimaan'  => $tgl_transfer,
+      'pelanggan'       => $pelanggan,
+      'keterangan'      => "INV " . $listnofaktur,
+      'kode_akun'       => $akun,
+      'jumlah'          => $jmlbayar,
+      'status_dk'       => 'K',
+      'status_validasi' => 1,
+      'kategori'        => 'PNJ'
+    );
+
+
+    if ($status == 1) {
+      //$delete = $this->db->delete('setoran_pusat',array('no_giro'=>$id_transfer));
+      //$insert = $this->db->insert('setoran_pusat',$data);
+      $update       = $this->db->update('setoran_pusat', $data, array('no_ref' => $id_transfer));
+      $deleteledger = $this->db->delete('ledger_bank', array('no_ref' => $id_transfer));
+      $insertledger = $this->db->insert('ledger_bank', $dataledger);
+    } else if ($status == 2) {
+      //$delete = $this->db->delete('setoran_pusat',array('no_ref'=>$id_transfer));
+      $deleteledger = $this->db->delete('ledger_bank', array('no_ref' => $id_transfer));
+      $update       = $this->db->update('setoran_pusat', $dataditolak, array('no_ref' => $id_transfer));
+      if ($update) {
+        // $qsb 				      	= "SELECT kode_setoranpusat FROM setoran_pusat
+        //                       WHERE LEFT(kode_setoranpusat,4) = 'SB$tahunini' ORDER BY kode_setoranpusat DESC LIMIT 1";
+        // $sb							    = $this->db->query($qsb)->row_array();
+        // $nomor_terakhir 		= $sb['kode_setoranpusat'];
+        // $kode_setoranpusat 	= buatkode($nomor_terakhir,'SB'.$tahunini,5);
+        // $dataditolak = array(
+        //   'kode_setoranpusat' => $kode_setoranpusat,
+        //   'tgl_setoranpusat'	=> $tglcair,
+        //   'kode_cabang'				=> $cabang,
+        //   'bank'							=> $bankpenerima,
+        //   'no_ref'				    => $id_transfer,
+        //   'transfer'					=> '-'.$jmlbayar,
+        //   'keterangan'				=> "TRANSFER PELANGGAN ".$cekcabang['nama_pelanggan']." DI TOLAK",
+        //   'status'						=> '2'
+
+        // );
+
+        // $insert_ditolak  = $this->db->insert('setoran_pusat',$dataditolak);
+      }
+    } else {
+      //echo "TEST";
+      $deleteledger = $this->db->delete('ledger_bank', array('no_ref' => $id_transfer));
+      //$delete = $this->db->delete('setoran_pusat',array('no_giro'=>$id_transfer));
+      $update       = $this->db->update('setoran_pusat', $datapending, array('no_ref' => $id_transfer));
+    }
+
+
+    foreach ($datatransfer as $t) {
+      if ($status == 1) {
+        if ($t->total == $t->jumlah) {
+          $datatransfer = array(
+            'status'            => $status,
+            'jumlah'            => $t->jumlah,
+            'omset_bulan'       => $bulan,
+            'omset_tahun'       => $tahunomset
+          );
+
+          $datatransferfailed = array(
+            'status'            => 0,
+            'jumlah'            => $t->jumlah,
+            'omset_bulan'       => 0,
+            'omset_tahun'       => ''
+          );
+
+          $cekbayar = $this->db->get_where('historibayar', array('id_transfer' => $t->id_transfer))->num_rows();
+
+          $updatetransfer = $this->db->update('transfer', $datatransfer, array('id_transfer' => $t->id_transfer));
+          if ($updatetransfer) {
+            if ($cekbayar == 0) {
+
+              $qbayar       = "SELECT nobukti FROM historibayar WHERE LEFT(nobukti,6) ='$cabang$tahunini-'ORDER BY nobukti DESC LIMIT 1 ";
+              $ceknolast    = $this->db->query($qbayar)->row_array();
+              $nobuktilast  = $ceknolast['nobukti'];
+              $nobukti      = buatkode($nobuktilast, $cabang . $tahunini . "-", 6);
+
+              $databayar = array(
+                'nobukti'       => $nobukti,
+                'no_fak_penj'   => $t->no_fak_penj,
+                'tglbayar'      => $tglcair,
+                'jenistransaksi' => $jenistransaksi,
+                'jenisbayar'    => 'transfer',
+                'bayar'         => $t->jumlah,
+                'id_transfer'   => $t->id_transfer,
+                'id_karyawan'    => $t->id_karyawan,
+                'id_admin'      => $id_admin
+
+
+              );
+              $simpanbayar = $this->db->insert('historibayar', $databayar);
+              if (!$simpanbayar) {
+                $this->db->update('transfer', $datatransferfailed, array('id_transfer' => $t->id_transfer));
+              } else {
+                $querypenjualanpend = "SELECT * FROM penjualan_pending
+                INNER JOIN karyawan ON penjualan_pending.id_karyawan = karyawan.id_karyawan
+                WHERE no_fak_penj ='$t->no_fak_penj'
+                ";
+                $getpenjualanpending  = $this->db->query($querypenjualanpend)->result();
+                // var_dump($getpenjualanpending);
+                // die;
+                foreach ($getpenjualanpending as $d) {
+                  $datapenjualan = [
+                    'no_fak_penj' => $d->no_fak_penj,
+                    'tgltransaksi' => $d->tgltransaksi,
+                    'kode_pelanggan' => $d->kode_pelanggan,
+                    'id_karyawan' => $d->id_karyawan,
+                    'subtotal' => $d->subtotal,
+                    'potaida' => $d->potaida,
+                    'potswan' => $d->potswan,
+                    'potstick' => $d->potstick,
+                    'potongan' => $d->potongan,
+                    'potisaida' => $d->potisaida,
+                    'potisswan' => $d->potisswan,
+                    'potisstick' => $d->potisstick,
+                    'potistimewa' => $d->potistimewa,
+                    'penyaida' => $d->penyaida,
+                    'penyswan' => $d->penyswan,
+                    'penystick' => $d->penystick,
+                    'penyharga' => $d->penyharga,
+                    'total' => $d->total,
+                    'jenistransaksi' => $d->jenistransaksi,
+                    'jenisbayar' => $d->jenisbayar,
+                    'jatuhtempo' => $d->jatuhtempo,
+                    'id_admin' => $id_admin
+                  ];
+
+                  $simpanpenjualan = $this->db->insert('penjualan', $datapenjualan);
+                  //echo $totalpiutang;
+                  if ($simpanpenjualan) {
+                    $detailpenjpending = $this->db->get_where('detailpenjualan_pending', array('no_fak_penj' => $d->no_fak_penj))->result();
+                    //var_dump($detailpenjpending);
+                    //echo $detailpenjpending;
+                    foreach ($detailpenjpending as $dp) {
+                      $datadetail = [
+                        'no_fak_penj' => $dp->no_fak_penj,
+                        'kode_barang' => $dp->kode_barang,
+                        'harga_dus' => $dp->harga_dus,
+                        'harga_pack' => $dp->harga_pack,
+                        'harga_pcs' => $dp->harga_pcs,
+                        'jumlah' => $dp->jumlah,
+                        'subtotal' => $dp->subtotal,
+                        'promo' => $dp->promo,
+                        'id_admin' => $dp->id_admin
+                      ];
+
+                      $simpandetailpending = $this->db->insert('detailpenjualan', $datadetail);
+                    }
+                  }
+                }
+              }
+            } else {
+              $databayar = array(
+                'tglbayar'      => $tglcair,
+                'bayar'         => $t->jumlah
+
+              );
+              $this->db->update('historibayar', $databayar, array('id_transfer' => $t->id_transfer));
+            }
+          }
+        }
+      } else {
+
+
+        if ($status == "2") {
+          $datatransfer = array(
+            'tgl_ditolak'     => $tgltolak,
+            'bank_penerima'   => $bankpenerima,
+            'norek'           => $norek,
+            'namapemilikrek'  => $namapemilik,
+            'status'          => $status,
+            'omset_bulan'       => 0,
+            'omset_tahun'       => ''
+          );
+        } else {
+          $datatransfer = array(
+            'tgl_ditolak'   => '',
+            'bank_penerima' => '',
+            'norek'         => $norek,
+            'namapemilikrek' => $namapemilik,
+            'status'        => $status,
+            'omset_bulan'   => 0,
+            'omset_tahun'   => ''
+          );
+        }
+
+
+        $this->db->update('transfer', $datatransfer, array('id_transfer' => $t->id_transfer));
+        $this->db->delete('historibayar', array('id_transfer' => $t->id_transfer));
+      }
+    }
+  }
   function updategirotolak()
   {
 
@@ -1311,6 +1655,17 @@ class Model_pembayaran extends CI_Model
     return $this->db->get();
   }
 
+  function getdetailtransferpending($kode_transfer)
+  {
+    $this->db->select('transfer.id_transfer,tgl_transfer,transfer.no_fak_penj,namabank,jumlah,transfer.date_created as tgl_input,historibayar.date_created as tgl_aksi');
+    $this->db->from('transfer');
+    $this->db->join('v_penjualan_pending', 'transfer.no_fak_penj = v_penjualan_pending.no_fak_penj');
+    $this->db->join('historibayar', 'transfer.id_transfer = historibayar.id_transfer AND transfer.no_fak_penj = historibayar.no_fak_penj', 'left');
+    $this->db->where('transfer.kode_transfer', $kode_transfer);
+    return $this->db->get();
+  }
+
+
   function getdetailsetoranpusat($kode_setoran)
   {
     $this->db->select('setoran_pusat.kode_setoranpusat,tgl_setoranpusat,setoran_pusat.date_created as tgl_input,ledger_bank.date_created as tgl_aksi');
@@ -1328,5 +1683,81 @@ class Model_pembayaran extends CI_Model
                 WHERE giro.status ='2' AND giro.no_fak_penj ='$nofaktur'
 							";
     return $this->db->query($query);
+  }
+
+  public function getdataTransferpenjualanpending($rowno, $rowperpage, $namapel = "", $dari = "", $sampai = "", $status = "")
+  {
+    $sess_cab = $this->session->userdata('cabang');
+    if ($sess_cab != 'pusat') {
+      $this->db->where('karyawan.kode_cabang', $sess_cab);
+    }
+    $this->db->select('tgl_transfer,v_penjualan_pending.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,kode_transfer,namabank,sum(jumlah) as jumlah,tglcair,transfer.status,tglbayar,kode_setoranpusat,tgl_setoranpusat,transfer.ket');
+    $this->db->from('transfer');
+    $this->db->join('historibayar', 'transfer.id_transfer = historibayar.id_transfer', 'left');
+    $this->db->join('v_penjualan_pending', 'transfer.no_fak_penj = v_penjualan_pending.no_fak_penj');
+    $this->db->join('karyawan', 'transfer.id_karyawan = karyawan.id_karyawan');
+    $this->db->join('pelanggan', 'v_penjualan_pending.kode_pelanggan = pelanggan.kode_pelanggan');
+    $this->db->join('setoran_pusat', 'transfer.kode_transfer = setoran_pusat.no_ref', 'left');
+    $this->db->group_by('tgl_transfer,v_penjualan_pending.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,transfer.kode_transfer,namabank,tglcair,transfer.status,tglbayar,kode_setoranpusat,tgl_setoranpusat,transfer.ket');
+    $this->db->order_by('tglcair,nama_pelanggan', 'desc');
+    $this->db->where('v_penjualan_pending.status', '0');
+    if ($namapel != '') {
+      $this->db->like('nama_pelanggan', $namapel, 'after');
+    }
+
+    if ($status !== '') {
+      $this->db->where('transfer.status', $status);
+    }
+
+    $this->db->where('tglcair >=', $dari);
+
+
+    $this->db->where('tglcair <=', $sampai);
+
+
+    $this->db->limit($rowperpage, $rowno);
+    $query = $this->db->get();
+
+    //echo $sampai;
+    return $query->result_array();
+  }
+
+  // Select total records
+  public function getrecordTransferpenjualanpending($namapel = "", $dari = "", $sampai = "", $status = "")
+  {
+    $sess_cab = $this->session->userdata('cabang');
+    if ($sess_cab != 'pusat') {
+      $this->db->where('karyawan.kode_cabang', $sess_cab);
+    }
+    $this->db->select('tgl_transfer,v_penjualan_pending.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,kode_transfer,namabank,sum(jumlah) as jumlah,tglcair,transfer.status,tglbayar,kode_setoranpusat,transfer.ket');
+    $this->db->from('transfer');
+    $this->db->join('historibayar', 'transfer.id_transfer = historibayar.id_transfer', 'left');
+    $this->db->join('v_penjualan_pending', 'transfer.no_fak_penj = v_penjualan_pending.no_fak_penj');
+    $this->db->join('penjualan', 'v_penjualan_pending.no_fak_penj = penjualan.no_fak_penj');
+    $this->db->join('karyawan', 'transfer.id_karyawan = karyawan.id_karyawan');
+    $this->db->join('pelanggan', 'v_penjualan_pending.kode_pelanggan = pelanggan.kode_pelanggan');
+    $this->db->join('setoran_pusat', 'transfer.kode_transfer = setoran_pusat.no_ref', 'left');
+    $this->db->group_by('tgl_transfer,v_penjualan_pending.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,transfer.kode_transfer,namabank,tglcair,transfer.status,tglbayar,kode_setoranpusat,transfer.ket');
+    $this->db->order_by('tglcair', 'desc');
+    $this->db->where('v_penjualan_pending.status', '0');
+    if ($namapel != '') {
+      $this->db->like('nama_pelanggan', $namapel, 'after');
+    }
+
+    if ($status !== '') {
+      $this->db->where('transfer.status', $status);
+    }
+
+    $this->db->where('tglcair >=', $dari);
+
+
+    $this->db->where('tglcair <=', $sampai);
+
+
+
+    $query = $this->db->get();
+
+    //echo $sampai;
+    return $query->num_rows();
   }
 }

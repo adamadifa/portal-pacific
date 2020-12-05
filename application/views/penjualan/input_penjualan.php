@@ -868,7 +868,7 @@
 			var tglgiro = $("#tglgiro").val();
 			var limit = $("#limitpelanggan").val();
 			var sisapiutang = $("#sisapiutang").val();
-			var total = totalbayar.replace(/\./g, '');
+			var totalbayar = totalbayar.replace(/\./g, '');
 			var totalpiutang = parseInt(sisapiutang) + parseInt(total);
 			//alert(totalpiutang);
 			//return false;

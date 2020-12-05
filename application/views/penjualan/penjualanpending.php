@@ -131,7 +131,11 @@ function uang($nilai)
                       <td>
                         <a href="<?php echo base_url(); ?>penjualan/updatepenjualanpending/<?php echo $d['kode_pelanggan']; ?>/<?php echo $d['no_fak_penj']; ?>" class="btn btn-sm btn-success""><i class=" fa fa-refresh"></i></a>
                         <a href="#" class="btn btn-sm btn-primary detail" data-nofakpenj="<?php echo $d['no_fak_penj']; ?>"><i class="fa fa-list"></i></a>
-                        <a href="#" class="btn btn-sm btn-info inputtransfer" data-nofakpenj="<?php echo $d['no_fak_penj']; ?>" data-total="<?php echo $d['total']; ?>" data-kodepel="<?php echo $d['kode_pelanggan']; ?>"><i class="fa fa-money mr-2"></i> Bayar</a>
+                        <?php
+                        if ($d['status'] != "1") {
+                        ?>
+                          <a href="#" class="btn btn-sm btn-info inputtransfer" data-nofakpenj="<?php echo $d['no_fak_penj']; ?>" data-total="<?php echo $d['total']; ?>" data-kodepel="<?php echo $d['kode_pelanggan']; ?>"><i class="fa fa-money mr-2"></i> Bayar</a>
+                        <?php } ?>
                         <a href="<?php echo base_url(); ?>penjualan/hapuspenjualanpending/<?php echo $d['no_fak_penj']; ?>" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></a>
                       </td>
                     </tr>
@@ -251,7 +255,7 @@ function uang($nilai)
       });
       $.ajax({
         type: 'POST',
-        url: '<?php echo base_url(); ?>Pembayaran/inputtransfer',
+        url: '<?php echo base_url(); ?>Pembayaran/inputtransferpending',
         data: {
           nofaktur: nofaktur,
           totalbayar: totalbayar,
