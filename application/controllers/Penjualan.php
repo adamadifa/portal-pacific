@@ -2398,6 +2398,7 @@ class Penjualan extends CI_Controller
     $nofaktur = $this->input->post('nofakpenj');
     $data['faktur'] = $this->Model_penjualan->getPenjualanpending($nofaktur)->row_array();
     $data['detail'] = $this->Model_penjualan->getDetailpenjualanpending($nofaktur)->result();
+    $data['transfer'] = $this->Model_penjualan->getTransferPending($nofaktur)->result();
     $this->load->view('penjualan/penjualanpending_detail', $data);
   }
 
@@ -3583,5 +3584,14 @@ class Penjualan extends CI_Controller
     $data['namapel'] = $namapel;
     // Load view
     $this->template->load('template/template', 'penjualan/movesales', $data);
+  }
+
+  function bataltransferpending()
+  {
+    $nofaktur = $this->uri->segment(3);
+    $bataltransfer = $this->Model_penjualan->bataltransferpending($nofaktur);
+    if ($bataltransfer) {
+      redirectPreviousPage();
+    }
   }
 }

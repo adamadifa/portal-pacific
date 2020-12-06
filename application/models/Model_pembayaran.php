@@ -1094,10 +1094,10 @@ class Model_pembayaran extends CI_Model
 
     //Query Transfer
     $querytransfer  = "SELECT id_transfer,tgl_transfer,transfer.no_fak_penj,v_penjualan_pending.total,namabank,bank_penerima,jumlah,tglcair,tgl_ditolak,norek,
-    namapemilikrek,kode_transfer,transfer.id_karyawan,transfer.status,ket
+    namapemilikrek,kode_transfer,transfer.id_karyawan,transfer.status,ket,v_penjualan_pending.tgltransaksi
     FROM transfer
     INNER JOIN v_penjualan_pending ON transfer.no_fak_penj = v_penjualan_pending.no_fak_penj
-    WHERE kode_transfer = '$id_transfer'";
+    WHERE kode_transfer = '$id_transfer' AND v_penjualan_pending.status='0'";
     $datatransfer   = $this->db->query($querytransfer)->result();
 
 
@@ -1236,8 +1236,11 @@ class Model_pembayaran extends CI_Model
 
 
     foreach ($datatransfer as $t) {
+      $batas  = date('Y-m-d', strtotime("+1 day", strtotime(date($t->tgltransaksi))));
+      // echo $tglcair . "-" . $t->tgltransaksi;
+      // die;
       if ($status == 1) {
-        if ($t->total == $t->jumlah) {
+        if ($t->total == $t->jumlah && $tglcair <= $batas) {
           $datatransfer = array(
             'status'            => $status,
             'jumlah'            => $t->jumlah,
@@ -1335,6 +1338,13 @@ class Model_pembayaran extends CI_Model
                       $simpandetailpending = $this->db->insert('detailpenjualan', $datadetail);
                     }
                   }
+
+                  $datapnj = array(
+                    'jenistransaksi' => 'tunai',
+                    'jenisbayar' => 'tunai'
+                  );
+
+                  $this->db->update('penjualan', $datapnj, array('no_fak_penj' => $d->no_fak_penj));
                 }
               }
             } else {
@@ -1345,7 +1355,24 @@ class Model_pembayaran extends CI_Model
               );
               $this->db->update('historibayar', $databayar, array('id_transfer' => $t->id_transfer));
             }
+            $this->session->set_flashdata(
+              'msg',
+              '<div class="alert bg-green text-white alert-dismissible" role="alert">
+                      <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                         <i class="fa fa-check"></i> Data Berhasil Diupdate !
+                  </div>'
+            );
+            redirectPreviousPage();
           }
+        } else {
+          $this->session->set_flashdata(
+            'msg',
+            '<div class="alert bg-red text-white alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                       <i class="fa fa-check"></i> Data Gagal Update, Pembayaran Melebiahi Batas Waktu Transfer !
+                </div>'
+          );
+          redirectPreviousPage();
         }
       } else {
 
@@ -1375,6 +1402,14 @@ class Model_pembayaran extends CI_Model
 
         $this->db->update('transfer', $datatransfer, array('id_transfer' => $t->id_transfer));
         $this->db->delete('historibayar', array('id_transfer' => $t->id_transfer));
+        $this->session->set_flashdata(
+          'msg',
+          '<div class="alert bg-green text-white alert-dismissible" role="alert">
+                  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                     <i class="fa fa-check"></i> Pembayaran Melebihi Batas Waktu Yang Ditentukan !
+              </div>'
+        );
+        redirectPreviousPage();
       }
     }
   }

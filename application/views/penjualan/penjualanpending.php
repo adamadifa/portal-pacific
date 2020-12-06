@@ -133,9 +133,14 @@ function uang($nilai)
                         <a href="#" class="btn btn-sm btn-primary detail" data-nofakpenj="<?php echo $d['no_fak_penj']; ?>"><i class="fa fa-list"></i></a>
                         <?php
                         if ($d['status'] != "1") {
+                          if (empty($d['cektransfer'])) {
                         ?>
-                          <a href="#" class="btn btn-sm btn-info inputtransfer" data-nofakpenj="<?php echo $d['no_fak_penj']; ?>" data-total="<?php echo $d['total']; ?>" data-kodepel="<?php echo $d['kode_pelanggan']; ?>"><i class="fa fa-money mr-2"></i> Bayar</a>
-                        <?php } ?>
+                            <a href="#" class="btn btn-sm btn-info inputtransfer" data-nofakpenj="<?php echo $d['no_fak_penj']; ?>" data-total="<?php echo $d['total']; ?>" data-kodepel="<?php echo $d['kode_pelanggan']; ?>"><i class="fa fa-money mr-2"></i> Bayar</a>
+                          <?php } else { ?>
+                            <a href="<?php echo base_url(); ?>penjualan/bataltransferpending/<?php echo $d['no_fak_penj']; ?>" class="btn btn-sm btn-danger bataltransfer" data-nofakpenj="<?php echo $d['no_fak_penj']; ?>"><i class="fa fa-money mr-2"></i> Batalkan Transfer</a>
+                        <?php
+                          }
+                        } ?>
                         <a href="<?php echo base_url(); ?>penjualan/hapuspenjualanpending/<?php echo $d['no_fak_penj']; ?>" class="btn btn-sm btn-danger"><i class="fa fa-trash-o"></i></a>
                       </td>
                     </tr>

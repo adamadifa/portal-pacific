@@ -4603,10 +4603,11 @@ class Model_penjualan extends CI_Model
       $this->db->where('(SELECT count(no_fak_penj) FROM penjualan WHERE penjualan.no_fak_penj = penjualan_pending.no_fak_penj) !=', '1');
     }
     $this->db->select("no_fak_penj,tgltransaksi,penjualan_pending.kode_pelanggan,nama_pelanggan,penjualan_pending.id_karyawan,nama_karyawan,
-		total,jenistransaksi,(SELECT count(no_fak_penj) FROM penjualan WHERE penjualan.no_fak_penj = penjualan_pending.no_fak_penj) as status");
+		total,jenistransaksi,(SELECT count(no_fak_penj) FROM penjualan WHERE penjualan.no_fak_penj = penjualan_pending.no_fak_penj) as status,cektransfer");
     $this->db->from('penjualan_pending');
     $this->db->join('pelanggan', 'penjualan_pending.kode_pelanggan = pelanggan.kode_pelanggan');
     $this->db->join('karyawan', 'penjualan_pending.id_karyawan = karyawan.id_karyawan');
+    $this->db->join('v_transfer', 'penjualan_pending.no_fak_penj = v_transfer.cektransfer', 'left');
     $this->db->limit($rowperpage, $rowno);
     $query = $this->db->get();
     return $query->result_array();
@@ -4636,6 +4637,7 @@ class Model_penjualan extends CI_Model
     $this->db->from('penjualan_pending');
     $this->db->join('pelanggan', 'penjualan_pending.kode_pelanggan = pelanggan.kode_pelanggan');
     $this->db->join('karyawan', 'penjualan_pending.id_karyawan = karyawan.id_karyawan');
+    $this->db->join('v_transfer', 'penjualan_pending.no_fak_penj = v_transfer.cektransfer', 'left');
     $query  = $this->db->get();
     $result = $query->result_array();
     return $result[0]['allcount'];
@@ -5885,5 +5887,15 @@ class Model_penjualan extends CI_Model
     $query  = $this->db->get();
     $result = $query->result_array();
     return $result[0]['allcount'];
+  }
+
+  function bataltransferpending($nofaktur)
+  {
+    return $this->db->delete('transfer', array('no_fak_penj' => $nofaktur));
+  }
+
+  function getTransferpending($nofaktur)
+  {
+    return $this->db->get_where('transfer', array('no_fak_penj' => $nofaktur));
   }
 }

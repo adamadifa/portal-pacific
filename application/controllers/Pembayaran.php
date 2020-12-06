@@ -381,7 +381,7 @@ class Pembayaran extends CI_Controller
 						<i class="fa fa-check" style="float:left; margin-right:10px"></i> Data Berhasil Disimpan !
 				</div>'
 			);
-			redirect('penjualan/detailfaktur/' . $nofaktur);
+			redirectPreviousPage();
 		} else {
 			$data['nofaktur'] 		= $this->input->post('nofaktur');
 			$data['totalbayar']		= $this->input->post('totalbayar');
@@ -1255,15 +1255,6 @@ class Pembayaran extends CI_Controller
 			$idtransfer   = $this->input->post('id_transfer');
 			$page 	  	  = $this->input->post('page');
 			$simpan = $this->Model_pembayaran->updatebayartransferpending($idtransfer);
-
-			$this->session->set_flashdata(
-				'msg',
-				'<div class="alert bg-green text-white alert-dismissible" role="alert">
-	              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	                 <i class="fa fa-check"></i> Data Berhasil Di Update !
-	          </div>'
-			);
-			redirect('pembayaran/' . $page);
 		} else {
 			$idtransfer 				= $this->input->post('id_transfer');
 			$data['transfer']		= $this->Model_pembayaran->viewtransferpending($idtransfer)->row_array();

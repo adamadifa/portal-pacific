@@ -65,3 +65,34 @@
     </tr>
   </tbody>
 </table>
+<table class="table table-bordered table-hover">
+  <thead class="thead-dark">
+    <tr>
+      <th colspan="9"><b>Data Pembayaran</b></th>
+    </tr>
+    <tr>
+      <th>Tgl Pencatatan</th>
+      <th>Jumlah Transfer</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php foreach ($transfer as $t) { ?>
+      <tr>
+        <td><?php echo $t->tgl_transfer; ?></td>
+        <td align="right"><b><?php echo  number_format($t->jumlah, '0', '', '.'); ?></b></td>
+        <td>
+          <?php
+          if ($t->status == "1") {
+          ?>
+            <span class="badge bg-green"><i class="fa fa-check"></i></span>
+          <?php
+          } else {
+          ?>
+            <span class="badge bg-orange">Pending</span>
+          <?php } ?>
+        </td>
+      </tr>
+    <?php } ?>
+  </tbody>
+</table>

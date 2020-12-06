@@ -8,7 +8,7 @@
     <li>Jika Transaksi Pembayaran Transfer Sesuai dengan ketentuan, maka secara otomatis Transaksi Tersebut Akan Berubah menjadi Transaksi Tunai & Status Transaksinya akan berubah dari <b style="font-weight:bold !important">Pending</b> Menjadi <b style="font-weight:bold !important">Approved</b>(<b><i class="fa fa-check"></i></b>)</li>
   </ol>
 </div>
-<form autocomplete="off" class="transferForm" id="formValidate" method="POST" action="<?php echo base_url(); ?>pembayaran/inputtransfer">
+<form autocomplete="off" class="transferForm" id="formValidate" method="POST" action="<?php echo base_url(); ?>pembayaran/inputtransferpending">
   <input type="hidden" value="<?php echo $nofaktur; ?>" id="nofaktur" name="nofaktur">
   <input type="hidden" value="<?php echo $totalbayar; ?>" id="totalbayar2" name="totalbayar2">
   <input type="hidden" value="<?php echo $totalpiutang; ?>" id="piutang" name="piutang">

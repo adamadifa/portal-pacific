@@ -54,22 +54,8 @@
                 </div>
               </div>
             </div>
-            <div class="mb-3">
-              <div class="form-group">
-                <select class="form-select" id="status2" name="status2" data-error=".errorTxt1">
-                  <option value="">-- Semua Status --</option>
-                  <option <?php if ($status == "0") {
-                            echo "selected";
-                          } ?> value="0">Pending</option>
-                  <option <?php if ($status == "1") {
-                            echo "selected";
-                          } ?> value="1">Diterima</option>
-                  <option <?php if ($status == "2") {
-                            echo "selected";
-                          } ?> value="2">Ditolak</option>
-                </select>
-              </div>
-            </div>
+            <input type="hidden" id="status2" name="status2" value="" />
+
             <div class="mb-3 d-flex justify-content-end">
               <button type="submit" name="submit" class="btn btn-primary btn-block mr-2" value="1"><i class="fa fa-search mr-2"></i>CARI</button>
             </div>
