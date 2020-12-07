@@ -129,6 +129,9 @@ if ($level == "Administrator") {
       <a href="<?php echo base_url(); ?>pembayaran/listtransfer" class="list-group-item list-group-item-action">
         <i class="fa fa-file-text mr-2"></i>Transfer
       </a>
+      <a href="<?php echo base_url(); ?>pembayaran/listtransferpenjpending" class="list-group-item list-group-item-action">
+        <i class="fa fa-file-text mr-2"></i>Transfer Penjualan Pending
+      </a>
       <a href="<?php echo base_url(); ?>laporanpenjualan/penjualan" class="list-group-item list-group-item-action">
         <i class="fa fa-file-text mr-2"></i>Laporan Penjualan
       </a>
