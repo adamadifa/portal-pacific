@@ -1,26 +1,31 @@
-<?php 
+<?php
 
-class Model_menu extends CI_Model{
+class Model_menu extends CI_Model
+{
 
-	function get_Menuparent(){
+	function get_Menuparent()
+	{
 
-	
+
 		return $this->db->get('menu');
 	}
 
-	function view_menu(){
+	function view_menu()
+	{
 
 		return $this->db->get('menu');
 	}
 
-	function hapus($id){
+	function hapus($id)
+	{
 
-		$this->db->delete('menu',array('id'=>$id));
+		$this->db->delete('menu', array('id' => $id));
 	}
 
 
 
-	function insert_menu(){
+	function insert_menu()
+	{
 		$id 			= $this->input->post('id');
 		$namamenu 		= $this->input->post('namamenu');
 		$link 	  		= $this->input->post('link');
@@ -31,29 +36,27 @@ class Model_menu extends CI_Model{
 
 		$data = array(
 
-				'name' 		=> $namamenu,
-				'link' 		=> $link,
-				'icon' 		=> $icon,
-				'is_active' => $status,
-				'is_parent' => $parentmenu,
-				'role'		=> $role
+			'name' 		=> $namamenu,
+			'link' 		=> $link,
+			'icon' 		=> $icon,
+			'is_active' => $status,
+			'is_parent' => $parentmenu,
+			'role'		=> $role
 
 
 		);
 
 
-		if(!empty($id)){
-			$this->db->update('menu',$data,array('id'=>$id));
-		}else{
-			$this->db->insert('menu',$data);
+		if (!empty($id)) {
+			$this->db->update('menu', $data, array('id' => $id));
+		} else {
+			$this->db->insert('menu', $data);
 		}
-
 	}
 
-	function get_menu($id){
+	function get_menu($id)
+	{
 
-		return $this->db->get_where('menu',array('id'=>$id));
+		return $this->db->get_where('menu', array('id' => $id));
 	}
-
-
 }
