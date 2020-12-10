@@ -25,17 +25,11 @@ if ($level == "Administrator" || $level == "manager marketing") {
         Data Komisi
       </a>
 
-      <a href="<?php echo base_url(); ?>komisi/rangekomisi" class="list-group-item list-group-item-action">
-        <i class="fa  fa-file-text mr-2"></i>Range Komisi
+      <a href="<?php echo base_url(); ?>komisi/targetqty" class="list-group-item list-group-item-action">
+        <i class="fa  fa-file-text mr-2"></i>Target Quantiy
       </a>
-      <a href="<?php echo base_url(); ?>komisi/targetkomisi" class="list-group-item list-group-item-action">
-        <i class="fa  fa-file-text mr-2"></i>Target Komisi
-      </a>
-      <a href="<?php echo base_url(); ?>komisi/penerimakomisi" class="list-group-item list-group-item-action">
-        <i class="fa  fa-file-text mr-2"></i>Penerima Komisi
-      </a>
-      <a href="<?php echo base_url(); ?>komisi/kriteriakomisi" class="list-group-item list-group-item-action">
-        <i class="fa  fa-file-text mr-2"></i>Kriteria Komisi
+      <a href="<?php echo base_url(); ?>komisi/targetcashin" class="list-group-item list-group-item-action">
+        <i class="fa  fa-file-text mr-2"></i>Target Cash IN
       </a>
     </div>
   </div>

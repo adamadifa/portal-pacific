@@ -690,4 +690,41 @@ class Model_accounting extends CI_Model
       }
     }
   }
+
+  function insert_jurnal_umum_temp()
+  {
+
+    $kode_akun            = $this->input->post('kode_akun');
+    $jumlah               = str_replace(".", "", $this->input->post('jumlah'));
+    $jenis_jurnal         = $this->input->post('jenis_jurnal');
+    $keterangan           = $this->input->post('keterangan');
+    $id_user              = $this->session->userdata('id_user');
+
+    if ($jenis_jurnal == "K") {
+      $kredit = $jumlah;
+      $debet  = "0";
+    } else {
+      $debet  = $jumlah;
+      $kredit = "0";
+    }
+    $data   = array(
+      'kode_akun'             => $kode_akun,
+      'keterangan'            => $keterangan,
+      'debet'                 => $debet,
+      'kredit'                => $kredit,
+      'jenis_jurnal'          => $jenis_jurnal,
+      'id_user'               => $id_user
+    );
+
+    $this->db->query("DELETE FROM jurnal_umum_temp WHERE kode_akun = '$kode_akun' AND id_user = '$id_user' ");
+    $this->db->insert('jurnal_umum_temp', $data);
+  }
+
+  function getJurnalUmumTemp()
+  {
+    $id_user   = $this->session->userdata('id_user');
+    return $this->db->query("SELECT * FROM jurnal_umum_temp 
+    INNER JOIN coa ON coa.kode_akun=jurnal_umum_temp.kode_akun
+    WHERE id_user = '$id_user' ");
+  }
 }

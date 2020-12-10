@@ -236,6 +236,23 @@ class Accounting extends CI_Controller
     $this->load->view('accounting/view_ledger', $data);
   }
 
+  function input_jurnal_umum()
+  {
+    $data['coa']        = $this->Model_accounting->coa()->result();
+    $this->template->load('template/template', 'accounting/input_jurnal_umum', $data);
+  }
+  function view_jurnal_umum_temp()
+  {
+    $data['detail']      = $this->Model_accounting->getJurnalUmumTemp()->result();
+    $this->load->view('accounting/view_jurnal_umum_temp', $data);
+  }
+
+  function insert_jurnal_umum_temp()
+  {
+    $this->Model_accounting->insert_jurnal_umum_temp();
+  }
+
+
   function view_kaskecil()
   {
     $kode_akun      = $this->input->post('kode_akun');
