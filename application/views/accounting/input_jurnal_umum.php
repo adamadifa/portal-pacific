@@ -37,9 +37,6 @@
           <div class="row">
             <div class="col-md-12 col-xs-12">
               <div class="card">
-                <div class="card-header">
-                  <h4 class="card-title">INPUT JURNAL UMUM</h4>
-                </div>
                 <div class="card-body">
                   <table class="table table-hover">
                     <thead class="thead-dark">
@@ -52,7 +49,7 @@
                             <?php } ?>
                           </select>
                         </th>
-                        <th style="width: 20%;" colspan="2"><input class="form-control" id="keterangan" style="text-align:right;color:black" placeholder="Keterangan"></th>
+                        <th style="width: 20%;" colspan="2"><input class="form-control" id="keterangan" style="text-align:left;color:black" placeholder="Keterangan"></th>
                         <th style="width: 10%;">
                           <select class="form-control " style="color:black" id="jenis_jurnal" name="jenis_jurnal">
                             <!-- <option value="">Pilih Jenis Jurnal</option> -->
@@ -61,7 +58,7 @@
                           </select>
                         </th>
                         <th style="width: 9%;"><input class="form-control" id="jumlah" style="text-align:right;color:black" placeholder="Jumlah"></th>
-                        <th style="width: 11%;"><a href="#" id="insertjurnalumum" class="btn btn-primary">Simpan</a><a href="#" id="clear" class="btn btn-danger">Clear</a></th>
+                        <th style="width: 11%;"><a href="#" id="insertjurnalumumtemp" class="btn btn-primary">Simpan</a><a href="#" id="clear" class="btn btn-danger">Clear</a></th>
                       </tr>
                       <tr>
                         <th style="width: 8%;">Kode Akun</th>
@@ -77,6 +74,11 @@
                     </tbody>
                   </table>
                 </div>
+              </div>
+            </div>
+            <div class="form-group mb-3">
+              <div class="input-icon" align="right">
+                <a href="#" id="insertjurnalumum" class="btn btn-primary btn-block">Simpan</a>
               </div>
             </div>
           </div>
@@ -138,42 +140,76 @@
       });
     }
 
-    $("#insertjurnalumum").click(function(e) {
+    $("#insertjurnalumumtemp").click(function(e) {
       var jumlah = $("#jumlah").val();
       var kode_akun = $("#kode_akun").val();
       var keterangan = $("#keterangan").val();
       var jenis_jurnal = $("#jenis_jurnal").val();
-      $.ajax({
-        type: 'POST',
-        url: '<?php echo base_url(); ?>accounting/insert_jurnal_umum_temp',
-        data: {
-          kode_akun: kode_akun,
-          keterangan: keterangan,
-          jenis_jurnal: jenis_jurnal,
-          jumlah: jumlah
-        },
-        cache: false,
-        success: function(respond) {
-          tampiltemp();
+      if (jumlah == "") {
+        swal("Oops!", "Jumlah Harus Diisi !", "warning");
+      } else if (kode_akun == "") {
+        swal("Oops!", "Akun Harus Dipilih !", "warning");
+      } else {
+        $.ajax({
+          type: 'POST',
+          url: '<?php echo base_url(); ?>accounting/insert_jurnal_umum_temp',
+          data: {
+            kode_akun: kode_akun,
+            keterangan: keterangan,
+            jenis_jurnal: jenis_jurnal,
+            jumlah: jumlah
+          },
+          cache: false,
+          success: function(respond) {
+            tampiltemp();
 
-          $('#jumlah').val("");
-          $('#keterangan').val("");
-          $('#jenis_jurnal').val("");
-          var $select = $('#kode_akun').selectize();
-          var control = $select[0].selectize;
-          control.clear();
-        }
-      });
+            $('#jumlah').val("");
+            $('#keterangan').val("");
+            var $select = $('#kode_akun').selectize();
+            var control = $select[0].selectize;
+            control.clear();
+            $("#kode_akun")[0].selectize.destroy();
+            $('#kode_akun').focus();
+          }
+        });
+      }
+    });
+
+    $("#insertjurnalumum").click(function(e) {
+      var tanggal = $("#tanggal").val();
+      if (tanggal == "") {
+        swal("Oops!", "Tanggal Harus Diisi !", "warning");
+      } else {
+        $.ajax({
+          type: 'POST',
+          url: '<?php echo base_url(); ?>accounting/insert_jurnal_umum',
+          data: {
+            tanggal: tanggal
+          },
+          cache: false,
+          success: function(respond) {
+            tampiltemp();
+            
+            $('#jumlah').val("");
+            $('#keterangan').val("");
+            var $select = $('#kode_akun').selectize();
+            var control = $select[0].selectize;
+            control.clear();
+            $("#kode_akun")[0].selectize.destroy();
+            $('#kode_akun').focus();
+          }
+        });
+      }
     });
 
     $("#clear").click(function(e) {
       $('#jumlah').val("");
       $('#keterangan').val("");
-      $('#jenis_jurnal').val("");
       var $select = $('#kode_akun').selectize();
       var control = $select[0].selectize;
       control.clear();
       $("#kode_akun")[0].selectize.destroy();
+      $('#kode_akun').val("");
     });
 
     $("#kode_akun").click(function(e) {

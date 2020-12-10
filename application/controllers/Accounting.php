@@ -333,6 +333,11 @@ class Accounting extends CI_Controller
   {
     $this->Model_accounting->insert_penyesuaian();
   }
+  
+  function insert_jurnal_umum()
+  {
+    $this->Model_accounting->insert_jurnal_umum();
+  }
 
   function update_penyesuaian()
   {
@@ -348,6 +353,11 @@ class Accounting extends CI_Controller
   function hapus_detailsaldoawal()
   {
     $this->Model_accounting->hapus_detailsaldoawal();
+  }
+
+  function hapus_jurnal_umum_temp()
+  {
+    $this->Model_accounting->hapus_jurnal_umum_temp();
   }
 
   function hapussaldoawal()

@@ -720,6 +720,53 @@ class Model_accounting extends CI_Model
     $this->db->insert('jurnal_umum_temp', $data);
   }
 
+
+  function insert_jurnal_umum()
+  {
+
+    $tanggal            = $this->input->post('tanggal');
+    $id_user            = $this->session->userdata('id_user');
+
+
+    $datatemp  = $this->db->query("SELECT * FROM jurnal_umum_temp WHERE id_user = '$id_user' ");
+
+    foreach ($datatemp->result() as $d) {
+
+      $array1             = explode("-", $tanggal);
+      $tahun              = $array1[0];
+      $bulan              = $array1[1];
+  
+      $thn = substr($tahun, 2, 2);
+      $qbukubesar         = "SELECT no_bukti FROM buku_besar WHERE LEFT(no_bukti,6) = 'GJ$bulan$thn' ORDER BY no_bukti DESC LIMIT 1 ";
+      $ceknolast          = $this->db->query($qbukubesar)->row_array();
+      $nobuktilast        = $ceknolast['no_bukti'];
+      $nobukti            = buatkode($nobuktilast, 'GJ' . $bulan . $thn, 4);
+      
+      $data   = array(
+        'no_bukti'              => $nobukti,
+        'tanggal'               => $tanggal,
+        'kode_akun'             => $d->kode_akun,
+        'keterangan'            => $d->keterangan,
+        'debet'                 => $d->debet,
+        'kredit'                => $d->kredit,
+        'no_ref'                => "",
+        'sumber'                => "GU"
+      );
+      $this->db->insert('buku_besar', $data);
+    }
+
+    $this->db->query("DELETE FROM jurnal_umum_temp WHERE id_user = '$id_user' ");
+
+  }
+
+  function hapus_jurnal_umum_temp()
+  {
+
+    $kode_akun            = $this->input->post('kode_akun');
+    $id_user              = $this->session->userdata('id_user');
+    return $this->db->query("DELETE FROM jurnal_umum_temp WHERE kode_akun = '$kode_akun' AND id_user = '$id_user' ");
+  }
+
   function getJurnalUmumTemp()
   {
     $id_user   = $this->session->userdata('id_user');

@@ -75,6 +75,9 @@
         </div>
       </div>
     </div>
+    <div class="col-md-2">
+      <?php $this->load->view('menu/menu_accounting_administrator'); ?>
+    </div>
   </div>
 </div>
 <script>

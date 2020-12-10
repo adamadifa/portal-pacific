@@ -19,25 +19,21 @@ foreach ($detail as $d) {
 <script type="text/javascript">
   $(function() {
 
+
     function tampiltemp() {
       $.ajax({
         type: 'POST',
-        url: '<?php echo base_url(); ?>accounting/view_detailsaldoawal',
+        url: '<?php echo base_url(); ?>accounting/view_jurnal_umum_temp',
         data: '',
         cache: false,
         success: function(html) {
 
           $("#loadjurnalumum").html(html);
 
-          $('#jumlah').val("");
-          $('#kode_edit').val(0);
-          var $select = $('#kode_akun').selectize();
-          var control = $select[0].selectize;
-          control.clear();
         }
-
       });
     }
+
 
     $(".hapus").click(function(e) {
       var kode_akun = $(this).attr("data-akun");
@@ -53,6 +49,14 @@ foreach ($detail as $d) {
 
           tampiltemp();
 
+          $('#jumlah').val("");
+          $('#keterangan').val("");
+          $('#jenis_jurnal').val("");
+          var $select = $('#kode_akun').selectize();
+          var control = $select[0].selectize;
+          control.clear();
+          $("#kode_akun")[0].selectize.destroy();
+          $('#kode_akun').val("");
         }
       });
     });
@@ -74,7 +78,6 @@ foreach ($detail as $d) {
       $('#kode_akun').val(akun);
       $('#keterangan').val(keterangan);
       $('#jenis_jurnal').val(jenis_jurnal);
-      $('#keterangan').selectize();
     });
 
     /* Fungsi formatRupiah */
