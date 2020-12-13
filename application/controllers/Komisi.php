@@ -114,4 +114,10 @@ class Komisi extends CI_Controller
     $data['bulan'] = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember");
     $this->template->load('template/template', 'komisi/komisi_targetcashin', $data);
   }
+
+  function kategoripoinqty()
+  {
+    $data['kategoripoin'] = $this->Model_komisi->getKategoripoin()->result();
+    $this->template->load('template/template', 'komisi/komisi_kategoripoinqty', $data);
+  }
 }

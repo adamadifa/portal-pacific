@@ -31,6 +31,9 @@ if ($level == "Administrator" || $level == "manager marketing") {
       <a href="<?php echo base_url(); ?>komisi/targetcashin" class="list-group-item list-group-item-action">
         <i class="fa  fa-file-text mr-2"></i>Target Cash IN
       </a>
+      <a href="<?php echo base_url(); ?>komisi/kategoripoinqty" class="list-group-item list-group-item-action">
+        <i class="fa  fa-file-text mr-2"></i>Kategori Poin Qty
+      </a>
     </div>
   </div>
   <div class="card">

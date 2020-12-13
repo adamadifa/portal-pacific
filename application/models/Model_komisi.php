@@ -41,4 +41,9 @@ class Model_komisi extends CI_Model
       $this->db->insert('komisi_target_cashin_detail', $data);
     }
   }
+
+  function getKategoripoin()
+  {
+    return $this->db->get('komisi_kategoripoinqty');
+  }
 }
