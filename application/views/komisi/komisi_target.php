@@ -78,10 +78,38 @@
     </div>
   </div>
 </div>
+<div class="modal modal-blur fade" id="modalsettarget" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog  modal-dialog-centered" style="max-width:1300px !important" role="document">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <h5 class="modal-title">Setting Target Quantity</h5>
+      </div>
+      <div class="modal-body">
+        <div id="loadformsettarget"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-white mr-auto" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal modal-blur fade" id="modalsettargetcashin" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg  modal-dialog-centered" role="document">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <h5 class="modal-title">Setting Target Cash IN</h5>
+      </div>
+      <div class="modal-body">
+        <div id="loadformsettargetcashin"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-white mr-auto" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 <script>
   $(function() {
-
-
     function loadtarget() {
       var bulan = $("#bulan").val();
       var tahun = $("#tahun").val();
@@ -114,12 +142,23 @@
         success: function(respond) {
           if (respond == 2) {
             swal("Success", "Target Berhasil Di Buat !", "success");
+            loadtarget();
           } else {
             swal("Opps", "Target Sudah Ada !", "warning");
           }
           console.log(respond);
         }
       });
+    });
+
+    $("#bulan").click(function(e) {
+      e.preventDefault();
+      loadtarget();
+    });
+
+    $("#tahun").click(function(e) {
+      e.preventDefault();
+      loadtarget();
     });
 
   });

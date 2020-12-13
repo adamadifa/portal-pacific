@@ -91,7 +91,11 @@ class Model_barang extends CI_Model
 
 	function hapus($id)
 	{
-
 		$this->db->delete('barang', array('kode_barang' => $id));
+	}
+
+	function getMasterproduk()
+	{
+		return $this->db->get('master_barang');
 	}
 }

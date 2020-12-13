@@ -1,25 +1,30 @@
 <?php
 
-class Model_cabang extends CI_Model{
+class Model_cabang extends CI_Model
+{
 
 
-	function view_cabang(){
+	function view_cabang()
+	{
 		$cabang = $this->session->userdata('cabang');
-		if($cabang != "pusat"){
 
-			$this->db->where('kode_cabang',$cabang);
+		if ($cabang != "pusat") {
+
+			$this->db->where('kode_cabang', $cabang);
 		}
 
 		return $this->db->get('cabang');
 	}
 
-	function get_cabang($kode_cabang){
+	function get_cabang($kode_cabang)
+	{
 
-		$this->db->where('kode_cabang',$kode_cabang);
+		$this->db->where('kode_cabang', $kode_cabang);
 		return $this->db->get('cabang');
 	}
 
-	function insert_cabang(){
+	function insert_cabang()
+	{
 
 		$kodecabang = $this->input->post('kodecabang');
 		$namacabang = $this->input->post('namacabang');
@@ -36,24 +41,21 @@ class Model_cabang extends CI_Model{
 		);
 
 
-		$cek_data = $this->db->get_where('cabang',array('kode_cabang'=>$kodecabang));
+		$cek_data = $this->db->get_where('cabang', array('kode_cabang' => $kodecabang));
 
-		if($cek_data->num_rows() != 0){
+		if ($cek_data->num_rows() != 0) {
 
-			$this->db->update('cabang',$data,array('kode_cabang'=>$kodecabang));
-		}else{
+			$this->db->update('cabang', $data, array('kode_cabang' => $kodecabang));
+		} else {
 
-			$this->db->insert('cabang',$data);
+			$this->db->insert('cabang', $data);
 		}
-
-
 	}
 
 
-	function hapus($id){
+	function hapus($id)
+	{
 
-		$this->db->delete('cabang',array('kode_cabang'=>$id));
+		$this->db->delete('cabang', array('kode_cabang' => $id));
 	}
-
-
 }
