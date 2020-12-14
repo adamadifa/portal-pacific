@@ -26,4 +26,20 @@ class Laporanaccounting extends CI_Controller
     $data['bulan'] = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember");
     $this->load->view('laporanaccounting/cetak_bukubesar', $data);
   }
+
+  function frmjurnalumum()
+  {
+    $data['tahun']     = date("Y");
+    $data['bulan']     = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember");
+    $data['coa']       = $this->Model_accounting->coa()->result();
+    $this->template->load('template/template', 'laporanaccounting/frmjurnalumum', $data);
+  }
+
+  function cetak_jurnalumum()
+  {
+    $data['dari'] = $this->input->post('dari');
+    $data['sampai'] = $this->input->post('sampai');
+    $data['jurnalumum'] = $this->Model_laporanaccounting->getJurnalUmum($data['dari'], $data['sampai'])->result();
+    $this->load->view('laporanaccounting/cetak_jurnalumum', $data);
+  }
 }

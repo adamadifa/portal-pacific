@@ -228,17 +228,15 @@ function uang($nilai)
           </td>
         <?php } ?>
         <!-- Opname -->
-        <td width="70px" align="center">
+        <td width="70px" align="right">
           <?php if (!empty($d->qtyopname) and $d->qtyopname != "0") {
             echo uang($d->qtyopname);
           }
           ?>
         </td>
-        <td width="70px" align="center">
+        <td width="70px" align="right">
           <?php if (!empty($selsish) and $selsish != "0") {
             echo uang($selsish);
-          } else {
-            echo "-";
           }
           ?>
         </td>

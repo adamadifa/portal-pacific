@@ -29,6 +29,14 @@
                       <input type="text" id="tanggal" name="tanggal" class="form-control datepicker" placeholder="Tanggal" data-error=".errorTxt19" />
                     </div>
                   </div>
+                  <div class="form-group mb-3">
+                    <div class="input-icon">
+                      <span class="input-icon-addon">
+                        <i class="fa fa-book"></i>
+                      </span>
+                      <input type="text" id="ket" name="ket" class="form-control" placeholder="Keterangan" data-error=".errorTxt19" />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -38,7 +46,7 @@
             <div class="col-md-12 col-xs-12">
               <div class="card">
                 <div class="card-body">
-                  <table class="table table-hover">
+                  <table class="table table-hover" style="zoom:90%">
                     <thead class="thead-dark">
                       <tr>
                         <th style="width: 15%;" colspan="2">
@@ -49,7 +57,7 @@
                             <?php } ?>
                           </select>
                         </th>
-                        <th style="width: 20%;" colspan="2"><input class="form-control" id="keterangan" style="text-align:left;color:black" placeholder="Keterangan"></th>
+                        <th hidden style="width: 20%;" colspan="2"><input class="form-control" id="keterangan" style="text-align:left;color:black" placeholder="Keterangan"></th>
                         <th style="width: 10%;">
                           <select class="form-control " style="color:black" id="jenis_jurnal" name="jenis_jurnal">
                             <!-- <option value="">Pilih Jenis Jurnal</option> -->
@@ -58,15 +66,15 @@
                           </select>
                         </th>
                         <th style="width: 9%;"><input class="form-control" id="jumlah" style="text-align:right;color:black" placeholder="Jumlah"></th>
-                        <th style="width: 11%;"><a href="#" id="insertjurnalumumtemp" class="btn btn-primary">Simpan</a><a href="#" id="clear" class="btn btn-danger">Clear</a></th>
+                        <th style="width: 7%;"><a href="#" id="insertjurnalumumtemp" class="btn btn-primary">Simpan</a><a href="#" id="clear" class="btn btn-danger">Clear</a></th>
                       </tr>
                       <tr>
                         <th style="width: 8%;">Kode Akun</th>
                         <th style="width: 15%;">Nama Akun</th>
-                        <th colspan="2">Keterangan</th>
+                        <!-- <th colspan="2">Keterangan</th> -->
                         <th style="width: 10%;text-align:right">Debet</th>
                         <th style="width: 10%;text-align:right">Kredit</th>
-                        <th style="width: 10%;text-align:right">Aksi</th>
+                        <th style="width: 7%;text-align:right">Aksi</th>
                       </tr>
                     </thead>
                     <tbody id="loadjurnalumum">
@@ -184,12 +192,13 @@
           type: 'POST',
           url: '<?php echo base_url(); ?>accounting/insert_jurnal_umum',
           data: {
-            tanggal: tanggal
+            tanggal: tanggal,
+            ket: ket
           },
           cache: false,
           success: function(respond) {
             tampiltemp();
-            
+
             $('#jumlah').val("");
             $('#keterangan').val("");
             var $select = $('#kode_akun').selectize();

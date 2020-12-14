@@ -17,6 +17,18 @@ class Model_laporanaccounting extends CI_Model
     return $this->db->get();
   }
 
+  function getJurnalUmum($dari, $sampai)
+  {
+    $this->db->where('tanggal >=', $dari);
+    $this->db->where('tanggal <=', $sampai);
+    $this->db->where('sumber =', 'GU');
+    $this->db->order_by('tanggal,no_bukti', 'asc');
+    $this->db->join('coa', 'buku_besar.kode_akun = coa.kode_akun', 'left');
+    $this->db->select("buku_besar.no_bukti,tanggal,sumber,buku_besar.keterangan,buku_besar.kode_akun,nama_akun,buku_besar.debet,buku_besar.kredit");
+    $this->db->from('buku_besar');
+    return $this->db->get();
+  }
+
   function getSaldoawalBB($bulan, $tahun, $kode_akun)
   {
     $this->db->where('bulan', $bulan);

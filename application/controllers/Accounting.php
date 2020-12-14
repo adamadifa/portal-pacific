@@ -333,7 +333,7 @@ class Accounting extends CI_Controller
   {
     $this->Model_accounting->insert_penyesuaian();
   }
-  
+
   function insert_jurnal_umum()
   {
     $this->Model_accounting->insert_jurnal_umum();

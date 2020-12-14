@@ -725,6 +725,7 @@ class Model_accounting extends CI_Model
   {
 
     $tanggal            = $this->input->post('tanggal');
+    $ket                = $this->input->post('ket');
     $id_user            = $this->session->userdata('id_user');
 
 
@@ -735,18 +736,18 @@ class Model_accounting extends CI_Model
       $array1             = explode("-", $tanggal);
       $tahun              = $array1[0];
       $bulan              = $array1[1];
-  
+
       $thn = substr($tahun, 2, 2);
       $qbukubesar         = "SELECT no_bukti FROM buku_besar WHERE LEFT(no_bukti,6) = 'GJ$bulan$thn' ORDER BY no_bukti DESC LIMIT 1 ";
       $ceknolast          = $this->db->query($qbukubesar)->row_array();
       $nobuktilast        = $ceknolast['no_bukti'];
       $nobukti            = buatkode($nobuktilast, 'GJ' . $bulan . $thn, 4);
-      
+
       $data   = array(
         'no_bukti'              => $nobukti,
         'tanggal'               => $tanggal,
         'kode_akun'             => $d->kode_akun,
-        'keterangan'            => $d->keterangan,
+        'keterangan'            => $ket,
         'debet'                 => $d->debet,
         'kredit'                => $d->kredit,
         'no_ref'                => "",
@@ -756,7 +757,6 @@ class Model_accounting extends CI_Model
     }
 
     $this->db->query("DELETE FROM jurnal_umum_temp WHERE id_user = '$id_user' ");
-
   }
 
   function hapus_jurnal_umum_temp()
