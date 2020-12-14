@@ -58,6 +58,7 @@
                           </select>
                         </th>
                         <th hidden style="width: 20%;" colspan="2"><input class="form-control" id="keterangan" style="text-align:left;color:black" placeholder="Keterangan"></th>
+                        <th hidden style="width: 20%;" colspan="2"><input class="form-control" id="totbalance" style="text-align:left;color:black" placeholder="Balance"></th>
                         <th style="width: 10%;">
                           <select class="form-control " style="color:black" id="jenis_jurnal" name="jenis_jurnal">
                             <!-- <option value="">Pilih Jenis Jurnal</option> -->
@@ -66,7 +67,7 @@
                           </select>
                         </th>
                         <th style="width: 9%;"><input class="form-control" id="jumlah" style="text-align:right;color:black" placeholder="Jumlah"></th>
-                        <th style="width: 7%;"><a href="#" id="insertjurnalumumtemp" class="btn btn-primary">Simpan</a><a href="#" id="clear" class="btn btn-danger">Clear</a></th>
+                        <th style="width: 10%;"><a href="#" id="insertjurnalumumtemp" class="btn btn-primary">Tambah</a><a href="#" id="clear" class="btn btn-danger">Clear</a></th>
                       </tr>
                       <tr>
                         <th style="width: 8%;">Kode Akun</th>
@@ -185,8 +186,15 @@
 
     $("#insertjurnalumum").click(function(e) {
       var tanggal = $("#tanggal").val();
+      var ket = $("#ket").val();
+
+      var totdebet = $('#totdebet').html();
+      var totkredit = $('#totkredit').html();
+      var total = totkredit - totdebet;
       if (tanggal == "") {
         swal("Oops!", "Tanggal Harus Diisi !", "warning");
+      } else if (total != "0") {
+        swal("Oops!", "Tidak Balance", "warning");
       } else {
         $.ajax({
           type: 'POST',

@@ -25,7 +25,7 @@ function uang($nilai)
     <tr>
       <th style="width: 10%;">TGL</th>
       <th>NO BUKTI</th>
-      <!-- <th>KETERANGAN</th> -->
+      <th>KETERANGAN</th>
       <th>KODE AKUN</th>
       <th>NAMA AKUN</th>
       <th>DEBET</th>
@@ -43,7 +43,7 @@ function uang($nilai)
       <tr>
         <td><?php echo dateToIndo2($d->tanggal); ?></td>
         <td><?php echo $d->no_bukti; ?></td>
-        <!-- <td><?php echo $d->keterangan; ?></td> -->
+        <td><?php echo $d->keterangan; ?></td>
         <td><?php echo $d->kode_akun; ?></td>
         <td><?php echo $d->nama_akun; ?></td>
         <td align="right"><?php echo number_format($d->debet); ?></td>
@@ -51,10 +51,7 @@ function uang($nilai)
       </tr>
     <?php } ?>
     <tr>
-      <td>Total</td>
-      <td></td>
-      <td>></td>
-      <td></td>
+      <td colspan="5">Total</td>
       <td align="right"><?php echo number_format($debet); ?></td>
       <td align="right"><?php echo number_format($kredit); ?></td>
     </tr>
