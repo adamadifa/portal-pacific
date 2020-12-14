@@ -120,4 +120,12 @@ class Komisi extends CI_Controller
     $data['kategoripoin'] = $this->Model_komisi->getKategoripoin()->result();
     $this->template->load('template/template', 'komisi/komisi_kategoripoinqty', $data);
   }
+
+  function laporankomisi()
+  {
+    $data['cb']    = $this->session->userdata('cabang');
+    $data['bulan'] = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember");
+    $data['cabang'] = $this->Model_cabang->view_cabang()->result();
+    $this->template->load('template/template', 'komisi/laporan/komisi', $data);
+  }
 }
