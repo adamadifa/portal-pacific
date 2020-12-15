@@ -1,11 +1,15 @@
 <?php
 $no = 1;
+$kredit = 0;
+$debet = 0;
 foreach ($detail as $d) {
+  $debet += $d->debet;
+  $kredit += $d->kredit;
+
 ?>
   <tr>
     <td style="width: 15%;"><?php echo $d->kode_akun; ?></td>
     <td><?php echo $d->nama_akun; ?></td>
-    <td colspan="2"><?php echo $d->keterangan; ?></td>
     <td style="width: 15%;text-align:right"><?php echo number_format($d->debet); ?></td>
     <td style="width: 15%;text-align:right"><?php echo number_format($d->kredit); ?></td>
     <td style="width: 5%;text-align:right">
@@ -15,10 +19,15 @@ foreach ($detail as $d) {
   </tr>
 <?php $no++;
 } ?>
-
+<tr>
+  <td colspan="2">Total</td>
+  <td align="right" id="totdebet"><?php echo $debet; ?></td>
+  <td align="right" id="totkredit"><?php echo $kredit; ?></td>
+</tr>
 <script type="text/javascript">
   $(function() {
 
+    // $('#totbalance').val((totdebet * 1) - (totkredit * 1))
 
     function tampiltemp() {
       $.ajax({
