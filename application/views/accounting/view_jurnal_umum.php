@@ -30,7 +30,9 @@ function uang($nilai)
               <select class="form-control selectoption" id="kode_akun" name="kode_akun">
                 <option value="">AKUN</option>
                 <?php foreach ($coa as $key => $d) { ?>
-                  <option <?php if($kode_akun == $d->kode_akun){ echo "selected"; } ?> value="<?php echo $d->kode_akun; ?>"><?php echo $d->kode_akun; ?> | <?php echo $d->nama_akun; ?></option>
+                  <option <?php if ($kode_akun == $d->kode_akun) {
+                            echo "selected";
+                          } ?> value="<?php echo $d->kode_akun; ?>"><?php echo $d->kode_akun; ?> | <?php echo $d->nama_akun; ?></option>
                 <?php } ?>
               </select>
             </div>
@@ -78,9 +80,9 @@ function uang($nilai)
                   <th>No</th>
                   <th>Nobukti</th>
                   <th>Tanggal</th>
-                  <th>Keterangan</th>
                   <th>Kode Akun</th>
                   <th>Nama Akun</th>
+                  <th>Keterangan</th>
                   <th>Debet</th>
                   <th>Kredit</th>
                   <th>Aksi</th>
@@ -89,7 +91,11 @@ function uang($nilai)
               <tbody>
                 <?php
                 $no  = 1;
+                $debet = 0;
+                $kredit = 0;
                 foreach ($data as $d) {
+                  $debet += $d->debet;
+                  $kredit += $d->kredit;
                 ?>
                   <tr>
                     <td><?php echo $no; ?></td>
@@ -100,13 +106,21 @@ function uang($nilai)
                     <td><?php echo $d->keterangan; ?></td>
                     <td align="right"><?php echo number_format($d->debet); ?></td>
                     <td align="right"><?php echo number_format($d->kredit); ?></td>
-                    <td>Aksi</td>
+                    <td><a href="#" data-kode="<?php echo $d->no_bukti; ?>" class="btn btn-sm btn-warning edit"><i class=" fa fa-pencil"></i></a></td>
                   </tr>
                 <?php
                   $no++;
                 }
                 ?>
               </tbody>
+              <thead class="thead-dark">
+                <tr>
+                  <th colspan="6" style="text-align: center;">Total</th>
+                  <th style="text-align: right;"><?php echo number_format($debet); ?></th>
+                  <th style="text-align: right;"><?php echo number_format($kredit); ?></th>
+                  <th></th>
+                </tr>
+              </thead>
             </table>
           </div>
         </div>
@@ -114,6 +128,19 @@ function uang($nilai)
     </div>
     <div class="col-md-2">
       <?php $this->load->view('menu/menu_accounting_administrator.php'); ?>
+    </div>
+  </div>
+</div>
+
+<div class="modal modal-blur fade" id="editjurnalumum" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-lg  modal-dialog-centered" role="document">
+    <div class="modal-content ">
+      <div class="modal-body">
+        <div id="loadeditjurnalumum"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-white mr-auto" data-dismiss="modal">Close</button>
+      </div>
     </div>
   </div>
 </div>
@@ -134,34 +161,20 @@ function uang($nilai)
 <script type="text/javascript">
   $(function() {
 
-    $('.detail').click(function(e) {
+    $('.edit').click(function(e) {
       e.preventDefault();
-      var kode_saldoawal_bb = $(this).attr('data-kode_saldoawal_bb');
+      var nobukti = $(this).attr('data-kode');
       $.ajax({
         type: 'POST',
-        url: '<?php echo base_url(); ?>accounting/detail_saldoawal',
+        url: '<?php echo base_url(); ?>accounting/edit_jurnal_umum',
         data: {
-          kode_saldoawal_bb: kode_saldoawal_bb
+          nobukti: nobukti
         },
         cache: false,
         success: function(respond) {
-          $("#loaddetailsaldoawal").html(respond);
-          $("#detailsaldoawal").modal("show");
+          $("#loadeditjurnalumum").html(respond);
+          $("#editjurnalumum").modal("show");
         }
-      });
-    });
-
-    $(".hapus").click(function(e) {
-      e.preventDefault();
-      var getLink = $(this).attr('data-href');
-      swal({
-        title: 'Alert',
-        text: 'Hapus Data ?',
-        html: true,
-        confirmButtonColor: '#d43737',
-        showCancelButton: true,
-      }, function() {
-        window.location.href = getLink
       });
     });
 
