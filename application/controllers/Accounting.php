@@ -209,6 +209,21 @@ class Accounting extends CI_Controller
     $this->template->load('template/template', 'accounting/view_saldoawal', $data);
   }
 
+  function view_jurnal_umum()
+  {
+    $kode_akun                = "";
+    $dari                     = $this->input->post('dari');
+    $sampai                   = $this->input->post('sampai');
+    $kode_akun                = $this->input->post('kode_akun');
+
+    $data['dari']       = $dari;
+    $data['sampai']     = $sampai;
+    $data['kode_akun']  = $kode_akun;
+    $data['data']       = $this->Model_accounting->getJurnalUmum($kode_akun, $dari, $sampai)->result();
+    $data['coa']        = $this->Model_accounting->coa()->result();
+    $this->template->load('template/template', 'accounting/view_jurnal_umum', $data);
+  }
+
   function view_accounting()
   {
     $data['tahun']     = date("Y");

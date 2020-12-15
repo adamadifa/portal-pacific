@@ -774,4 +774,20 @@ class Model_accounting extends CI_Model
     INNER JOIN coa ON coa.kode_akun=jurnal_umum_temp.kode_akun
     WHERE id_user = '$id_user' ");
   }
+
+  function getJurnalUmum($kode_akun,$dari,$sampai)
+  {
+
+
+    if($kode_akun != ""){
+      $kode_akun = "AND buku_besar.kode_akun = '$kode_akun' ";
+    }
+
+    return $this->db->query("SELECT * FROM buku_besar 
+    INNER JOIN coa ON coa.kode_akun=buku_besar.kode_akun
+    WHERE sumber = 'GU' AND tanggal BETWEEN '$dari' AND '$sampai' "
+    .$kode_akun 
+    ."
+    ");
+  }
 }
