@@ -7,6 +7,7 @@ foreach ($data->result() as $d) {
     <td><?php echo $d->kode_barang; ?></td>
     <td><?php echo $d->nama_barang; ?></td>
     <td><?php echo $d->keterangan; ?></td>
+    <td><?php echo $d->nama_cabang; ?></td>
     <td><?php echo $d->qty; ?></td>
     <td align="right"><a href="#" data-kodebarang="<?php echo $d->kode_barang; ?>" data-idadmin="<?php echo $d->id_admin; ?>" class="btn btn-danger btn-sm hapus"><i class="fa fa-trash-o"></i></a></td>
   </tr>
@@ -44,6 +45,7 @@ foreach ($data->result() as $d) {
           $('#harga').val("");
           $('#keterangan').val("");
           $('#jenisbarang').val("");
+          $('#cbg').val("");
 
         }
 

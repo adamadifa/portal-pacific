@@ -1,3 +1,12 @@
+<?php
+function uang($nilai)
+{
+
+  return number_format($nilai, '0', '', '.');
+}
+
+?>
+
 <div class="row">
   <div class="col-md-12 col-xs-12">
     <div class="card">
@@ -34,12 +43,12 @@
         </div>
         <div class="form-group mb-3">
           <div class="input-icon">
-            <input type="text" style="text-align: right;" value="<?php echo number_format($getJurnal['debet']); ?>" id="debet" name="debet" class="form-control" placeholder="Keterangan" data-error=".errorTxt19" />
+            <input type="text" style="text-align: right;" value="<?php echo uang($getJurnal['debet']); ?>" id="debet" name="debet" class="form-control" placeholder="Keterangan" data-error=".errorTxt19" />
           </div>
         </div>
         <div class="form-group mb-3">
           <div class="input-icon">
-            <input type="text" style="text-align: right;" value="<?php echo number_format($getJurnal['kredit']); ?>" id="kredit" name="kredit" class="form-control" placeholder="Keterangan" data-error=".errorTxt19" />
+            <input type="text" style="text-align: right;" value="<?php echo uang($getJurnal['kredit']); ?>" id="kredit" name="kredit" class="form-control" placeholder="Keterangan" data-error=".errorTxt19" />
           </div>
         </div>
         <div class="form-group mb-3">
