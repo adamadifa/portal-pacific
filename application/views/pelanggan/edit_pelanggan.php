@@ -186,13 +186,13 @@
                 <div class="form-group">
                   <select id="lama_berjualan" name="lama_berjualan" class="form-select">
                     <option value="">-- Pilih Lama Berjualan -- </option>
-                    <option <?php if ($pel['lama_berjualan'] == "1") {
+                    <option <?php if ($pel['lama_berjualan'] == "Kurang 1 Tahun") {
                               echo "selected";
                             } ?> value="Kurang 1 Tahun">Kurang 1 Tahun</option>
-                    <option <?php if ($pel['lama_berjualan'] == "2") {
+                    <option <?php if ($pel['lama_berjualan'] == "2-5 Tahun") {
                               echo "selected";
                             } ?> value="2-5 Tahun">2-5 Tahun</option>
-                    <option <?php if ($pel['lama_berjualan'] == "3") {
+                    <option <?php if ($pel['lama_berjualan'] == "Lebih 5 Tahun") {
                               echo "selected";
                             } ?> value="Lebih 5 Tahun">Lebih 5 Tahun</option>
                   </select>
