@@ -794,7 +794,7 @@
 
 		// CEK NO FAKTU YANG SAMA
 
-		$("#nofaktur").on('keyup keydown change', function(e) {
+		$("#nofaktur").on('change', function(e) {
 			if (e.keyCode == 32) return false;
 			var nofaktur = $("#nofaktur").val();
 			$.ajax({
