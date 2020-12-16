@@ -19,6 +19,7 @@
       <th>Kode Barang</th>
       <th>Nama Barang</th>
       <th>Ket</th>
+      <th>Cabang</th>
       <th>Qty</th>
     </tr>
   </thead>
@@ -32,6 +33,7 @@
         <td><?php echo $d->kode_barang; ?></td>
         <td><?php echo $d->nama_barang; ?></td>
         <td><?php echo $d->keterangan; ?></td>
+        <td><?php echo $d->nama_cabang; ?></td>
         <td><?php echo $d->qty; ?></td>
       </tr>
     <?php $no++;

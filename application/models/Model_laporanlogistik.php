@@ -3,11 +3,12 @@
 class Model_laporanlogistik extends CI_Model
 {
 
+
   function getDepartemen()
   {
 
     $query = "
-    SELECT * FROM departemen 
+    SELECT * FROM departemen WHERE status_pengajuan != '2'
     ";
     return $this->db->query($query);
   }
@@ -217,7 +218,7 @@ class Model_laporanlogistik extends CI_Model
 
     if ($kode_dept != "") {
 
-      $kode_dept = "AND pengeluaran.kode_dept = '" . $kode_dept . "' ";
+      $kode_dept = "AND pengeluaran.kode_dept = '" . $kode_dept . "' AND detail_pengeluaran.kode_cabang = '' ";
     }
 
     if ($kode_kategori != "") {

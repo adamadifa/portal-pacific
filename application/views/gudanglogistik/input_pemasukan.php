@@ -38,7 +38,7 @@
                       <input type="text" value="" id="tgl_pemasukan" name="tgl_pemasukan" class="form-control datepicker date" placeholder="Tanggal Pemasukan" data-error=".errorTxt19" />
                     </div>
                   </div>
-                  <div class="mb-3">
+                  <!-- <div class="mb-3">
                     <select class="form-control selectoption" id="bulan" name="bulan">
                       <option value="">Bulan</option>
                       <?php for ($a = 1; $a <= 12; $a++) { ?>
@@ -53,7 +53,7 @@
                         <option value="<?php echo $t;  ?>"><?php echo $t; ?></option>
                       <?php } ?>
                     </select>
-                  </div>
+                  </div> -->
                 </div>
               </div>
             </div>

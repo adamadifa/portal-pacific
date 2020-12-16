@@ -31,7 +31,7 @@
                   </div>
 
                   <div class="mb-3">
-                    <select name="cbg" id="cbg" class="form-select show-tick">
+                    <select name="cbg" id="cbg" class="form-select show-tick selectoption">
                       <option value="">-- Pilih Cabang --</option>
                       <?php foreach ($cabang as $c) { ?>
                         <option value="<?php echo $c->kode_cabang; ?>"><?php echo strtoupper($c->nama_cabang); ?></option>
@@ -132,19 +132,19 @@
 <script>
   $(function() {
 
-    $("#cbg").hide();
+    // $("#cbg").hide();
 
-    $('#kode_dept').change(function() {
+    // $('#kode_dept').change(function() {
 
-      var kode_dept = $("#kode_dept").val();
-      if (kode_dept == "GAF") {
-        $("#cbg").show();
-      } else {
-        $("#cbg").hide();
-        $("#cbg").val("");
-      }
+    //   var kode_dept = $("#kode_dept").val();
+    //   if (kode_dept == "GAF" || kode_dept == "AKT") {
+    //     $("#cbg").show();
+    //   } else {
+    //     $("#cbg").hide();
+    //     $("#cbg").val("");
+    //   }
 
-    });
+    // });
 
   });
 </script>

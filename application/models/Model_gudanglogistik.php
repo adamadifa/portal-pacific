@@ -811,7 +811,7 @@ class Model_gudanglogistik extends CI_Model
   function getDept()
   {
 
-    return $this->db->get_where('departemen');
+    return $this->db->get_where('departemen', array('status_pengajuan!=' => '2'));
   }
 
   function getSaldoawal()
@@ -840,6 +840,7 @@ class Model_gudanglogistik extends CI_Model
 
     $nobukti            = $this->input->post('nobukti');
     $this->db->join('master_barang_pembelian', 'detail_pengeluaran.kode_barang = master_barang_pembelian.kode_barang');
+    $this->db->join('cabang', 'cabang.kode_cabang = detail_pengeluaran.kode_cabang', 'left');
     return $this->db->get_where('detail_pengeluaran', array('detail_pengeluaran.nobukti_pengeluaran' => $nobukti));
   }
 
