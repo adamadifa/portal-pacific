@@ -81,6 +81,14 @@ class Accounting extends CI_Controller
     $this->load->view('accounting/costratiobiaya_edit', $data);
   }
 
+  function edit_jurnal_umum()
+  {
+    $nobukti             = $this->input->post('nobukti');
+    $data['coa']         = $this->Model_keuangan->coa()->result();
+    $data['getJurnal']   = $this->Model_accounting->getEditJurnalUmum($nobukti)->row_array();
+    $this->load->view('accounting/edit_jurnal_umum', $data);
+  }
+
   function insertcostratiobiaya()
   {
     $this->Model_accounting->insertcostratiobiaya();
@@ -383,6 +391,11 @@ class Accounting extends CI_Controller
   function insert_detailsaldoawal()
   {
     $this->Model_accounting->insert_detailsaldoawal();
+  }
+
+  function update_jurnal_umum()
+  {
+    $this->Model_accounting->update_jurnal_umum();
   }
 
   function hapusbukubesar()

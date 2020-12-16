@@ -31,7 +31,7 @@ if ($level == "Administrator" || $level == "manager accounting" || $level == "sp
       <a href="#" class="list-group-item list-group-item-action active">
         Jurnal Umum
       </a>
-      <a href="<?php echo base_url(); ?>accounting/input_jurnal_umum" class="list-group-item list-group-item-action">
+      <a href="<?php echo base_url(); ?>accounting/view_jurnal_umum" class="list-group-item list-group-item-action">
         <i class="fa  fa-file-text mr-2"></i>Jurnal Umum
       </a>
       <a href="<?php echo base_url(); ?>laporanaccounting/frmjurnalumum" class="list-group-item list-group-item-action">

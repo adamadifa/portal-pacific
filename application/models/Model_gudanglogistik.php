@@ -1283,14 +1283,16 @@ class Model_gudanglogistik extends CI_Model
 
     $kode_barang   = $this->input->post('kodebarang');
     $qty           = str_replace(",", "", $this->input->post('jumlah'));
-    $keterangan   = $this->input->post('keterangan');
-    $id_admin     = $this->session->userdata('id_user');
+    $keterangan    = $this->input->post('keterangan');
+    $kode_cabang   = $this->input->post('kode_cabang');
+    $id_admin       = $this->session->userdata('id_user');
 
     $data = array(
 
       'kode_barang' => $kode_barang,
       'qty'          => $qty,
       'keterangan'  => $keterangan,
+      'kode_cabang' => $kode_cabang,
       'id_admin'    => $id_admin
 
     );
@@ -1372,6 +1374,7 @@ class Model_gudanglogistik extends CI_Model
         'nobukti_pengeluaran'    => $nobukti,
         'kode_barang'            => $d->kode_barang,
         'qty'                    => $d->qty,
+        'kode_cabang'            => $d->kode_cabang,
         'keterangan'             => $d->keterangan
 
       );
@@ -1387,6 +1390,7 @@ class Model_gudanglogistik extends CI_Model
 
     $id_user = $this->session->userdata('id_user');
     $this->db->join('master_barang_pembelian', 'detailpengeluaran_temp.kode_barang = master_barang_pembelian.kode_barang');
+    $this->db->join('cabang', 'cabang.kode_cabang = detailpengeluaran_temp.kode_cabang', 'left');
     return $this->db->get_where('detailpengeluaran_temp', array('id_admin' => $id_user));
   }
 

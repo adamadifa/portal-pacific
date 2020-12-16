@@ -58,7 +58,6 @@
                           </select>
                         </th>
                         <th hidden style="width: 20%;" colspan="2"><input class="form-control" id="keterangan" style="text-align:left;color:black" placeholder="Keterangan"></th>
-                        <th hidden style="width: 20%;" colspan="2"><input class="form-control" id="totbalance" style="text-align:left;color:black" placeholder="Balance"></th>
                         <th style="width: 10%;">
                           <select class="form-control " style="color:black" id="jenis_jurnal" name="jenis_jurnal">
                             <!-- <option value="">Pilih Jenis Jurnal</option> -->

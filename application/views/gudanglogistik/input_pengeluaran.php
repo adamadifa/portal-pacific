@@ -39,7 +39,7 @@
                     </div>
                   </div>
                   <div class="form-group mb-3">
-                    <select class="form-control show-tick" id="departemen" name="departemen" data-error=".errorTxt1">
+                    <select class="form-control show-tick departemen" id="departemen" name="departemen" data-error=".errorTxt1">
                       <option value="">--Pilih Departemen--</option>
                       <?php foreach ($dept as $d) { ?>
                         <option value="<?php echo $d->kode_dept; ?>"><?php echo $d->nama_dept; ?></option>
@@ -57,8 +57,8 @@
               <div class="card">
                 <div class="card-body">
                   <div class="row">
-                    <div class="col-md-3">
-                      <div class="row mb-2">
+                    <div class="col-md-4">
+                      <div class="row mb-12">
                         <div class="form-group">
                           <div class="input-icon">
                             <span class="input-icon-addon">
@@ -69,9 +69,31 @@
                           </div>
                         </div>
                       </div>
+                      <div class="row">
+                        <div class="col-md-4">
+                          <div class="form-group">
+                            <label class="form-check form-switch">
+                              <input class="form-check-input cabang" type="checkbox" name="girotocash" value="1">
+                              <span class="form-check-label"><b>Cabang ?</b></span>
+                            </label>
+                          </div>
+                        </div>
+                        <div class="col-md-8">
+                          <div class="form-group">
+                            <div class="input-icon">
+                              <select name="cbg" id="cbg" class="form-select show-tick">
+                                <option value="">-- Pilih Cabang --</option>
+                                <?php foreach ($cabang as $c) { ?>
+                                  <option value="<?php echo $c->kode_cabang; ?>"><?php echo strtoupper($c->nama_cabang); ?></option>
+                                <?php } ?>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                     <div class="col-md-2">
-                      <div class="row mb-2">
+                      <div class="row mb-12">
                         <div class="form-group">
                           <div class="input-icon">
                             <span class="input-icon-addon">
@@ -83,28 +105,29 @@
                       </div>
                     </div>
                     <div class="col-md-3">
-                      <div class="form-group">
-                        <div class="input-icon">
-                          <span class="input-icon-addon">
-                            <i class="fa fa-balance-scale"></i>
-                          </span>
-                          <input type="text" value="" id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" data-error=".errorTxt19" />
-                        </div>
-                      </div>
-                    </div>
-                    <div class="col-md-2">
-                      <div class="row mb-2">
+                      <div class="col-md-12">
                         <div class="form-group">
                           <div class="input-icon">
                             <span class="input-icon-addon">
-                              <i class="fa fa-barcode"></i>
+                              <i class="fa fa-balance-scale"></i>
                             </span>
-                            <input type="text" readonly value="" id="jenisbarang" name="jenisbarang" class="form-control" placeholder="Jenis Barang" data-error=".errorTxt19" />
+                            <input type="text" value="" id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" data-error=".errorTxt19" />
                           </div>
                         </div>
                       </div>
                     </div>
                     <div class="col-md-2">
+                      <div class="form-group">
+                        <div class="input-icon">
+                          <span class="input-icon-addon">
+                            <i class="fa fa-barcode"></i>
+                          </span>
+                          <input type="text" readonly value="" id="jenisbarang" name="jenisbarang" class="form-control" placeholder="Jenis Barang" data-error=".errorTxt19" />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="col-md-1">
                       <div class="form-group">
                         <a href="#" id="tambahbarang" class="btn btn-primary">
                           <i class="fa fa-cart-plus mr-2"></i> Tambah
@@ -112,6 +135,7 @@
                       </div>
                     </div>
                   </div>
+                  <br>
                   <div class="row">
                     <div class="col-md-12">
                       <table class="table table-bordered table-striped">
@@ -121,6 +145,7 @@
                             <th>Kode Barang</th>
                             <th>Nama Barang</th>
                             <th>Keterangan</th>
+                            <th>Cabang</th>
                             <th>Qty</th>
                             <th>Aksi</th>
                           </tr>
@@ -161,10 +186,6 @@
     </div>
   </div>
 </div>
-<script>
-  flatpickr(document.getElementById('tgl_pengeluaran'), {});
-  flatpickr(document.getElementById('jatuhtempo'), {});
-</script>
 
 <script>
   $(function() {
@@ -177,6 +198,21 @@
     }
 
     tampiltemp();
+
+    $("#cbg").hide();
+
+    $('.cabang').change(function() {
+      //alert('test');
+      if (this.checked) {
+        // var returnVal = confirm("Apakah Benar Barang Ini Merupakan Kebutuhan Cabang ?");
+        // $(this).prop("checked", returnVal);
+        $("#cbg").show();
+      } else {
+        $("#cbg").hide();
+        $("#cbg").val("");
+      }
+
+    });
 
     $('#harga,#jumlah').on("input", function() {
 
@@ -223,6 +259,7 @@
           $('#jumlah').val("");
           $('#harga').val("");
           $('#keterangan').val("");
+          $("#cbg").val("");
           $('#jenisbarang').val("");
 
         }
@@ -236,6 +273,7 @@
       var kodebarang = $('#kodebarang').val();
       var jumlah = $('#jumlah').val();
       var harga = $('#harga').val();
+      var kode_cabang = $('#cbg').val();
       var kodeakun = $('#kodeakun').val();
       var keterangan = $('#keterangan').val();
 
@@ -263,6 +301,7 @@
           data: {
             kodebarang: kodebarang,
             jumlah: jumlah,
+            kode_cabang: kode_cabang,
             harga: harga,
             keterangan: keterangan,
             kodeakun: kodeakun

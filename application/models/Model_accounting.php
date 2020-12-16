@@ -759,6 +759,27 @@ class Model_accounting extends CI_Model
     $this->db->query("DELETE FROM jurnal_umum_temp WHERE id_user = '$id_user' ");
   }
 
+  function update_jurnal_umum()
+  {
+
+    $nobukti            = $this->input->post('nobukti');
+    $tanggal            = $this->input->post('tanggal');
+    $debet              = str_replace(",", "", $this->input->post('debet'));
+    $kredit             = str_replace(",", "", $this->input->post('kredit'));
+    $kode_akun          = $this->input->post('kode_akun');
+    $ket                = $this->input->post('keterangan');
+
+    $data   = array(
+      'tanggal'               => $tanggal,
+      'kode_akun'             => $kode_akun,
+      'keterangan'            => $ket,
+      'debet'                 => $debet,
+      'kredit'                => $kredit,
+    );
+    $this->db->where('no_bukti', $nobukti);
+    $this->db->update('buku_besar', $data);
+  }
+
   function hapus_jurnal_umum_temp()
   {
 
@@ -775,19 +796,27 @@ class Model_accounting extends CI_Model
     WHERE id_user = '$id_user' ");
   }
 
-  function getJurnalUmum($kode_akun,$dari,$sampai)
+  function getJurnalUmum($kode_akun, $dari, $sampai)
   {
 
 
-    if($kode_akun != ""){
+    if ($kode_akun != "") {
       $kode_akun = "AND buku_besar.kode_akun = '$kode_akun' ";
     }
 
     return $this->db->query("SELECT * FROM buku_besar 
     INNER JOIN coa ON coa.kode_akun=buku_besar.kode_akun
     WHERE sumber = 'GU' AND tanggal BETWEEN '$dari' AND '$sampai' "
-    .$kode_akun 
-    ."
+      . $kode_akun
+      . "
+    ");
+  }
+
+  function getEditJurnalUmum($nobukti)
+  {
+    return $this->db->query("SELECT * FROM buku_besar 
+    INNER JOIN coa ON coa.kode_akun=buku_besar.kode_akun
+    WHERE sumber = 'GU' AND no_bukti = '$nobukti'
     ");
   }
 }

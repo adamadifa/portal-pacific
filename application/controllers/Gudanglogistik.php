@@ -6,7 +6,7 @@ class Gudanglogistik extends CI_Controller
   {
     parent::__construct();
     check_login();
-    $this->load->model(array('Model_gudanglogistik'));
+    $this->load->model(array('Model_gudanglogistik', 'Model_cabang'));
   }
 
   function pembelian($rowno = 0)
@@ -723,6 +723,7 @@ class Gudanglogistik extends CI_Controller
   {
 
     $data['dept']     = $this->Model_gudanglogistik->getDept()->result();
+    $data['cabang']   = $this->Model_cabang->view_cabang()->result();
     $this->template->load('template/template', 'gudanglogistik/input_pengeluaran', $data);
   }
 
