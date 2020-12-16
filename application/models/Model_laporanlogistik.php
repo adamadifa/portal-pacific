@@ -1,8 +1,10 @@
 <?php
 
-class Model_laporanlogistik extends CI_Model{
+class Model_laporanlogistik extends CI_Model
+{
 
-	function getDepartemen(){
+  function getDepartemen()
+  {
 
     $query = "
     SELECT * FROM departemen 
@@ -10,7 +12,8 @@ class Model_laporanlogistik extends CI_Model{
     return $this->db->query($query);
   }
 
-  function getbarang(){
+  function getbarang()
+  {
 
     $query = "
     SELECT * FROM master_barang_pembelian WHERE kode_dept = 'GDL' AND status = 'Aktif' ORDER BY nama_barang
@@ -18,28 +21,28 @@ class Model_laporanlogistik extends CI_Model{
     return $this->db->query($query);
   }
 
-  function getKategori(){
+  function getKategori()
+  {
 
     $kodedept = $this->session->userdata('dept');
     if ($kodedept != "") {
 
-      $kodedept = "WHERE kategori_barang_pembelian.kode_dept = '".$kodedept."' ";
-
+      $kodedept = "WHERE kategori_barang_pembelian.kode_dept = '" . $kodedept . "' ";
     }
     $query = "
     SELECT * FROM kategori_barang_pembelian "
-    .$kodedept
-    ."
+      . $kodedept
+      . "
     ";
     return $this->db->query($query);
   }
 
-  function list_detailPersediaan($bulan,$tahun,$kode_kategori){
+  function list_detailPersediaan($bulan, $tahun, $kode_kategori)
+  {
 
     if ($kode_kategori != "") {
 
-      $kode_kategori = "AND master_barang_pembelian.kode_kategori = '".$kode_kategori."' ";
-
+      $kode_kategori = "AND master_barang_pembelian.kode_kategori = '" . $kode_kategori . "' ";
     }
 
     $query = "SELECT 
@@ -87,8 +90,8 @@ class Model_laporanlogistik extends CI_Model{
     
 
     WHERE master_barang_pembelian.kode_dept = 'GDL' AND master_barang_pembelian.status = 'Aktif' "
-    .$kode_kategori
-    ."
+      . $kode_kategori
+      . "
     GROUP BY
     master_barang_pembelian.kode_barang,
     master_barang_pembelian.nama_barang,
@@ -109,13 +112,13 @@ class Model_laporanlogistik extends CI_Model{
   }
 
 
-  function list_detailPersediaanopname($bulan,$tahun,$kode_kategori){
+  function list_detailPersediaanopname($bulan, $tahun, $kode_kategori)
+  {
 
 
     if ($kode_kategori != "") {
 
-      $kode_kategori = "AND master_barang_pembelian.kode_kategori = '".$kode_kategori."' ";
-
+      $kode_kategori = "AND master_barang_pembelian.kode_kategori = '" . $kode_kategori . "' ";
     }
 
     $query = "SELECT 
@@ -158,27 +161,26 @@ class Model_laporanlogistik extends CI_Model{
     
 
     WHERE master_barang_pembelian.kode_dept = 'GDL' AND master_barang_pembelian.status = 'Aktif' "
-    .$kode_kategori
-    ."
+      . $kode_kategori
+      . "
     ORDER BY master_barang_pembelian.nama_barang ASC
     ";
     return $this->db->query($query);
   }
 
-  function list_detailPemasukan($dari,$sampai,$kode_kategori,$kode_barang){
+  function list_detailPemasukan($dari, $sampai, $kode_kategori, $kode_barang)
+  {
 
 
     if ($kode_kategori != "") {
 
-      $kode_kategori = "AND master_barang_pembelian.kode_kategori = '".$kode_kategori."' ";
-
+      $kode_kategori = "AND master_barang_pembelian.kode_kategori = '" . $kode_kategori . "' ";
     }
 
     if ($kode_barang != "") {
 
-      $kode_barang = "AND detail_pemasukan.kode_barang = '".$kode_barang."' ";
-
-    } 
+      $kode_barang = "AND detail_pemasukan.kode_barang = '" . $kode_barang . "' ";
+    }
 
     $query = "
     SELECT gk.nama_supplier,detail_pemasukan.penyesuaian,pemasukan.tgl_pemasukan,master_barang_pembelian.kode_barang,satuan,keterangan,nama_barang,kategori,nama_akun,coa.kode_akun,harga,qty,pemasukan.nobukti_pemasukan FROM detail_pemasukan
@@ -198,9 +200,9 @@ class Model_laporanlogistik extends CI_Model{
     GROUP BY nobukti_pembelian) gk ON (pemasukan.nobukti_pemasukan = gk.nobukti_pembelian)
 
     WHERE pemasukan.tgl_pemasukan BETWEEN '$dari' AND '$sampai' AND master_barang_pembelian.status = 'Aktif' AND master_barang_pembelian.kode_dept = 'GDL'"
-    .$kode_kategori
-    .$kode_barang
-    . "
+      . $kode_kategori
+      . $kode_barang
+      . "
     ORDER BY 
     pemasukan.tgl_pemasukan,
     detail_pemasukan.kode_barang,
@@ -210,31 +212,36 @@ class Model_laporanlogistik extends CI_Model{
     return $this->db->query($query);
   }
 
-  function list_detailPengeluaran($dari,$sampai,$kode_dept,$kode_kategori,$kode_barang){
+  function list_detailPengeluaran($dari, $sampai, $kode_dept, $kode_kategori, $kode_barang, $kode_cabang)
+  {
 
     if ($kode_dept != "") {
 
-      $kode_dept = "AND pengeluaran.kode_dept = '".$kode_dept."' ";
-
-    } 
+      $kode_dept = "AND pengeluaran.kode_dept = '" . $kode_dept . "' ";
+    }
 
     if ($kode_kategori != "") {
 
-      $kode_kategori = "AND master_barang_pembelian.kode_kategori = '".$kode_kategori."' ";
-
+      $kode_kategori = "AND master_barang_pembelian.kode_kategori = '" . $kode_kategori . "' ";
     }
 
     if ($kode_barang != "") {
 
-      $kode_barang = "AND detail_pengeluaran.kode_barang = '".$kode_barang."' ";
+      $kode_barang = "AND detail_pengeluaran.kode_barang = '" . $kode_barang . "' ";
+    }
 
-    } 
+    if ($kode_cabang != "") {
+
+      $kode_cabang = "AND detail_pengeluaran.kode_cabang = '" . $kode_cabang . "' ";
+    }
 
     $query = "
     SELECT * FROM detail_pengeluaran
 
     INNER JOIN pengeluaran ON 
     pengeluaran.nobukti_pengeluaran = detail_pengeluaran.nobukti_pengeluaran
+    LEFt JOIN cabang ON 
+    detail_pengeluaran.kode_cabang = cabang.kode_cabang
     INNER JOIN departemen ON 
     departemen.kode_dept = pengeluaran.kode_dept
     INNER JOIN master_barang_pembelian ON 
@@ -243,10 +250,11 @@ class Model_laporanlogistik extends CI_Model{
     master_barang_pembelian.kode_kategori = kategori_barang_pembelian.kode_kategori
 
     WHERE pengeluaran.tgl_pengeluaran BETWEEN '$dari' AND '$sampai' AND master_barang_pembelian.status = 'Aktif' AND  master_barang_pembelian.kode_dept = 'GDL'"
-    .$kode_dept
-    .$kode_barang
-    .$kode_kategori
-    ."
+      . $kode_dept
+      . $kode_barang
+      . $kode_kategori
+      . $kode_cabang
+      . "
     ORDER BY 
     pengeluaran.tgl_pengeluaran,
     pengeluaran.nobukti_pengeluaran 
@@ -254,5 +262,4 @@ class Model_laporanlogistik extends CI_Model{
     ";
     return $this->db->query($query);
   }
-
 }

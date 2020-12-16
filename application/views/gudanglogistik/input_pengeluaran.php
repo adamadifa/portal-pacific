@@ -186,7 +186,9 @@
     </div>
   </div>
 </div>
-
+<script>
+  flatpickr(document.getElementById('tgl_pengeluaran'), {});
+</script>
 <script>
   $(function() {
 

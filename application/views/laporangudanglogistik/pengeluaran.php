@@ -31,6 +31,15 @@
                   </div>
 
                   <div class="mb-3">
+                    <select name="cbg" id="cbg" class="form-select show-tick">
+                      <option value="">-- Pilih Cabang --</option>
+                      <?php foreach ($cabang as $c) { ?>
+                        <option value="<?php echo $c->kode_cabang; ?>"><?php echo strtoupper($c->nama_cabang); ?></option>
+                      <?php } ?>
+                    </select>
+                  </div>
+
+                  <div class="mb-3">
                     <select class="form-control selectoption" name="kode_kategori" id="kode_kategori">
                       <option value="">-- SEMUA KATEGORI --</option>
                       <?php foreach ($kategori as $d) { ?>
@@ -115,6 +124,27 @@
     flatpickr(document.getElementById('sampai'), {});
 
     $('.selectoption').selectize({});
+
+  });
+</script>
+
+
+<script>
+  $(function() {
+
+    $("#cbg").hide();
+
+    $('#kode_dept').change(function() {
+
+      var kode_dept = $("#kode_dept").val();
+      if (kode_dept == "GAF") {
+        $("#cbg").show();
+      } else {
+        $("#cbg").hide();
+        $("#cbg").val("");
+      }
+
+    });
 
   });
 </script>
