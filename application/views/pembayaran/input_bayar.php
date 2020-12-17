@@ -199,14 +199,16 @@
       var piutang = $("#piutang").val();
       var totbayar = $("#totalbayar2").val();
       var jumlahbayar = (jmlbayar * 1) + (totbayar * 1);
-
+      var nogiro = $("#nogiro").val();
       if (jumlahbayar > piutang) {
         swal("Oops!", "Jumlah Bayar Lebih Dari Total Piutang !", "warning");
         return false;
       } else if ($(".girotocash").prop('checked') == true) {
         //do something
-        swal("Opps!", "Silahkan Pilih Giro Yang Di Ganti !", "warning");
-        return false;
+        if (nogiro == "") {
+          swal("Opps!", "Silahkan Pilih Giro Yang Di Ganti !", "warning");
+          return false;
+        }
       } else {
         return true;
       }
