@@ -128,4 +128,19 @@ class Komisi extends CI_Controller
     $data['cabang'] = $this->Model_cabang->view_cabang()->result();
     $this->template->load('template/template', 'komisi/laporan/komisi', $data);
   }
+
+  function cetak_komisi()
+  {
+    $cabang = $this->input->post('cabang');
+    $bulan = $this->input->post('bulan');
+    $tahun = $this->input->post('tahun');
+    $data['cabang'] = $cabang;
+    $data['bln'] = $bulan;
+    $data['tahun'] = $tahun;
+    $data['bulan'] = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember");
+    $data['komisi'] = $this->Model_komisi->cetak_komisi($cabang, $bulan, $tahun)->result();
+    //var_dump($data['komisi']);
+    //die;
+    $this->load->view('komisi/laporan/cetak_komisi', $data);
+  }
 }

@@ -172,7 +172,7 @@
 
 <body class="antialiased" style="zoom:90%">
   <div class="page">
-    <header class="navbar navbar-expand-md navbar-dark navbar-fixed-top">
+    <header class="navbar navbar-expand-md navbar-dark ">
       <div class="container-fluid">
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-menu" aria-expanded="false" aria-controls="navbar-menu">
           <span class="navbar-toggler-icon"></span>

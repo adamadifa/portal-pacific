@@ -46,4 +46,43 @@ class Model_komisi extends CI_Model
   {
     return $this->db->get('komisi_kategoripoinqty');
   }
+
+  function cetak_komisi($cabang, $bulan, $tahun)
+  {
+    $dari = $tahun . "-" . $bulan . "-01";
+    $sampai = $tahun . "-" . $bulan . "-31";
+    $query = "SELECT karyawan.id_karyawan,nama_karyawan,
+    targetkategoriA,realisasitargetA,
+    targetkategoriB,realisasitargetB,
+    targetproductFocus,realisasitargetproductfocus
+    FROM karyawan
+    LEFT JOIN (
+    SELECT  id_karyawan,
+    SUM(IF(kategori_komisi='KKQ01',jumlah_target,0)) as targetkategoriA,
+    SUM(IF(kategori_komisi='KKQ02',jumlah_target,0)) as targetkategoriB,
+    SUM(IF(kategori_komisi='KKQ03',jumlah_target,0)) as targetproductfocus
+    FROM
+    komisi_target_qty_detail k_detail
+    INNER JOIN komisi_target ON k_detail.kode_target = komisi_target.kode_target
+    INNER JOIN master_barang ON k_detail.kode_produk = master_barang.kode_produk
+    WHERE bulan ='$bulan' AND tahun='$tahun'
+    GROUP BY id_karyawan) komisi ON (karyawan.id_karyawan = komisi.id_karyawan)
+
+    LEFT JOIN
+    (
+    SELECT penjualan.id_karyawan, 
+    SUM(IF(kategori_komisi='KKQ01',ROUND((jumlah/barang.isipcsdus),2),0)) as realisasitargetA,
+    SUM(IF(kategori_komisi='KKQ02',ROUND((jumlah/barang.isipcsdus),2),0)) as realisasitargetB,
+    SUM(IF(kategori_komisi='KKQ03',ROUND((jumlah/barang.isipcsdus),2),0)) as realisasitargetproductfocus
+    FROM detailpenjualan
+    INNER JOIN penjualan ON detailpenjualan.no_fak_penj = penjualan.no_fak_penj
+    INNER JOIN barang ON detailpenjualan.kode_barang = barang.kode_barang
+    INNER JOIN master_barang ON barang.kode_produk = master_barang.kode_produk
+    WHERE tgltransaksi BETWEEN '$dari' AND '$sampai'
+    GROUP BY penjualan.id_karyawan
+    ) realisasi ON (karyawan.id_karyawan = realisasi.id_karyawan)
+    WHERE kode_cabang ='$cabang' AND nama_karyawan !='-'";
+
+    return $this->db->query($query);
+  }
 }

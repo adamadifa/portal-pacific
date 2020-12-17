@@ -20,7 +20,7 @@
                 <h4 class="card-title">Laporan Komisi</h4>
               </div>
               <div class="card-body">
-                <form class="formValidate" id="formValidate" method="POST" action="<?php echo base_url(); ?>laporanpenjualan/cetak_costratio" target="_blank">
+                <form class="formValidate" id="formValidate" method="POST" action="<?php echo base_url(); ?>komisi/cetak_komisi" target="_blank">
                   <?php if ($cb == 'pusat') { ?>
                     <div class="mb-3">
                       <select name="cabang" id="cabang" class="form-select">
