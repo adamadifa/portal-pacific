@@ -38,12 +38,12 @@
                       <input type="text" value="" id="tgl_retur" name="tgl_retur" class="form-control datepicker date" placeholder="Tanggal Pengeluaran" data-error=".errorTxt19" />
                     </div>
                   </div>
-                  
+
                   <div class="form-group mb-3">
                     <div class="input-icon">
                       <span class="input-icon-addon">
                         <i class="fa fa-list"></i>
-                      </span> 
+                      </span>
                       <select class="form-control show-tick" id="supplier" name="supplier" data-error=".errorTxt1">
                         <option value="">--SUPPLIER--</option>
                         <option value="SP0186">SURYA BUANA CV</option>
@@ -54,16 +54,16 @@
                       </select>
                     </div>
                   </div>
-                  <div class="form-group mb-3">
+                  <div class="form-group mb-3" hidden>
                     <div class="input-icon">
                       <span class="input-icon-addon">
                         <i class="fa fa-list"></i>
-                      </span> 
-                        <select class="form-control show-tick" id="jenis_retur" name="jenis_retur" data-error=".errorTxt1">
-                          <option value="">--JENIS RETUR--</option>
-                          <option value="Retur IN">Retur IN</option>
-                          <option value="Retur OUT">Retur OUT</option>
-                        </select>
+                      </span>
+                      <select class="form-control show-tick" id="jenis_retur" name="jenis_retur" data-error=".errorTxt1">
+                        <!-- <option value="">--JENIS RETUR--</option> -->
+                        <!-- <option value="Retur IN">Retur IN</option> -->
+                        <option value="Retur OUT">Retur OUT</option>
+                      </select>
                     </div>
                   </div>
                 </div>
@@ -93,14 +93,14 @@
                         </div>
                       </div>
                     </div>
-                    
+
                     <div class="col-md-2">
                       <div class="form-group">
                         <div class="input-icon">
                           <span class="input-icon-addon">
                             <i class="fa fa-book"></i>
                           </span>
-                            <input type="text" readonly value="" id="jenisbarang" name="jenisbarang" class="form-control" placeholder="Jenis Barang" data-error=".errorTxt19" />
+                          <input type="text" readonly value="" id="jenisbarang" name="jenisbarang" class="form-control" placeholder="Jenis Barang" data-error=".errorTxt19" />
                         </div>
                       </div>
                     </div>
@@ -110,7 +110,7 @@
                           <span class="input-icon-addon">
                             <i class="fa fa-book"></i>
                           </span>
-                            <input type="text" value="" id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" data-error=".errorTxt19" />
+                          <input type="text" value="" id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" data-error=".errorTxt19" />
                         </div>
                       </div>
                     </div>
@@ -120,7 +120,7 @@
                           <span class="input-icon-addon">
                             <i class="fa fa-balance-scale"></i>
                           </span>
-                            <input type="text" style="text-align:right" value="" id="qty" name="qty" class="form-control" placeholder="QTY" data-error=".errorTxt19" />
+                          <input type="text" style="text-align:right" value="" id="qty" name="qty" class="form-control" placeholder="QTY" data-error=".errorTxt19" />
                         </div>
                       </div>
                     </div>
@@ -189,17 +189,17 @@
 <script>
   $(function() {
 
-   
+
     function formatAngka(angka) {
       if (typeof(angka) != 'string') angka = angka.toString();
       var reg = new RegExp('([0-9]+)([0-9]{3})');
-      while(reg.test(angka)) angka = angka.replace(reg, '$1,$2');
+      while (reg.test(angka)) angka = angka.replace(reg, '$1,$2');
       return angka;
     }
 
     tampiltemp();
 
-    $("#barang").click(function(){
+    $("#barang").click(function() {
 
       $("#tabelbarang").load("<?php echo base_url(); ?>gudangbahan/tabelbarang/");
       $("#databarang").modal("show");
@@ -207,24 +207,24 @@
     });
 
     $.ajax({
-      type    : 'POST',
-      url     : '<?php echo base_url();?>gudangbahan/codeotomatisretur',
-      data    : '',
-      success : function (respond) {
+      type: 'POST',
+      url: '<?php echo base_url(); ?>gudangbahan/codeotomatisretur',
+      data: '',
+      success: function(respond) {
 
         $("#nobukti").val(respond);
 
       }
     });
 
-    function tampiltemp(){
+    function tampiltemp() {
 
       $.ajax({
-        type    : 'POST',
-        url     : '<?php echo base_url();?>gudangbahan/view_detailretur_temp',
-        data    : '',
-        cache   : false,
-        success : function(html){
+        type: 'POST',
+        url: '<?php echo base_url(); ?>gudangbahan/view_detailretur_temp',
+        data: '',
+        cache: false,
+        success: function(html) {
 
           $("#loadreturbarang").html(html);
 
@@ -243,43 +243,42 @@
       });
     }
 
-    $("#tambahbarang").click(function(e){
+    $("#tambahbarang").click(function(e) {
       e.preventDefault();
 
-      var kodebarang    = $('#kodebarang').val();
-      var qty           = $('#qty').val();
-      var kodeakun      = $('#kodeakun').val();
-      var keterangan    = $('#keterangan').val();
-      var kode_edit     = $('#kode_edit').val();
+      var kodebarang = $('#kodebarang').val();
+      var qty = $('#qty').val();
+      var kodeakun = $('#kodeakun').val();
+      var keterangan = $('#keterangan').val();
+      var kode_edit = $('#kode_edit').val();
 
       if (kodebarang == 0) {
 
         swal("Oops!", "Nama Barang Harus Diisi !", "warning");
 
-      }else if(qty == ""){
+      } else if (qty == "") {
 
         swal("Oops!", "Qty Unit Harus Diisi!", "warning");
 
-      }else if(kodeakun == 0){
+      } else if (kodeakun == 0) {
 
         swal("Oops!", "Kode Akun Harus Diisi!", "warning");
 
-      }else{
+      } else {
 
         $.ajax({
-          type    : 'POST',
-          url     : '<?php echo base_url();?>gudangbahan/inputretur_temp',
-          data    :
-          {
-            kodebarang      : kodebarang,
-            kode_edit       : kode_edit,
-            qty             : qty,
-            keterangan      : keterangan
+          type: 'POST',
+          url: '<?php echo base_url(); ?>gudangbahan/inputretur_temp',
+          data: {
+            kodebarang: kodebarang,
+            kode_edit: kode_edit,
+            qty: qty,
+            keterangan: keterangan
           },
-          cache   : false,
-          success : function(respond){
+          cache: false,
+          success: function(respond) {
 
-            if(respond == 1){
+            if (respond == 1) {
               swal("Oops!", "Data Sudah Di Inputkan!", "warning");
             }
 
@@ -293,22 +292,22 @@
       }
     });
 
-    $("#simpan").click(function(){
+    $("#simpan").click(function() {
 
-      var nobukti          = $('#nobukti').val();
-      var tgl_retur    = $('#tgl_retur').val();
+      var nobukti = $('#nobukti').val();
+      var tgl_retur = $('#tgl_retur').val();
 
       if (nobukti == 0) {
 
         swal("Oops!", "No Bukti Harus Diisi!", "warning");
         return false;
 
-      }else if(tgl_retur == 0){
+      } else if (tgl_retur == 0) {
 
         swal("Oops!", "Tanggal Harus Diisi!", "warning");
         return false;
 
-      }else{
+      } else {
 
         return true;
 

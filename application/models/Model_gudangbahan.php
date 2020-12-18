@@ -1,103 +1,158 @@
 <?php
 
-class Model_gudangbahan extends CI_Model{
+class Model_gudangbahan extends CI_Model
+{
 
-  function hapuspengeluaran(){
+  function hapuspengeluaran()
+  {
 
-    $nobukti    = str_replace(".","/",$this->uri->segment(3));
+    $nobukti    = str_replace(".", "/", $this->uri->segment(3));
     $this->db->query("DELETE FROM pengeluaran_gb WHERE nobukti_pengeluaran = '$nobukti' ");
     $this->db->query("DELETE FROM detail_pengeluaran_gb WHERE nobukti_pengeluaran = '$nobukti' ");
-
   }
-  
-  function getKategori(){
+
+  function getKategori()
+  {
 
     return $this->db->get('kategori_barang_pembelian');
   }
 
 
-  function listproduk(){
+  function listproduk()
+  {
 
     return $this->db->get('master_barang_pembelian');
   }
 
-  function ceksaldoretur($bulan,$tahun){
+  function ceksaldoretur($bulan, $tahun)
+  {
 
-    if($bulan == 1){
+    if ($bulan == 1) {
       $bulan = 12;
       $tahun = $tahun - 1;
-    }else{
+    } else {
       $bulan = $bulan - 1;
       $tahun = $tahun;
     }
 
-    return $this->db->get_where('saldoawal_gb_retur',array('bulan'=>$bulan,'tahun'=>$tahun));
-
+    return $this->db->get_where('saldoawal_gb_retur', array('bulan' => $bulan, 'tahun' => $tahun));
   }
 
-  function ceksaldoallretur(){
+  function ceksaldoallretur()
+  {
 
     return $this->db->get('saldoawal_gb_retur');
   }
 
-  function ceksaldoSkrgretur($bulan,$tahun){
+  function ceksaldoSkrgretur($bulan, $tahun)
+  {
 
-    return $this->db->get_where('saldoawal_gb_retur',array('bulan'=>$bulan,'tahun'=>$tahun));
+    return $this->db->get_where('saldoawal_gb_retur', array('bulan' => $bulan, 'tahun' => $tahun));
   }
 
-  function ceksaldo($bulan,$tahun){
+  function ceksaldo($bulan, $tahun)
+  {
 
-    if($bulan == 1){
+    if ($bulan == 1) {
       $bulan = 12;
       $tahun = $tahun - 1;
-    }else{
+    } else {
       $bulan = $bulan - 1;
       $tahun = $tahun;
     }
 
-    return $this->db->get_where('saldoawal_gb',array('bulan'=>$bulan,'tahun'=>$tahun));
-
+    return $this->db->get_where('saldoawal_gb', array('bulan' => $bulan, 'tahun' => $tahun));
   }
 
-  function ceksaldoall(){
+  function ceksaldoall()
+  {
 
     return $this->db->get('saldoawal_gb');
   }
 
-  function ceksaldoSkrg($bulan,$tahun){
+  function ceksaldoSkrg($bulan, $tahun)
+  {
 
-    return $this->db->get_where('saldoawal_gb',array('bulan'=>$bulan,'tahun'=>$tahun));
+    return $this->db->get_where('saldoawal_gb', array('bulan' => $bulan, 'tahun' => $tahun));
   }
 
-  function cekopname($bulan,$tahun){
+  function cekopname($bulan, $tahun)
+  {
 
-    if($bulan == 1){
+    if ($bulan == 1) {
       $bulan = 12;
       $tahun = $tahun - 1;
-    }else{
+    } else {
       $bulan = $bulan - 1;
       $tahun = $tahun;
     }
 
-    return $this->db->get_where('opname_gb',array('bulan'=>$bulan,'tahun'=>$tahun,));
-
+    return $this->db->get_where('opname_gb', array('bulan' => $bulan, 'tahun' => $tahun,));
   }
 
-  function cekopnameall(){
+  function cekopnameall()
+  {
 
     return $this->db->get('opname_gb');
   }
-  function cekopnameSkrg($bulan,$tahun){
+  function cekopnameSkrg($bulan, $tahun)
+  {
 
-    return $this->db->get_where('opname_gb',array('bulan'=>$bulan,'tahun'=>$tahun));
+    return $this->db->get_where('opname_gb', array('bulan' => $bulan, 'tahun' => $tahun));
   }
 
-  function getDetailopname($bulan,$tahun){
+  public function getDataPengeluaranR($rowno, $rowperpage, $nobukti = "", $tgl_pengeluaran = "")
+  {
 
-    if($bulan == 1){
+    $this->db->select('*');
+    $this->db->from('pengeluaran_gp');
+    $this->db->order_by('tgl_pengeluaran,nobukti_pengeluaran', 'DESC');
+    $this->db->where('kode_dept', 'Retur Out');
+    $this->db->where('nobukti_pengeluaran NOT IN (SELECT nobukti_retur FROM retur_gb)');
+
+    if ($nobukti != '') {
+      $this->db->like('nobukti_pengeluaran', $nobukti);
+    }
+
+    if ($tgl_pengeluaran != '') {
+      $this->db->where('tgl_pengeluaran', $tgl_pengeluaran);
+    }
+
+
+    $this->db->limit($rowperpage, $rowno);
+    $query = $this->db->get();
+    return $query->result_array();
+  }
+
+  public function getrecordPengeluaranCountR($nobukti = "", $tgl_pengeluaran = "")
+  {
+
+    $this->db->select('count(*) as allcount');
+    $this->db->from('pengeluaran_gp');
+    $this->db->order_by('tgl_pengeluaran', 'desc');
+    $this->db->where('kode_dept', 'Retur Out');
+
+    if ($nobukti != '') {
+      $this->db->like('nobukti_pengeluaran', $nobukti);
+    }
+
+    if ($tgl_pengeluaran != '') {
+      $this->db->where('tgl_pengeluaran', $tgl_pengeluaran);
+    }
+
+    $query  = $this->db->get();
+    $result = $query->result_array();
+    return $result[0]['allcount'];
+  }
+
+
+  function getDetailopname($bulan, $tahun)
+  {
+
+    if ($bulan == 1) {
       $bulan = 12;
       $tahun = $tahun - 1;
-    }else{
+    } else {
       $bulan = $bulan - 1;
       $tahun = $tahun;
     }
@@ -171,15 +226,15 @@ class Model_gudangbahan extends CI_Model{
     ORDER BY master_barang_pembelian.kode_barang ASC
     ";
     return $this->db->query($query);
-
   }
-  
-  function getdetailsaldo($bulan,$tahun){
 
-    if($bulan == 1){
+  function getdetailsaldo($bulan, $tahun)
+  {
+
+    if ($bulan == 1) {
       $bulan = 12;
       $tahun = $tahun - 1;
-    }else{
+    } else {
       $bulan = $bulan - 1;
       $tahun = $tahun;
     }
@@ -251,15 +306,15 @@ class Model_gudangbahan extends CI_Model{
     ORDER BY master_barang_pembelian.kode_barang ASC
     ";
     return $this->db->query($query);
-
   }
-  
-  function getdetailsaldoretur($bulan,$tahun){
 
-    if($bulan == 1){
+  function getdetailsaldoretur($bulan, $tahun)
+  {
+
+    if ($bulan == 1) {
       $bulan = 12;
       $tahun = $tahun - 1;
-    }else{
+    } else {
       $bulan = $bulan - 1;
       $tahun = $tahun;
     }
@@ -297,10 +352,10 @@ class Model_gudangbahan extends CI_Model{
     ORDER BY master_barang_pembelian.kode_barang ASC
     ";
     return $this->db->query($query);
-
   }
 
-  function insert_opname(){
+  function insert_opname()
+  {
 
     $kode_opname_gb   = $this->input->post('kode_opname_gb');
     $tanggal          = $this->input->post('tanggal');
@@ -315,49 +370,51 @@ class Model_gudangbahan extends CI_Model{
       'tahun'             => $tahun,
     );
 
-    $cek            = $this->db->get_where('opname_gb',array('kode_opname_gb'=>$kode_opname_gb))->num_rows();
-    $cekbulan       = $this->db->get_where('opname_gb',array('bulan'=>$bulan,'tahun'=>$tahun))->num_rows();
-    if(empty($cek) && empty($cekbulan)) {
+    $cek            = $this->db->get_where('opname_gb', array('kode_opname_gb' => $kode_opname_gb))->num_rows();
+    $cekbulan       = $this->db->get_where('opname_gb', array('bulan' => $bulan, 'tahun' => $tahun))->num_rows();
+    if (empty($cek) && empty($cekbulan)) {
 
-      $simpansaldo   = $this->db->insert('opname_gb',$data);
-      if($simpansaldo){
-        for($i=1; $i<=$jumproduk; $i++){
-          $kode_barang     = $this->input->post('kode_barang'.$i);
-          $qty_berat       = $this->input->post('qty_berat'.$i);
-          $qty_unit        = $this->input->post('qty_unit'.$i);
+      $simpansaldo   = $this->db->insert('opname_gb', $data);
+      if ($simpansaldo) {
+        for ($i = 1; $i <= $jumproduk; $i++) {
+          $kode_barang     = $this->input->post('kode_barang' . $i);
+          $qty_berat       = $this->input->post('qty_berat' . $i);
+          $qty_unit        = $this->input->post('qty_unit' . $i);
 
-          $detail_saldo   = array (
+          $detail_saldo   = array(
             'kode_opname_gb'    => $kode_opname_gb,
             'kode_barang'       => $kode_barang,
             'qty_berat'         => $qty_berat,
             'qty_unit'          => $qty_unit
           );
-          $this->db->insert('opname_gb_detail',$detail_saldo);
-
+          $this->db->insert('opname_gb_detail', $detail_saldo);
         }
-        $this->session->set_flashdata('msg',
+        $this->session->set_flashdata(
+          'msg',
           '<div class="alert bg-green alert-dismissible" role="alert">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <i class="material-icons" style="float:left; margin-right:10px">check</i> Data Berhasil Disimpan !
-          </div>');
+          </div>'
+        );
         redirect('gudangbahan/opname');
-
       }
-
-    }else{
-      $this->session->set_flashdata('msg',
+    } else {
+      $this->session->set_flashdata(
+        'msg',
         '<div class="alert bg-red alert-dismissible" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <i class="material-icons" style="float:left; margin-right:10px">check</i> Data Sudah Ada !
-        </div>');
+        </div>'
+      );
       redirect('gudangbahan/inputopname');
     }
   }
 
 
-  function insert_saldoawal(){
+  function insert_saldoawal()
+  {
 
-    $kode_saldoawal_gb= $this->input->post('kode_saldoawal');
+    $kode_saldoawal_gb = $this->input->post('kode_saldoawal');
     $tanggal          = $this->input->post('tanggal');
     $bulan            = $this->input->post('bulan');
     $tahun            = $this->input->post('tahun');
@@ -370,48 +427,50 @@ class Model_gudangbahan extends CI_Model{
       'tahun'             => $tahun,
     );
 
-    $cek            = $this->db->get_where('saldoawal_gb',array('kode_saldoawal_gb'=>$kode_saldoawal_gb))->num_rows();
-    $cekbulan       = $this->db->get_where('saldoawal_gb',array('bulan'=>$bulan,'tahun'=>$tahun))->num_rows();
-    if(empty($cek) && empty($cekbulan)) {
+    $cek            = $this->db->get_where('saldoawal_gb', array('kode_saldoawal_gb' => $kode_saldoawal_gb))->num_rows();
+    $cekbulan       = $this->db->get_where('saldoawal_gb', array('bulan' => $bulan, 'tahun' => $tahun))->num_rows();
+    if (empty($cek) && empty($cekbulan)) {
 
-      $simpansaldo   = $this->db->insert('saldoawal_gb',$data);
-      if($simpansaldo){
-        for($i=1; $i<=$jumproduk; $i++){
-          $kode_barang     = $this->input->post('kode_barang'.$i);
-          $qty_berat       = $this->input->post('qty_berat'.$i);
-          $qty_unit        = $this->input->post('qty_unit'.$i);
+      $simpansaldo   = $this->db->insert('saldoawal_gb', $data);
+      if ($simpansaldo) {
+        for ($i = 1; $i <= $jumproduk; $i++) {
+          $kode_barang     = $this->input->post('kode_barang' . $i);
+          $qty_berat       = $this->input->post('qty_berat' . $i);
+          $qty_unit        = $this->input->post('qty_unit' . $i);
 
-          $detail_saldo   = array (
+          $detail_saldo   = array(
             'kode_saldoawal_gb' => $kode_saldoawal_gb,
             'kode_barang'       => $kode_barang,
             'qty_berat'         => $qty_berat,
             'qty_unit'          => $qty_unit
           );
-          $this->db->insert('saldoawal_gb_detail',$detail_saldo);
-
+          $this->db->insert('saldoawal_gb_detail', $detail_saldo);
         }
-        $this->session->set_flashdata('msg',
+        $this->session->set_flashdata(
+          'msg',
           '<div class="alert bg-green alert-dismissible" role="alert">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <i class="material-icons" style="float:left; margin-right:10px">check</i> Data Berhasil Disimpan !
-          </div>');
+          </div>'
+        );
         redirect('gudangbahan/saldoawal');
-
       }
-
-    }else{
-      $this->session->set_flashdata('msg',
+    } else {
+      $this->session->set_flashdata(
+        'msg',
         '<div class="alert bg-red alert-dismissible" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <i class="material-icons" style="float:left; margin-right:10px">check</i> Data Sudah Ada !
-        </div>');
+        </div>'
+      );
       redirect('gudangbahan/inputsaldoawal');
     }
   }
 
-  function insert_saldoawal_retur(){
+  function insert_saldoawal_retur()
+  {
 
-    $kode_saldoawal_gb= $this->input->post('kode_saldoawal');
+    $kode_saldoawal_gb = $this->input->post('kode_saldoawal');
     $tanggal          = $this->input->post('tanggal');
     $bulan            = $this->input->post('bulan');
     $tahun            = $this->input->post('tahun');
@@ -424,219 +483,237 @@ class Model_gudangbahan extends CI_Model{
       'tahun'             => $tahun,
     );
 
-    $cek            = $this->db->get_where('saldoawal_gb_retur',array('kode_saldoawal_gb'=>$kode_saldoawal_gb))->num_rows();
-    $cekbulan       = $this->db->get_where('saldoawal_gb_retur',array('bulan'=>$bulan,'tahun'=>$tahun))->num_rows();
-    if(empty($cek) && empty($cekbulan)) {
+    $cek            = $this->db->get_where('saldoawal_gb_retur', array('kode_saldoawal_gb' => $kode_saldoawal_gb))->num_rows();
+    $cekbulan       = $this->db->get_where('saldoawal_gb_retur', array('bulan' => $bulan, 'tahun' => $tahun))->num_rows();
+    if (empty($cek) && empty($cekbulan)) {
 
-      $simpansaldo   = $this->db->insert('saldoawal_gb_retur',$data);
-      if($simpansaldo){
-        for($i=1; $i<=$jumproduk; $i++){
-          $kode_barang      = $this->input->post('kode_barang'.$i);
-          $qty              = $this->input->post('qty'.$i);
+      $simpansaldo   = $this->db->insert('saldoawal_gb_retur', $data);
+      if ($simpansaldo) {
+        for ($i = 1; $i <= $jumproduk; $i++) {
+          $kode_barang      = $this->input->post('kode_barang' . $i);
+          $qty              = $this->input->post('qty' . $i);
 
-          $detail_saldo   = array (
+          $detail_saldo   = array(
             'kode_saldoawal_gb' => $kode_saldoawal_gb,
             'kode_barang'       => $kode_barang,
             'qty_berat'         => $qty
           );
-          $this->db->insert('saldoawal_gb_detail_retur',$detail_saldo);
-
+          $this->db->insert('saldoawal_gb_detail_retur', $detail_saldo);
         }
-        $this->session->set_flashdata('msg',
+        $this->session->set_flashdata(
+          'msg',
           '<div class="alert bg-green alert-dismissible" role="alert">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <i class="material-icons" style="float:left; margin-right:10px">check</i> Data Berhasil Disimpan !
-          </div>');
+          </div>'
+        );
         redirect('gudangbahan/saldoawal_retur');
-
       }
-
-    }else{
-      $this->session->set_flashdata('msg',
+    } else {
+      $this->session->set_flashdata(
+        'msg',
         '<div class="alert bg-red alert-dismissible" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <i class="material-icons" style="float:left; margin-right:10px">check</i> Data Sudah Ada !
-        </div>');
+        </div>'
+      );
       redirect('gudangbahan/inputsaldoawal');
     }
   }
 
-  function hapuspemasukan(){
+  function hapuspemasukan()
+  {
 
-    $nobukti    = str_replace(".","/",$this->uri->segment(3));
+    $nobukti    = str_replace(".", "/", $this->uri->segment(3));
     $this->db->query("DELETE FROM pemasukan_gb WHERE nobukti_pemasukan = '$nobukti' ");
     $this->db->query("DELETE FROM detail_pemasukan_gb WHERE nobukti_pemasukan = '$nobukti' ");
-
   }
 
-  function hapusretur(){
+  function hapusretur()
+  {
 
-    $nobukti    = str_replace(".","/",$this->uri->segment(3));
+    $nobukti    = str_replace(".", "/", $this->uri->segment(3));
     $this->db->query("DELETE FROM retur_gb WHERE nobukti_retur = '$nobukti' ");
     $this->db->query("DELETE FROM detail_retur_gb WHERE nobukti_retur = '$nobukti' ");
-
   }
 
-  function hapussaldoawal(){
+  function hapussaldoawal()
+  {
 
-    $nobukti    = str_replace(".","/",$this->uri->segment(3));
+    $nobukti    = str_replace(".", "/", $this->uri->segment(3));
     $this->db->query("DELETE FROM saldoawal_gb WHERE kode_saldoawal_gb = '$nobukti' ");
     $this->db->query("DELETE FROM saldoawal_gb_detail WHERE kode_saldoawal_gb = '$nobukti' ");
-
   }
 
 
-  function hapussaldoawal_retur(){
+  function hapussaldoawal_retur()
+  {
 
-    $nobukti    = str_replace(".","/",$this->uri->segment(3));
+    $nobukti    = str_replace(".", "/", $this->uri->segment(3));
     $this->db->query("DELETE FROM saldoawal_gb_retur WHERE kode_saldoawal_gb = '$nobukti' ");
     $this->db->query("DELETE FROM saldoawal_gb_detail_retur WHERE kode_saldoawal_gb = '$nobukti' ");
-
   }
 
-  function hapusopname(){
+  function hapusopname()
+  {
 
-    $nobukti    = str_replace(".","/",$this->uri->segment(3));
+    $nobukti    = str_replace(".", "/", $this->uri->segment(3));
     $this->db->query("DELETE FROM opname_gb WHERE kode_opname_gb = '$nobukti' ");
     $this->db->query("DELETE FROM opname_gb_detail WHERE kode_opname_gb = '$nobukti' ");
-
   }
 
-  function getDetailPemasukan(){
+  function getDetailPemasukan()
+  {
 
     $nobukti            = $this->input->post('nobukti');
-    $this->db->join('master_barang_pembelian','detail_pemasukan_gb.kode_barang = master_barang_pembelian.kode_barang');
-    return $this->db->get_where('detail_pemasukan_gb',array('detail_pemasukan_gb.nobukti_pemasukan'=>$nobukti));
+    $this->db->join('master_barang_pembelian', 'detail_pemasukan_gb.kode_barang = master_barang_pembelian.kode_barang');
+    return $this->db->get_where('detail_pemasukan_gb', array('detail_pemasukan_gb.nobukti_pemasukan' => $nobukti));
   }
 
-  function getDetailRetur(){
+  function getDetailRetur()
+  {
 
     $nobukti            = $this->input->post('nobukti');
-    $this->db->join('master_barang_pembelian','detail_retur_gb.kode_barang = master_barang_pembelian.kode_barang');
-    return $this->db->get_where('detail_retur_gb',array('detail_retur_gb.nobukti_retur'=>$nobukti));
+    $this->db->join('master_barang_pembelian', 'detail_retur_gb.kode_barang = master_barang_pembelian.kode_barang');
+    return $this->db->get_where('detail_retur_gb', array('detail_retur_gb.nobukti_retur' => $nobukti));
   }
 
-  function getDetailsaldoawalRetur(){
+  function getDetailsaldoawalRetur()
+  {
 
     $kode_saldoawal_gb            = $this->input->post('kode_saldoawal_gb');
-    $this->db->join('master_barang_pembelian','saldoawal_gb_detail_retur.kode_barang = master_barang_pembelian.kode_barang');
-    return $this->db->get_where('saldoawal_gb_detail_retur',array('saldoawal_gb_detail_retur.kode_saldoawal_gb'=>$kode_saldoawal_gb));
+    $this->db->join('master_barang_pembelian', 'saldoawal_gb_detail_retur.kode_barang = master_barang_pembelian.kode_barang');
+    return $this->db->get_where('saldoawal_gb_detail_retur', array('saldoawal_gb_detail_retur.kode_saldoawal_gb' => $kode_saldoawal_gb));
   }
 
-  function getDetailsaldoawal(){
+  function getDetailsaldoawal()
+  {
 
     $kode_saldoawal_gb            = $this->input->post('kode_saldoawal_gb');
-    $this->db->join('master_barang_pembelian','saldoawal_gb_detail.kode_barang = master_barang_pembelian.kode_barang');
-    return $this->db->get_where('saldoawal_gb_detail',array('saldoawal_gb_detail.kode_saldoawal_gb'=>$kode_saldoawal_gb));
+    $this->db->join('master_barang_pembelian', 'saldoawal_gb_detail.kode_barang = master_barang_pembelian.kode_barang');
+    return $this->db->get_where('saldoawal_gb_detail', array('saldoawal_gb_detail.kode_saldoawal_gb' => $kode_saldoawal_gb));
   }
 
-  function geteditpemasukan(){
+  function geteditpemasukan()
+  {
 
-    $nobukti    = str_replace(".","/",$this->uri->segment(3));
-    
+    $nobukti    = str_replace(".", "/", $this->uri->segment(3));
+
     // $this->db->join('detail_pemasukan_gb','pemasukan_gb.nobukti_pemasukan = detail_pemasukan_gb.nobukti_pemasukan');
-    return $this->db->get_where('pemasukan_gb',array('pemasukan_gb.nobukti_pemasukan'=>$nobukti));
+    return $this->db->get_where('pemasukan_gb', array('pemasukan_gb.nobukti_pemasukan' => $nobukti));
   }
 
 
-  function geteditpengeluaran(){
+  function geteditpengeluaran()
+  {
 
-    $nobukti    = str_replace(".","/",$this->uri->segment(3));
-    
+    $nobukti    = str_replace(".", "/", $this->uri->segment(3));
+
     // $this->db->join('detail_pemasukan_gb','pemasukan_gb.nobukti_pemasukan = detail_pemasukan_gb.nobukti_pemasukan');
-    return $this->db->get_where('pengeluaran_gb',array('pengeluaran_gb.nobukti_pengeluaran'=>$nobukti));
+    return $this->db->get_where('pengeluaran_gb', array('pengeluaran_gb.nobukti_pengeluaran' => $nobukti));
   }
 
 
-  function getDetailopnamestok(){
+  function getDetailopnamestok()
+  {
 
     $kode_opname_gb            = $this->input->post('kode_opname_gb');
-    $this->db->join('master_barang_pembelian','opname_gb_detail.kode_barang = master_barang_pembelian.kode_barang');
-    return $this->db->get_where('opname_gb_detail',array('opname_gb_detail.kode_opname_gb'=>$kode_opname_gb));
+    $this->db->join('master_barang_pembelian', 'opname_gb_detail.kode_barang = master_barang_pembelian.kode_barang');
+    return $this->db->get_where('opname_gb_detail', array('opname_gb_detail.kode_opname_gb' => $kode_opname_gb));
   }
 
-  function getDept(){
+  function getDept()
+  {
 
     return $this->db->get_where('departemen');
   }
 
-  function getSaldoawal(){
+  function getSaldoawal()
+  {
 
     $kode_saldoawal_gb            = $this->input->post('kode_saldoawal_gb');
-    return $this->db->get_where('saldoawal_gb',array('kode_saldoawal_gb'=>$kode_saldoawal_gb));
+    return $this->db->get_where('saldoawal_gb', array('kode_saldoawal_gb' => $kode_saldoawal_gb));
   }
 
-  function getSaldoawalRetur(){
+  function getSaldoawalRetur()
+  {
 
     $kode_saldoawal_gb            = $this->input->post('kode_saldoawal_gb');
-    return $this->db->get_where('saldoawal_gb_retur',array('kode_saldoawal_gb'=>$kode_saldoawal_gb));
+    return $this->db->get_where('saldoawal_gb_retur', array('kode_saldoawal_gb' => $kode_saldoawal_gb));
   }
 
-  function getOpname(){
+  function getOpname()
+  {
 
     $kode_opname_gb            = $this->input->post('kode_opname_gb');
-    return $this->db->get_where('opname_gb',array('kode_opname_gb'=>$kode_opname_gb));
+    return $this->db->get_where('opname_gb', array('kode_opname_gb' => $kode_opname_gb));
   }
 
-  function getPemasukan(){
+  function getPemasukan()
+  {
 
     $nobukti            = $this->input->post('nobukti');
-    return $this->db->get_where('pemasukan_gb',array('nobukti_pemasukan'=>$nobukti));
+    return $this->db->get_where('pemasukan_gb', array('nobukti_pemasukan' => $nobukti));
   }
 
-  function getRetur(){
+  function getRetur()
+  {
 
     $nobukti            = $this->input->post('nobukti');
-    $this->db->join('supplier','retur_gb.supplier = supplier.kode_supplier');
-    return $this->db->get_where('retur_gb',array('nobukti_retur'=>$nobukti));
+    $this->db->join('supplier', 'retur_gb.supplier = supplier.kode_supplier');
+    return $this->db->get_where('retur_gb', array('nobukti_retur' => $nobukti));
   }
 
-  function getDetailPengeluaran(){
+  function getDetailPengeluaran()
+  {
 
     $nobukti            = $this->input->post('nobukti');
-    $this->db->join('master_barang_pembelian','detail_pengeluaran_gb.kode_barang = master_barang_pembelian.kode_barang');
-    return $this->db->get_where('detail_pengeluaran_gb',array('detail_pengeluaran_gb.nobukti_pengeluaran'=>$nobukti));
+    $this->db->join('master_barang_pembelian', 'detail_pengeluaran_gb.kode_barang = master_barang_pembelian.kode_barang');
+    return $this->db->get_where('detail_pengeluaran_gb', array('detail_pengeluaran_gb.nobukti_pengeluaran' => $nobukti));
   }
 
-  function getPengeluaran(){
+  function getPengeluaran()
+  {
 
     $nobukti            = $this->input->post('nobukti');
-    return $this->db->get_where('pengeluaran_gb',array('nobukti_pengeluaran'=>$nobukti));
+    return $this->db->get_where('pengeluaran_gb', array('nobukti_pengeluaran' => $nobukti));
   }
 
-  public function getrecordPembelianCount($nobukti="",$tgl_pembelian="",$departemen="",$ppn="",$ln="",$supplier=""){
+  public function getrecordPembelianCount($nobukti = "", $tgl_pembelian = "", $departemen = "", $ppn = "", $ln = "", $supplier = "")
+  {
 
     $this->db->select('count(*) as allcount');
     $this->db->from('pembelian');
-    $this->db->join('supplier','pembelian.kode_supplier = supplier.kode_supplier');
-    $this->db->where('pembelian.kode_dept','GDB');
+    $this->db->join('supplier', 'pembelian.kode_supplier = supplier.kode_supplier');
+    $this->db->where('pembelian.kode_dept', 'GDB');
     $this->db->where('nobukti_pembelian NOT IN (SELECT nobukti_pemasukan FROM pemasukan_gb)');
-    $this->db->where('tgl_pembelian>=','2020-04-01');
-    if($nobukti != ''){
+    $this->db->where('tgl_pembelian>=', '2020-04-01');
+    if ($nobukti != '') {
       $this->db->like('nobukti_pembelian', $nobukti);
     }
-    if($tgl_pembelian != ''){
+    if ($tgl_pembelian != '') {
       $this->db->where('tgl_pembelian', $tgl_pembelian);
     }
 
-    if($departemen != ''){
+    if ($departemen != '') {
       $this->db->where('pembelian.kode_dept', $departemen);
     }
 
-    if($ppn != ''){
+    if ($ppn != '') {
       $this->db->where('pembelian.ppn', $ppn);
     }
 
-    if($supplier != ''){
+    if ($supplier != '') {
       $this->db->where('pembelian.kode_supplier', $supplier);
     }
-    $this->db->order_by('tgl_pembelian','desc');
+    $this->db->order_by('tgl_pembelian', 'desc');
     $query  = $this->db->get();
     $result = $query->result_array();
     return $result[0]['allcount'];
   }
 
-  public function getDataPembelian($rowno,$rowperpage,$nobukti="",$tgl_pembelian="",$departemen="",$ppn="",$ln="",$supplier=""){
+  public function getDataPembelian($rowno, $rowperpage, $nobukti = "", $tgl_pembelian = "", $departemen = "", $ppn = "", $ln = "", $supplier = "")
+  {
 
     $this->db->select('nobukti_pembelian,tgl_pembelian,tgl_jatuhtempo,ppn,no_fak_pajak,pembelian.kode_supplier,nama_supplier,pembelian.kode_dept,nama_dept,jenistransaksi,ref_tunai,
 
@@ -647,28 +724,28 @@ class Model_gudangbahan extends CI_Model{
       WHERE nobukti_pembelian = pembelian.nobukti_pembelian
       GROUP BY nobukti_pembelian) as jmlbayar');
     $this->db->from('pembelian');
-    $this->db->join('departemen','pembelian.kode_dept = departemen.kode_dept');
-    $this->db->join('supplier','pembelian.kode_supplier = supplier.kode_supplier');
-    $this->db->where('pembelian.kode_dept','GDB');
+    $this->db->join('departemen', 'pembelian.kode_dept = departemen.kode_dept');
+    $this->db->join('supplier', 'pembelian.kode_supplier = supplier.kode_supplier');
+    $this->db->where('pembelian.kode_dept', 'GDB');
     $this->db->where('nobukti_pembelian NOT IN (SELECT nobukti_pemasukan FROM pemasukan_gb)');
-    $this->db->where('tgl_pembelian>=','2020-04-01');
-    if($nobukti != ''){
+    $this->db->where('tgl_pembelian>=', '2020-04-01');
+    if ($nobukti != '') {
       $this->db->like('nobukti_pembelian', $nobukti);
     }
-    if($tgl_pembelian != ''){
+    if ($tgl_pembelian != '') {
       $this->db->where('tgl_pembelian', $tgl_pembelian);
     }
-    if($departemen != ''){
+    if ($departemen != '') {
       $this->db->where('pembelian.kode_dept', $departemen);
     }
-    if($ppn != ''){
+    if ($ppn != '') {
       $this->db->where('pembelian.ppn', $ppn);
     }
 
-    if($supplier != ''){
+    if ($supplier != '') {
       $this->db->where('pembelian.kode_supplier', $supplier);
     }
-    $this->db->order_by('tgl_pembelian,nobukti_pembelian','DESC');
+    $this->db->order_by('tgl_pembelian,nobukti_pembelian', 'DESC');
 
     $this->db->limit($rowperpage, $rowno);
     $query = $this->db->get();
@@ -676,66 +753,74 @@ class Model_gudangbahan extends CI_Model{
   }
 
 
-  function getPembelian($nobukti){
+  function getPembelian($nobukti)
+  {
 
-    $this->db->join('supplier','pembelian.kode_supplier = supplier.kode_supplier');
-    return $this->db->get_where('pembelian',array('nobukti_pembelian'=>$nobukti));
+    $this->db->join('supplier', 'pembelian.kode_supplier = supplier.kode_supplier');
+    return $this->db->get_where('pembelian', array('nobukti_pembelian' => $nobukti));
   }
 
 
-  function getPemohon(){
+  function getPemohon()
+  {
 
-    return $this->db->get_where('departemen',array('status_pengajuan'=>1));
+    return $this->db->get_where('departemen', array('status_pengajuan' => 1));
   }
 
-  function listSupplier(){
+  function listSupplier()
+  {
 
     return $this->db->get('supplier');
   }
 
-  function getPembeliantemp($departemen){
+  function getPembeliantemp($departemen)
+  {
 
     $id_user = $this->session->userdata('id_user');
-    $this->db->join('master_barang_pembelian','detailpembelian_temp.kode_barang = master_barang_pembelian.kode_barang');
-    return $this->db->get_where('detailpembelian_temp',array('id_admin'=>$id_user,'detailpembelian_temp.kode_dept'=>$departemen));
+    $this->db->join('master_barang_pembelian', 'detailpembelian_temp.kode_barang = master_barang_pembelian.kode_barang');
+    return $this->db->get_where('detailpembelian_temp', array('id_admin' => $id_user, 'detailpembelian_temp.kode_dept' => $departemen));
   }
 
-  function listKontraBonPMB($nobukti){
+  function listKontraBonPMB($nobukti)
+  {
 
     $this->db->select('detail_kontrabon.no_kontrabon,jmlbayar
      ,tgl_kontrabon,kategori,tglbayar');
     $this->db->from('detail_kontrabon');
-    $this->db->join('kontrabon','detail_kontrabon.no_kontrabon = kontrabon.no_kontrabon');
-    $this->db->join('historibayar_pembelian','historibayar_pembelian.no_kontrabon = detail_kontrabon.no_kontrabon','left');
-    $this->db->where('nobukti_pembelian',$nobukti);
-    $this->db->order_by('tgl_kontrabon','DESC');
+    $this->db->join('kontrabon', 'detail_kontrabon.no_kontrabon = kontrabon.no_kontrabon');
+    $this->db->join('historibayar_pembelian', 'historibayar_pembelian.no_kontrabon = detail_kontrabon.no_kontrabon', 'left');
+    $this->db->where('nobukti_pembelian', $nobukti);
+    $this->db->order_by('tgl_kontrabon', 'DESC');
     return $this->db->get();
   }
 
-  function getDetailPnjPembelian($nobukti){
+  function getDetailPnjPembelian($nobukti)
+  {
 
-    return $this->db->get_where('detail_pembelian',array('detail_pembelian.nobukti_pembelian'=>$nobukti,'status'=>'PNJ'));
+    return $this->db->get_where('detail_pembelian', array('detail_pembelian.nobukti_pembelian' => $nobukti, 'status' => 'PNJ'));
   }
 
-  function getDetailPembelian($nobukti){
+  function getDetailPembelian($nobukti)
+  {
 
-    $this->db->join('master_barang_pembelian','detail_pembelian.kode_barang = master_barang_pembelian.kode_barang');
-    $this->db->join('coa','detail_pembelian.kode_akun = coa.kode_akun');
-    return $this->db->get_where('detail_pembelian',array('detail_pembelian.nobukti_pembelian'=>$nobukti,'status'=>'PMB'));
+    $this->db->join('master_barang_pembelian', 'detail_pembelian.kode_barang = master_barang_pembelian.kode_barang');
+    $this->db->join('coa', 'detail_pembelian.kode_akun = coa.kode_akun');
+    return $this->db->get_where('detail_pembelian', array('detail_pembelian.nobukti_pembelian' => $nobukti, 'status' => 'PMB'));
   }
 
 
-  public function getDataopname($rowno,$rowperpage,$kode_opname_gb="",$tanggal=""){
+  public function getDataopname($rowno, $rowperpage, $kode_opname_gb = "", $tanggal = "")
+  {
 
     $this->db->select('*');
     $this->db->from('opname_gb');
-    $this->db->order_by('tanggal','DESC');
+    $this->db->order_by('tanggal', 'DESC');
 
-    if($kode_opname_gb != ''){
+    if ($kode_opname_gb != '') {
       $this->db->like('kode_opname_gb', $kode_opname_gb);
     }
 
-    if($tanggal != ''){
+    if ($tanggal != '') {
       $this->db->where('tanggal', $tanggal);
     }
 
@@ -744,17 +829,18 @@ class Model_gudangbahan extends CI_Model{
     return $query->result_array();
   }
 
-  public function getrecordopnameCount($kode_opname_gb="",$tanggal=""){
+  public function getrecordopnameCount($kode_opname_gb = "", $tanggal = "")
+  {
 
     $this->db->select('count(*) as allcount');
     $this->db->from('opname_gb');
-    $this->db->order_by('tanggal','DESC');
+    $this->db->order_by('tanggal', 'DESC');
 
-    if($kode_opname_gb != ''){
+    if ($kode_opname_gb != '') {
       $this->db->like('kode_opname_gb', $kode_opname_gb);
     }
 
-    if($tanggal != ''){
+    if ($tanggal != '') {
       $this->db->where('tanggal', $tanggal);
     }
 
@@ -763,17 +849,18 @@ class Model_gudangbahan extends CI_Model{
     return $result[0]['allcount'];
   }
 
-  public function getDataSaldoawal($rowno,$rowperpage,$kode_saldoawal_gb="",$tanggal=""){
+  public function getDataSaldoawal($rowno, $rowperpage, $kode_saldoawal_gb = "", $tanggal = "")
+  {
 
     $this->db->select('*');
     $this->db->from('saldoawal_gb');
-    $this->db->order_by('tanggal','DESC');
+    $this->db->order_by('tanggal', 'DESC');
 
-    if($kode_saldoawal_gb != ''){
+    if ($kode_saldoawal_gb != '') {
       $this->db->like('kode_saldoawal_gb', $kode_saldoawal_gb);
     }
 
-    if($tanggal != ''){
+    if ($tanggal != '') {
       $this->db->where('tanggal', $tanggal);
     }
 
@@ -782,17 +869,18 @@ class Model_gudangbahan extends CI_Model{
     return $query->result_array();
   }
 
-  public function getrecordSaldoawalnCount($kode_saldoawal_gb="",$tanggal=""){
+  public function getrecordSaldoawalnCount($kode_saldoawal_gb = "", $tanggal = "")
+  {
 
     $this->db->select('count(*) as allcount');
     $this->db->from('saldoawal_gb');
-    $this->db->order_by('tanggal','DESC');
+    $this->db->order_by('tanggal', 'DESC');
 
-    if($kode_saldoawal_gb != ''){
+    if ($kode_saldoawal_gb != '') {
       $this->db->like('kode_saldoawal_gb', $kode_saldoawal_gb);
     }
 
-    if($tanggal != ''){
+    if ($tanggal != '') {
       $this->db->where('tanggal', $tanggal);
     }
 
@@ -801,17 +889,18 @@ class Model_gudangbahan extends CI_Model{
     return $result[0]['allcount'];
   }
 
-  public function getDataSaldoawalRetur($rowno,$rowperpage,$kode_saldoawal_gb="",$tanggal=""){
+  public function getDataSaldoawalRetur($rowno, $rowperpage, $kode_saldoawal_gb = "", $tanggal = "")
+  {
 
     $this->db->select('*');
     $this->db->from('saldoawal_gb_retur');
-    $this->db->order_by('tanggal','DESC');
+    $this->db->order_by('tanggal', 'DESC');
 
-    if($kode_saldoawal_gb != ''){
+    if ($kode_saldoawal_gb != '') {
       $this->db->like('kode_saldoawal_gb', $kode_saldoawal_gb);
     }
 
-    if($tanggal != ''){
+    if ($tanggal != '') {
       $this->db->where('tanggal', $tanggal);
     }
 
@@ -820,17 +909,18 @@ class Model_gudangbahan extends CI_Model{
     return $query->result_array();
   }
 
-  public function getrecordSaldoawalnCountRetur($kode_saldoawal_gb="",$tanggal=""){
+  public function getrecordSaldoawalnCountRetur($kode_saldoawal_gb = "", $tanggal = "")
+  {
 
     $this->db->select('count(*) as allcount');
     $this->db->from('saldoawal_gb_retur');
-    $this->db->order_by('tanggal','DESC');
+    $this->db->order_by('tanggal', 'DESC');
 
-    if($kode_saldoawal_gb != ''){
+    if ($kode_saldoawal_gb != '') {
       $this->db->like('kode_saldoawal_gb', $kode_saldoawal_gb);
     }
 
-    if($tanggal != ''){
+    if ($tanggal != '') {
       $this->db->where('tanggal', $tanggal);
     }
 
@@ -839,17 +929,18 @@ class Model_gudangbahan extends CI_Model{
     return $result[0]['allcount'];
   }
 
-  public function getDataPemasukan($rowno,$rowperpage,$nobukti="",$tgl_pemasukan=""){
+  public function getDataPemasukan($rowno, $rowperpage, $nobukti = "", $tgl_pemasukan = "")
+  {
 
     $this->db->select('*');
     $this->db->from('pemasukan_gb');
-    $this->db->order_by('tgl_pemasukan','DESC');
+    $this->db->order_by('tgl_pemasukan', 'DESC');
 
-    if($nobukti != ''){
+    if ($nobukti != '') {
       $this->db->like('nobukti_pemasukan', $nobukti);
     }
 
-    if($tgl_pemasukan != ''){
+    if ($tgl_pemasukan != '') {
       $this->db->where('tgl_pemasukan', $tgl_pemasukan);
     }
 
@@ -858,17 +949,18 @@ class Model_gudangbahan extends CI_Model{
     return $query->result_array();
   }
 
-  public function getrecordPemasukanCount($nobukti="",$tgl_pemasukan=""){
+  public function getrecordPemasukanCount($nobukti = "", $tgl_pemasukan = "")
+  {
 
     $this->db->select('count(*) as allcount');
     $this->db->from('pemasukan_gb');
-    $this->db->order_by('tgl_pemasukan','DESC');
+    $this->db->order_by('tgl_pemasukan', 'DESC');
 
-    if($nobukti != ''){
+    if ($nobukti != '') {
       $this->db->like('nobukti_pemasukan', $nobukti);
     }
 
-    if($tgl_pemasukan != ''){
+    if ($tgl_pemasukan != '') {
       $this->db->where('tgl_pemasukan', $tgl_pemasukan);
     }
 
@@ -877,18 +969,19 @@ class Model_gudangbahan extends CI_Model{
     return $result[0]['allcount'];
   }
 
-  public function getDataretur($rowno,$rowperpage,$nobukti="",$tgl_retur=""){
+  public function getDataretur($rowno, $rowperpage, $nobukti = "", $tgl_retur = "")
+  {
 
     $this->db->select('*');
     $this->db->from('retur_gb');
-    $this->db->join('supplier','supplier.kode_supplier=retur_gb.supplier');
-    $this->db->order_by('tgl_retur','DESC');
+    $this->db->join('supplier', 'supplier.kode_supplier=retur_gb.supplier');
+    $this->db->order_by('tgl_retur', 'DESC');
 
-    if($nobukti != ''){
+    if ($nobukti != '') {
       $this->db->like('nobukti_retur', $nobukti);
     }
 
-    if($tgl_retur != ''){
+    if ($tgl_retur != '') {
       $this->db->where('tgl_retur', $tgl_retur);
     }
 
@@ -897,18 +990,19 @@ class Model_gudangbahan extends CI_Model{
     return $query->result_array();
   }
 
-  public function getrecordreturCount($nobukti="",$tgl_retur=""){
+  public function getrecordreturCount($nobukti = "", $tgl_retur = "")
+  {
 
     $this->db->select('count(*) as allcount');
     $this->db->from('retur_gb');
-    $this->db->join('supplier','supplier.kode_supplier=retur_gb.supplier');
-    $this->db->order_by('tgl_retur','DESC');
+    $this->db->join('supplier', 'supplier.kode_supplier=retur_gb.supplier');
+    $this->db->order_by('tgl_retur', 'DESC');
 
-    if($nobukti != ''){
+    if ($nobukti != '') {
       $this->db->like('nobukti_retur', $nobukti);
     }
 
-    if($tgl_retur != ''){
+    if ($tgl_retur != '') {
       $this->db->where('tgl_retur', $tgl_retur);
     }
 
@@ -917,22 +1011,23 @@ class Model_gudangbahan extends CI_Model{
     return $result[0]['allcount'];
   }
 
-  public function getDataPengeluaran($rowno,$rowperpage,$nobukti="",$tgl_pengeluaran="", $kode_dept = ""){
+  public function getDataPengeluaran($rowno, $rowperpage, $nobukti = "", $tgl_pengeluaran = "", $kode_dept = "")
+  {
 
     $this->db->select('*');
     $this->db->from('pengeluaran_gb');
-    $this->db->order_by('tgl_pengeluaran,nobukti_pengeluaran','DESC');
+    $this->db->order_by('tgl_pengeluaran,nobukti_pengeluaran', 'DESC');
 
-    if($nobukti != ''){
+    if ($nobukti != '') {
       $this->db->like('nobukti_pengeluaran', $nobukti);
     }
 
-    if($tgl_pengeluaran != ''){
+    if ($tgl_pengeluaran != '') {
       $this->db->where('tgl_pengeluaran', $tgl_pengeluaran);
     }
 
 
-    if($kode_dept != ''){
+    if ($kode_dept != '') {
       $this->db->where('kode_dept', $kode_dept);
     }
 
@@ -942,17 +1037,18 @@ class Model_gudangbahan extends CI_Model{
     return $query->result_array();
   }
 
-  public function getrecordPengeluaranCount($nobukti="",$tgl_pengeluaran="", $kode_dept=""){
+  public function getrecordPengeluaranCount($nobukti = "", $tgl_pengeluaran = "", $kode_dept = "")
+  {
 
     $this->db->select('count(*) as allcount');
     $this->db->from('pengeluaran_gb');
-    $this->db->order_by('tgl_pengeluaran','desc');
+    $this->db->order_by('tgl_pengeluaran', 'desc');
 
-    if($nobukti != ''){
+    if ($nobukti != '') {
       $this->db->like('nobukti_pengeluaran', $nobukti);
     }
 
-    if($tgl_pengeluaran != ''){
+    if ($tgl_pengeluaran != '') {
       $this->db->where('tgl_pengeluaran', $tgl_pengeluaran);
     }
 
@@ -965,7 +1061,8 @@ class Model_gudangbahan extends CI_Model{
     return $result[0]['allcount'];
   }
 
-  function insertpemasukan_temp(){
+  function insertpemasukan_temp()
+  {
 
     $kode_barang  = $this->input->post('kodebarang');
     $kodeedit     = $this->input->post('kode_edit');
@@ -986,15 +1083,15 @@ class Model_gudangbahan extends CI_Model{
 
     );
     if ($kodeedit == "") {
-      $this->db->insert('detailpemasukan_temp_gb',$data);
-    }else{
-      $this->db->where('kode_barang',$kode_barang);
-      $this->db->update('detailpemasukan_temp_gb',$data);
+      $this->db->insert('detailpemasukan_temp_gb', $data);
+    } else {
+      $this->db->where('kode_barang', $kode_barang);
+      $this->db->update('detailpemasukan_temp_gb', $data);
     }
-
   }
 
-  function insert_detail_pengeluaran(){
+  function insert_detail_pengeluaran()
+  {
 
     $kode_barang          = $this->input->post('kodebarang');
     $nobukti_pengeluaran  = $this->input->post('nobukti');
@@ -1015,16 +1112,16 @@ class Model_gudangbahan extends CI_Model{
 
     );
     if ($kodeedit == "") {
-      $this->db->insert('detail_pengeluaran_gb',$data);
-    }else{
-      $this->db->where('nobukti_pengeluaran',$nobukti_pengeluaran);
-      $this->db->where('kode_barang',$kode_barang);
-      $this->db->update('detail_pengeluaran_gb',$data);
+      $this->db->insert('detail_pengeluaran_gb', $data);
+    } else {
+      $this->db->where('nobukti_pengeluaran', $nobukti_pengeluaran);
+      $this->db->where('kode_barang', $kode_barang);
+      $this->db->update('detail_pengeluaran_gb', $data);
     }
-
   }
 
-  function insertretur_temp(){
+  function insertretur_temp()
+  {
 
     $kode_barang  = $this->input->post('kodebarang');
     $kodeedit     = $this->input->post('kode_edit');
@@ -1041,15 +1138,15 @@ class Model_gudangbahan extends CI_Model{
 
     );
     if ($kodeedit == "") {
-      $this->db->insert('detailretur_temp_gb',$data);
-    }else{
-      $this->db->where('kode_barang',$kode_barang);
-      $this->db->update('detailretur_temp_gb',$data);
+      $this->db->insert('detailretur_temp_gb', $data);
+    } else {
+      $this->db->where('kode_barang', $kode_barang);
+      $this->db->update('detailretur_temp_gb', $data);
     }
-
   }
 
-  function editdetailsaldoawal(){
+  function editdetailsaldoawal()
+  {
 
     $kodesaldo    = $this->input->post('kodesaldoawal');
     $kode_barang  = $this->input->post('kodebarang');
@@ -1064,13 +1161,13 @@ class Model_gudangbahan extends CI_Model{
 
     );
 
-    $this->db->where('kode_saldoawal_gb',$kodesaldo);
-    $this->db->where('kode_barang',$kode_barang);
-    $this->db->update('saldoawal_gb_detail',$data);
-
+    $this->db->where('kode_saldoawal_gb', $kodesaldo);
+    $this->db->where('kode_barang', $kode_barang);
+    $this->db->update('saldoawal_gb_detail', $data);
   }
 
-  function editdetailsaldoawal_retur(){
+  function editdetailsaldoawal_retur()
+  {
 
     $kodesaldo    = $this->input->post('kodesaldoawal');
     $kode_barang  = $this->input->post('kodebarang');
@@ -1083,18 +1180,18 @@ class Model_gudangbahan extends CI_Model{
 
     );
 
-    $this->db->where('kode_saldoawal_gb',$kodesaldo);
-    $this->db->where('kode_barang',$kode_barang);
-    $this->db->update('saldoawal_gb_detail_retur',$data);
-
+    $this->db->where('kode_saldoawal_gb', $kodesaldo);
+    $this->db->where('kode_barang', $kode_barang);
+    $this->db->update('saldoawal_gb_detail_retur', $data);
   }
 
-  function inputeditpemasukan(){
+  function inputeditpemasukan()
+  {
 
     $kode_barang  = $this->input->post('kodebarang');
     $kodeedit     = $this->input->post('kode_edit');
     $nobukti      = $this->input->post('nobukti');
-    $tgl_pemasukan= $this->input->post('tgl_pemasukan');
+    $tgl_pemasukan = $this->input->post('tgl_pemasukan');
     $departemen   = $this->input->post('departemen');
     $unit         = str_replace(",", "", $this->input->post('qty_unit'));
     $berat        = str_replace(",", "", $this->input->post('qty_berat'));
@@ -1113,16 +1210,16 @@ class Model_gudangbahan extends CI_Model{
 
     );
     if ($kodeedit == "") {
-      $this->db->insert('detail_pemasukan_gb',$data2);
-    }else{
-      $this->db->where('kode_barang',$kode_barang);
-      $this->db->where('nobukti_pemasukan',$nobukti);
-      $this->db->update('detail_pemasukan_gb',$data2);
+      $this->db->insert('detail_pemasukan_gb', $data2);
+    } else {
+      $this->db->where('kode_barang', $kode_barang);
+      $this->db->where('nobukti_pemasukan', $nobukti);
+      $this->db->update('detail_pemasukan_gb', $data2);
     }
-
   }
 
-  function inputeditpengeluaran(){
+  function inputeditpengeluaran()
+  {
 
     $kode_barang      = $this->input->post('kodebarang');
     $kodeedit         = $this->input->post('kode_edit');
@@ -1146,34 +1243,34 @@ class Model_gudangbahan extends CI_Model{
 
     );
     if ($kodeedit == "") {
-      $this->db->insert('detail_pengeluaran_gb',$data2);
-    }else{
-      $this->db->where('kode_barang',$kode_barang);
-      $this->db->where('nobukti_pengeluaran',$nobukti);
-      $this->db->update('detail_pengeluaran_gb',$data2);
+      $this->db->insert('detail_pengeluaran_gb', $data2);
+    } else {
+      $this->db->where('kode_barang', $kode_barang);
+      $this->db->where('nobukti_pengeluaran', $nobukti);
+      $this->db->update('detail_pengeluaran_gb', $data2);
     }
-
   }
 
-  function update_pemasukan(){
+  function update_pemasukan()
+  {
 
     $nobukti      = $this->input->post('nobukti');
-    $tgl_pemasukan= $this->input->post('tgl_pemasukan');
+    $tgl_pemasukan = $this->input->post('tgl_pemasukan');
     $departemen   = $this->input->post('departemen');
-    
+
     $data = array(
 
       'tgl_pemasukan'     => $tgl_pemasukan,
       'departemen'        => $departemen
 
     );
-    $this->db->where('nobukti_pemasukan',$nobukti);
-    $this->db->update('pemasukan_gb',$data);
-    redirect('gudangbahan/pemasukan','refresh');
-
+    $this->db->where('nobukti_pemasukan', $nobukti);
+    $this->db->update('pemasukan_gb', $data);
+    redirect('gudangbahan/pemasukan', 'refresh');
   }
 
-  function update_pengeluaran(){
+  function update_pengeluaran()
+  {
 
     $nobukti          = $this->input->post('nobukti');
     $tgl_pengeluaran  = $this->input->post('tgl_pengeluaran');
@@ -1185,7 +1282,7 @@ class Model_gudangbahan extends CI_Model{
     } else {
       $unit           = "";
     }
-    
+
     $data = array(
 
       'tgl_pengeluaran'     => $tgl_pengeluaran,
@@ -1193,13 +1290,13 @@ class Model_gudangbahan extends CI_Model{
       'kode_dept'           => $departemen
 
     );
-    $this->db->where('nobukti_pengeluaran',$nobukti);
-    $this->db->update('pengeluaran_gb',$data);
-    redirect('gudangbahan/pengeluaran','refresh');
-
+    $this->db->where('nobukti_pengeluaran', $nobukti);
+    $this->db->update('pengeluaran_gb', $data);
+    redirect('gudangbahan/pengeluaran', 'refresh');
   }
 
-  function insert_pembelian(){
+  function insert_pembelian()
+  {
 
     $nobukti             = $this->input->post('nobukti_pembelian');
     $kode_barang         = $this->input->post('kode_barang23');
@@ -1220,12 +1317,12 @@ class Model_gudangbahan extends CI_Model{
         'gdb'               => 1
 
       );
-      $this->db->insert('pemasukan_gb',$data);
+      $this->db->insert('pemasukan_gb', $data);
     }
 
     $data3               = array();
     $index               = 0;
-    foreach($kode_barang as $databarang){ 
+    foreach ($kode_barang as $databarang) {
       array_push($data3, array(
         'nobukti_pemasukan'   => $nobukti,
         'kode_barang'         => $databarang,
@@ -1236,11 +1333,12 @@ class Model_gudangbahan extends CI_Model{
       ));
       $index++;
     }
-    $this->db->insert_batch('detail_pemasukan_gb',$data3);
+    $this->db->insert_batch('detail_pemasukan_gb', $data3);
     redirect('gudangbahan/pembelian');
   }
 
-  function insert_pemasukan(){
+  function insert_pemasukan()
+  {
 
     $nobukti              = $this->input->post('nobukti');
     $tgl_pemasukan        = $this->input->post('tgl_pemasukan');
@@ -1249,12 +1347,12 @@ class Model_gudangbahan extends CI_Model{
 
     $data = array(
 
-     'nobukti_pemasukan'      => $nobukti,
-     'tgl_pemasukan'          => $tgl_pemasukan,
-     'departemen'             => $departemen
-   );
+      'nobukti_pemasukan'      => $nobukti,
+      'tgl_pemasukan'          => $tgl_pemasukan,
+      'departemen'             => $departemen
+    );
 
-    $this->db->insert('pemasukan_gb',$data);
+    $this->db->insert('pemasukan_gb', $data);
 
     $data = $this->db->query("SELECT * FROM detailpemasukan_temp_gb WHERE id_admin = '$id_admin' ");
 
@@ -1270,15 +1368,51 @@ class Model_gudangbahan extends CI_Model{
         'keterangan'        => $d->keterangan
 
       );
-      $this->db->insert('detail_pemasukan_gb',$data);
+      $this->db->insert('detail_pemasukan_gb', $data);
     }
 
     $this->db->query("DELETE FROM detailpemasukan_temp_gb WHERE id_admin = '$id_admin' ");
     redirect('gudangbahan/pemasukan');
-
   }
 
-  function insert_retur(){
+
+  function insert_returproduksi()
+  {
+
+    $nobukti              = $this->input->post('nobukti');
+    $tgl_retur            = $this->input->post('tgl');
+    $tgl_approve          = $this->input->post('tgl_approve');
+    $supplier             = $this->input->post('supplier');
+
+    $data = array(
+
+      'nobukti_retur'      => $nobukti,
+      'tgl_retur'          => $tgl_retur,
+      'tgl_approve'        => $tgl_approve,
+      'supplier'           => $supplier,
+      'jenis_retur'        => "Retur IN"
+    );
+
+    $this->db->insert('retur_gb', $data);
+
+    $data = $this->db->query("SELECT * FROM detail_pengeluaran_gp WHERE nobukti_pengeluaran = '$nobukti' ");
+
+    foreach ($data->result() as $d) {
+
+      $data = array(
+
+        'nobukti_retur'     => $nobukti,
+        'kode_barang'       => $d->kode_barang,
+        'qty'               => $d->qty,
+        'keterangan'        => $d->keterangan
+
+      );
+      $this->db->insert('detail_retur_gb', $data);
+    }
+  }
+
+  function insert_retur()
+  {
 
     $nobukti              = $this->input->post('nobukti');
     $tgl_retur            = $this->input->post('tgl_retur');
@@ -1288,13 +1422,14 @@ class Model_gudangbahan extends CI_Model{
 
     $data = array(
 
-     'nobukti_retur'      => $nobukti,
-     'tgl_retur'          => $tgl_retur,
-     'supplier'           => $supplier,
-     'jenis_retur'        => $jenis_retur
-   );
+      'nobukti_retur'      => $nobukti,
+      'tgl_retur'          => $tgl_retur,
+      'tgl_approve'        => $tgl_retur,
+      'supplier'           => $supplier,
+      'jenis_retur'        => $jenis_retur
+    );
 
-    $this->db->insert('retur_gb',$data);
+    $this->db->insert('retur_gb', $data);
 
     $data = $this->db->query("SELECT * FROM detailretur_temp_gb WHERE id_admin = '$id_admin' ");
 
@@ -1308,84 +1443,84 @@ class Model_gudangbahan extends CI_Model{
         'keterangan'        => $d->keterangan
 
       );
-      $this->db->insert('detail_retur_gb',$data);
+      $this->db->insert('detail_retur_gb', $data);
     }
 
     $this->db->query("DELETE FROM detailretur_temp_gb WHERE id_admin = '$id_admin' ");
     redirect('gudangbahan/retur');
-
   }
 
-  function getPemasukantemp(){
+  function getPemasukantemp()
+  {
 
     $id_user = $this->session->userdata('id_user');
-    $this->db->join('master_barang_pembelian','detailpemasukan_temp_gb.kode_barang = master_barang_pembelian.kode_barang');
-    return $this->db->get_where('detailpemasukan_temp_gb',array('id_admin'=>$id_user));
-
+    $this->db->join('master_barang_pembelian', 'detailpemasukan_temp_gb.kode_barang = master_barang_pembelian.kode_barang');
+    return $this->db->get_where('detailpemasukan_temp_gb', array('id_admin' => $id_user));
   }
 
-  function getReturemp(){
+  function getReturemp()
+  {
 
     $id_user = $this->session->userdata('id_user');
-    $this->db->join('master_barang_pembelian','detailretur_temp_gb.kode_barang = master_barang_pembelian.kode_barang');
-    return $this->db->get_where('detailretur_temp_gb',array('id_admin'=>$id_user));
-
+    $this->db->join('master_barang_pembelian', 'detailretur_temp_gb.kode_barang = master_barang_pembelian.kode_barang');
+    return $this->db->get_where('detailretur_temp_gb', array('id_admin' => $id_user));
   }
 
-  function view_detaileditpemasukan(){
+  function view_detaileditpemasukan()
+  {
 
     $nobukti  = $this->input->post('nobukti');
-    $this->db->join('master_barang_pembelian','detail_pemasukan_gb.kode_barang = master_barang_pembelian.kode_barang');
-    return $this->db->get_where('detail_pemasukan_gb',array('nobukti_pemasukan'=>$nobukti));
-
+    $this->db->join('master_barang_pembelian', 'detail_pemasukan_gb.kode_barang = master_barang_pembelian.kode_barang');
+    return $this->db->get_where('detail_pemasukan_gb', array('nobukti_pemasukan' => $nobukti));
   }
 
-  function view_detaileditpengeluaran(){
+  function view_detaileditpengeluaran()
+  {
 
     $nobukti  = $this->input->post('nobukti');
-    $this->db->join('master_barang_pembelian','detail_pengeluaran_gb.kode_barang = master_barang_pembelian.kode_barang');
-    return $this->db->get_where('detail_pengeluaran_gb',array('nobukti_pengeluaran'=>$nobukti));
-
+    $this->db->join('master_barang_pembelian', 'detail_pengeluaran_gb.kode_barang = master_barang_pembelian.kode_barang');
+    return $this->db->get_where('detail_pengeluaran_gb', array('nobukti_pengeluaran' => $nobukti));
   }
 
-  function hapus_detailpemasukan_temp(){
+  function hapus_detailpemasukan_temp()
+  {
 
     $kodebarang  = $this->input->post('kodebarang');
     $idadmin     = $this->input->post('idadmin');
     $ket         = $this->input->post('ket');
-    $this->db->delete('detailpemasukan_temp_gb',array('kode_barang'=>$kodebarang,'id_admin'=>$idadmin,'keterangan'=>$ket));
-
+    $this->db->delete('detailpemasukan_temp_gb', array('kode_barang' => $kodebarang, 'id_admin' => $idadmin, 'keterangan' => $ket));
   }
 
-  function hapus_detailretur_temp(){
+  function hapus_detailretur_temp()
+  {
 
     $kodebarang  = $this->input->post('kodebarang');
     $idadmin     = $this->input->post('idadmin');
     $ket         = $this->input->post('ket');
-    $this->db->delete('detailretur_temp_gb',array('kode_barang'=>$kodebarang,'id_admin'=>$idadmin,'keterangan'=>$ket));
-
+    $this->db->delete('detailretur_temp_gb', array('kode_barang' => $kodebarang, 'id_admin' => $idadmin, 'keterangan' => $ket));
   }
 
-  function hapus_detaileditpemasukan(){
+  function hapus_detaileditpemasukan()
+  {
 
     $kodebarang   = $this->input->post('kodebarang');
     $nobukti      = $this->input->post('nobukti');
     $ket         = $this->input->post('ket');
-    $this->db->delete('detail_pemasukan_gb',array('kode_barang'=>$kodebarang,'nobukti_pemasukan'=>$nobukti,'keterangan'=>$ket));
-
+    $this->db->delete('detail_pemasukan_gb', array('kode_barang' => $kodebarang, 'nobukti_pemasukan' => $nobukti, 'keterangan' => $ket));
   }
 
 
-  function hapus_detaileditpengeluaran(){
+  function hapus_detaileditpengeluaran()
+  {
 
     $kodebarang   = $this->input->post('kodebarang');
     $nobukti      = $this->input->post('nobukti');
     $ket          = $this->input->post('ket');
-    $this->db->delete('detail_pengeluaran_gb',array('kode_barang'=>$kodebarang,'nobukti_pengeluaran'=>$nobukti,'keterangan'=>$ket));
-
+    $this->db->delete('detail_pengeluaran_gb', array('kode_barang' => $kodebarang, 'nobukti_pengeluaran' => $nobukti, 'keterangan' => $ket));
   }
 
-  function insertpengeluaran_temp(){
+  function insertpengeluaran_temp()
+  {
 
     $kode_barang  = $this->input->post('kodebarang');
     $kodeedit     = $this->input->post('kode_edit');
@@ -1407,15 +1542,15 @@ class Model_gudangbahan extends CI_Model{
     );
 
     if ($kodeedit == "") {
-      $this->db->insert('detailpengeluaran_temp_gb',$data);
-    }else{
-      $this->db->where('kode_barang',$kode_barang);
-      $this->db->update('detailpengeluaran_temp_gb',$data);
+      $this->db->insert('detailpengeluaran_temp_gb', $data);
+    } else {
+      $this->db->where('kode_barang', $kode_barang);
+      $this->db->update('detailpengeluaran_temp_gb', $data);
     }
-
   }
 
-  function insert_pengeluaran(){
+  function insert_pengeluaran()
+  {
 
     $nobukti            = $this->input->post('nobukti');
     $tgl_pengeluaran    = $this->input->post('tgl_pengeluaran');
@@ -1423,9 +1558,9 @@ class Model_gudangbahan extends CI_Model{
     $id_admin           = $this->session->userdata('id_user');
     if ($kode_dept == 'Produksi') {
       $unit             = $this->input->post('unit');
-    }else if ($kode_dept == 'Cabang') {
+    } else if ($kode_dept == 'Cabang') {
       $unit             = $this->input->post('cabang');
-    }else{
+    } else {
       $unit           = "";
     }
 
@@ -1438,7 +1573,7 @@ class Model_gudangbahan extends CI_Model{
 
     );
 
-    $this->db->insert('pengeluaran_gb',$data);
+    $this->db->insert('pengeluaran_gb', $data);
 
     $data = $this->db->query("SELECT * FROM detailpengeluaran_temp_gb WHERE id_admin = '$id_admin' ")->result();
 
@@ -1455,69 +1590,67 @@ class Model_gudangbahan extends CI_Model{
         'keterangan'          => $d->keterangan
 
       );
-      $this->db->insert('detail_pengeluaran_gb',$data);
+      $this->db->insert('detail_pengeluaran_gb', $data);
     }
 
     $this->db->query("DELETE FROM detailpengeluaran_temp_gb WHERE id_admin = '$id_admin' ");
     redirect('gudangbahan/pengeluaran');
-
   }
 
-  function getPengeluarantemp(){
+  function getPengeluarantemp()
+  {
 
     $id_user = $this->session->userdata('id_user');
-    $this->db->join('master_barang_pembelian','detailpengeluaran_temp_gb.kode_barang = master_barang_pembelian.kode_barang');
-    return $this->db->get_where('detailpengeluaran_temp_gb',array('id_admin'=>$id_user));
-
+    $this->db->join('master_barang_pembelian', 'detailpengeluaran_temp_gb.kode_barang = master_barang_pembelian.kode_barang');
+    return $this->db->get_where('detailpengeluaran_temp_gb', array('id_admin' => $id_user));
   }
 
-  function getPengeluarandetail(){
+  function getPengeluarandetail()
+  {
 
     $nobukti  = $this->input->post('nobukti');
-    $this->db->join('master_barang_pembelian','detail_pengeluaran_gb.kode_barang = master_barang_pembelian.kode_barang');
-    return $this->db->get_where('detail_pengeluaran_gb',array('nobukti_pengeluaran'=> $nobukti));
-
+    $this->db->join('master_barang_pembelian', 'detail_pengeluaran_gb.kode_barang = master_barang_pembelian.kode_barang');
+    return $this->db->get_where('detail_pengeluaran_gb', array('nobukti_pengeluaran' => $nobukti));
   }
 
-  function hapus_detailpengeluaran_temp(){
+  function hapus_detailpengeluaran_temp()
+  {
 
     $kodebarang  = $this->input->post('kodebarang');
     $idadmin     = $this->input->post('idadmin');
     $ket         = $this->input->post('ket');
-    $this->db->delete('detailpengeluaran_temp_gb',array('kode_barang'=>$kodebarang,'id_admin'=>$idadmin,'keterangan'=>$ket));
-
+    $this->db->delete('detailpengeluaran_temp_gb', array('kode_barang' => $kodebarang, 'id_admin' => $idadmin, 'keterangan' => $ket));
   }
 
-  function hapus_detailpengeluaran_detail(){
+  function hapus_detailpengeluaran_detail()
+  {
 
     $nobukti  = $this->input->post('nobukti');
     $kodebarang  = $this->input->post('kodebarang');
     $ket         = $this->input->post('ket');
-    $this->db->delete('detail_pengeluaran_gb',array('kode_barang'=>$kodebarang,'nobukti_pengeluaran'=> $nobukti,'keterangan'=>$ket));
-
+    $this->db->delete('detail_pengeluaran_gb', array('kode_barang' => $kodebarang, 'nobukti_pengeluaran' => $nobukti, 'keterangan' => $ket));
   }
 
-  function jsonPilihAkun(){
+  function jsonPilihAkun()
+  {
 
     $this->datatables->select('set_coa_cabang.kode_akun,nama_akun');
     $this->datatables->from('set_coa_cabang');
-    $this->datatables->join('coa','set_coa_cabang.kode_akun = coa.kode_akun');
-    $this->datatables->where('kategori','pembelian');
+    $this->datatables->join('coa', 'set_coa_cabang.kode_akun = coa.kode_akun');
+    $this->datatables->where('kategori', 'pembelian');
     $this->datatables->add_column('view', '<a href="#"  data-toggle="modal" data-kode="$1" data-nama="$2" class="btn btn-danger btn-sm waves-effect pilih">Pilih</a>', 'kode_akun,nama_akun');
     return $this->datatables->generate();
-
   }
 
-  function jsonPilihBarang(){
+  function jsonPilihBarang()
+  {
 
     $this->datatables->select('kode_barang,nama_barang,satuan,master_barang_pembelian.kode_dept,nama_dept,jenis_barang');
     $this->datatables->from('master_barang_pembelian');
-    $this->datatables->join('departemen','master_barang_pembelian.kode_dept = departemen.kode_dept');
-    $this->datatables->where('master_barang_pembelian.kode_dept','GDB');
-    $this->db->order_by('master_barang_pembelian.kode_barang,master_barang_pembelian.nama_barang','ASC');
+    $this->datatables->join('departemen', 'master_barang_pembelian.kode_dept = departemen.kode_dept');
+    $this->datatables->where('master_barang_pembelian.kode_dept', 'GDB');
+    $this->db->order_by('master_barang_pembelian.kode_barang,master_barang_pembelian.nama_barang', 'ASC');
     $this->datatables->add_column('view', '<a href="#"  data-toggle="modal" data-kode="$1" data-nama="$2"  data-jenis="$3" class="btn btn-danger btn-sm waves-effect pilih">Pilih</a>', 'kode_barang,nama_barang,jenis_barang');
     return $this->datatables->generate();
-
   }
-
 }

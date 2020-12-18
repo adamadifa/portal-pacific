@@ -11,7 +11,7 @@ function uang($nilai)
     <div class="row align-items-center">
       <div class="col-auto">
         <h2 class="page-title">
-          DATA RETUR
+          DATA RETUR PRODUKSI
         </h2>
       </div>
     </div>
@@ -21,19 +21,19 @@ function uang($nilai)
     <div class="col-md-10 col-xs-12">
       <div class="card">
         <div class="card-header">
-          <h4 class="card-title">DATA RETUR</h4>
+          <h4 class="card-title">DATA RETUR PRODUKSI</h4>
 
         </div>
         <div class="card-body">
-          <form class="form-horizontal" method="post" action="<?php echo base_url(); ?>gudangbahan/retur" autocomplete="off">
+          <form class="form-horizontal" method="post" action="<?php echo base_url(); ?>gudangbahan/returproduksi" autocomplete="off">
             <div class="mb-3">
-              <input type="text" value="<?php echo $nobukti; ?>" id="nobukti" name="nobukti" class="form-control" placeholder="No Bukti Retur" data-error=".errorTxt19" />
+              <input type="text" value="<?php echo $nobukti; ?>" id="nobukti" name="nobukti" class="form-control" placeholder="No Bukti pemasukan" data-error=".errorTxt19" />
             </div>
             <div class="mb-3">
               <div class="row">
                 <div class="col-md-12">
                   <div class="input-icon">
-                    <input type="text" value="<?php echo $tgl_retur; ?>" id="tgl_retur" name="tgl_retur" class="datepicker form-control date" placeholder="Tanggal" data-error=".errorTxt19" />
+                    <input id="tgl_pengeluaran" type="date" value="<?php echo $tgl_pengeluaran; ?>" placeholder="Tanggal" class="form-control" name="tgl_pengeluaran" />
                     <span class="input-icon-addon"><svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
                         <path stroke="none" d="M0 0h24v24H0z" />
                         <rect x="4" y="5" width="16" height="16" rx="2" />
@@ -51,39 +51,33 @@ function uang($nilai)
               <button type="submit" name="submit" class="btn btn-primary btn-block mr-2" value="1"><i class="fa fa-search mr-2"></i>CARI</button>
             </div>
           </form>
-          <a href="<?php echo base_url(); ?>gudangbahan/input_retur" class="btn btn-danger mb-3">Tambah Data</a>
+          <!-- <a href="<?php echo base_url(); ?>produksi/input_pengeluaran" class="btn btn-danger mb-3">Tambah Data</a> -->
           <div class="table-responsive">
             <table class="table table-bordered table-striped table-hover" id="datatable">
               <thead class="thead-dark">
                 <tr>
                   <th width="10px">No</th>
                   <th width="150px">No Bukti</th>
-                  <th>Tanggal Masuk</th>
-                  <th>Tanggal Diterima</th>
-                  <th>Supplier</th>
-                  <th>Jenis Retur</th>
-                  <th width="190px">Aksi</th>
+                  <th>Tanggal Keluar</th>
+                  <th>Jenis Pengeluaran</th>
+                  <th width="90px">Aksi</th>
                 </tr>
               </thead>
               <tbody>
                 <?php
                 $no  = $row + 1;
                 foreach ($result as $d) {
-                  $nobukti = str_replace("/", ".", $d['nobukti_retur']);
+                  $nobukti = str_replace("/", ".", $d['nobukti_pengeluaran']);
                 ?>
                   <tr>
                     <td><?php echo $no; ?></td>
-                    <td><?php echo $d['nobukti_retur']; ?></td>
-                    <td><?php echo DateToIndo2($d['tgl_retur']); ?></td>
-                    <td><?php if (!empty($d['tgl_approve'])) {
-                          echo DateToIndo2($d['tgl_approve']);
-                        } ?></td>
-                    <td><?php echo $d['nama_supplier']; ?></td>
-                    <td><?php echo $d['jenis_retur']; ?></td>
+                    <td><?php echo $d['nobukti_pengeluaran']; ?></td>
+                    <td><?php echo DateToIndo2($d['tgl_pengeluaran']); ?></td>
+                    <td><?php echo $d['kode_dept']; ?></td>
                     <td>
-                      <a href="#" data-nobukti="<?php echo $d['nobukti_retur']; ?>" class="btn btn-sm btn-primary detail">Detail</a>
-                      <a href="#" data-href="<?php echo base_url(); ?>gudangbahan/hapusretur/<?php echo $nobukti; ?>" class="btn btn-sm btn-danger hapus">Hapus</a>
-                      <!-- <a href="<?php echo base_url(); ?>gudangbahan/edit_retur/<?php echo $nobukti; ?>" class="btn btn-xs btn-warning">Edit</a> -->
+                      <a href="#" data-nobukti="<?php echo $d['nobukti_pengeluaran']; ?>" class="btn btn-sm btn-primary detail">Proses</a>
+                      <!-- <a href="#" data-href="<?php echo base_url(); ?>produksi/hapuspengeluaran/<?php echo $nobukti; ?>" class="btn btn-sm btn-danger hapus">Hapus</a> -->
+                      <!-- <a href="<?php echo base_url(); ?>produksi/edit_pengeluaran/<?php echo $nobukti; ?>" class="btn btn-sm btn-warning">Edit</a> -->
                     </td>
                   </tr>
                 <?php
@@ -100,19 +94,19 @@ function uang($nilai)
       </div>
     </div>
     <div class="col-md-2">
-      <?php $this->load->view('menu/menu_gudangbahan_administrator'); ?>
+      <?php $this->load->view('menu/menu_gudangbahan_administrator.php'); ?>
     </div>
   </div>
 </div>
 
-<div class="modal modal-blur fade" id="detailretur" tabindex="-1" role="dialog" aria-hidden="true">
+<div class="modal modal-blur fade" id="detailpengeluaran" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-xl  modal-dialog-centered" role="document">
     <div class="modal-content ">
       <div class="modal-header">
         <h5 class="modal-title">Detail</h5>
       </div>
       <div class="modal-body">
-        <div id="loaddetailretur"></div>
+        <div id="loaddetailpengeluaran"></div>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-white mr-auto" data-dismiss="modal">Close</button>
@@ -123,7 +117,7 @@ function uang($nilai)
 
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    flatpickr(document.getElementById('tgl_retur'), {});
+    flatpickr(document.getElementById('tgl_pengeluaran'), {});
   });
 </script>
 
@@ -131,24 +125,22 @@ function uang($nilai)
   $(function() {
 
     $('.detail').click(function(e) {
-      e.preventDefault();
       var nobukti = $(this).attr('data-nobukti');
       $.ajax({
         type: 'POST',
-        url: '<?php echo base_url(); ?>gudangbahan/detail_retur',
+        url: '<?php echo base_url(); ?>gudangbahan/detail_returproduksi',
         data: {
           nobukti: nobukti
         },
         cache: false,
         success: function(respond) {
-          $("#loaddetailretur").html(respond);
-          $("#detailretur").modal("show");
+          $("#loaddetailpengeluaran").html(respond);
+          $("#detailpengeluaran").modal("show");
         }
       });
     });
 
-    $(".hapus").click(function(e) {
-      e.preventDefault();
+    $(".hapus").click(function() {
       var getLink = $(this).attr('data-href');
       swal({
         title: 'Alert',

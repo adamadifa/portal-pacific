@@ -54,7 +54,8 @@ class Model_komisi extends CI_Model
     $query = "SELECT karyawan.id_karyawan,nama_karyawan,
     targetkategoriA,realisasitargetA,
     targetkategoriB,realisasitargetB,
-    targetproductFocus,realisasitargetproductfocus
+    targetproductfocus,realisasitargetproductfocus,
+    jumlah_target_cashin,jml_cashin
     FROM karyawan
     LEFT JOIN (
     SELECT  id_karyawan,
@@ -81,6 +82,30 @@ class Model_komisi extends CI_Model
     WHERE tgltransaksi BETWEEN '$dari' AND '$sampai'
     GROUP BY penjualan.id_karyawan
     ) realisasi ON (karyawan.id_karyawan = realisasi.id_karyawan)
+
+    LEFT JOIN (
+    SELECT
+      id_karyawan,jumlah_target_cashin
+    FROM
+      komisi_target_cashin_detail k_cashin
+      INNER JOIN komisi_target ON k_cashin.kode_target = komisi_target.kode_target
+    WHERE
+      bulan = '$bulan' AND tahun = '$tahun' 
+    GROUP BY
+      id_karyawan 
+    ) komisicashin ON ( karyawan.id_karyawan = komisicashin.id_karyawan )
+    
+    LEFT JOIN (
+    SELECT
+      id_karyawan,SUM(bayar) as jml_cashin
+    FROM
+      historibayar
+    WHERE
+      tglbayar BETWEEN '$dari' 
+      AND '$sampai' 
+    GROUP BY
+      id_karyawan 
+    ) hb ON ( karyawan.id_karyawan = hb.id_karyawan )
     WHERE kode_cabang ='$cabang' AND nama_karyawan !='-'";
 
     return $this->db->query($query);

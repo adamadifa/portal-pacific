@@ -1,8 +1,10 @@
 <?php
 
-class Model_produksi extends CI_Model{
+class Model_produksi extends CI_Model
+{
 
-  function jsonBarang(){
+  function jsonBarang()
+  {
     $this->datatables->select('kode_barang,nama_barang,jenis_barang,satuan,kode_kategori,kode_dept,status');
     $this->datatables->from('master_barang_produksi');
     $this->datatables->add_column('view', '<a href="#" data-kode="$1" class="btn bg-green btn-xs waves-effect edit">Edit</a> <a href="#"  data-toggle="modal" data-href="hapusbarang/$1" class="btn bg-red btn-xs waves-effect hapus">Hapus</a>', 'kode_barang');
@@ -11,9 +13,8 @@ class Model_produksi extends CI_Model{
 
   function getBarang($kodebarang)
   {
-    return $this->db->get_where('master_barang_produksi',array('kode_barang'=>$kodebarang));
-
-  } 
+    return $this->db->get_where('master_barang_produksi', array('kode_barang' => $kodebarang));
+  }
 
   function insert_barang()
   {
@@ -34,25 +35,27 @@ class Model_produksi extends CI_Model{
       'kode_dept'     => 'PRD'
     );
 
-    $cek = $this->db->get_where('master_barang_produksi',array('kode_barang'=>$kodebarang))->num_rows();
-    if(empty($cek))
-    {
-      $simpan = $this->db->insert('master_barang_produksi',$data);
-      if($simpan)
-      {
-        $this->session->set_flashdata('msg',
+    $cek = $this->db->get_where('master_barang_produksi', array('kode_barang' => $kodebarang))->num_rows();
+    if (empty($cek)) {
+      $simpan = $this->db->insert('master_barang_produksi', $data);
+      if ($simpan) {
+        $this->session->set_flashdata(
+          'msg',
           '<div class="alert bg-green alert-dismissible" role="alert">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <i class="material-icons" style="float:left; margin-right:10px">check</i> Data Berhasil Disimpan !
-          </div>');
+          </div>'
+        );
         redirect('produksi/barang');
       }
-    }else{
-      $this->session->set_flashdata('msg',
+    } else {
+      $this->session->set_flashdata(
+        'msg',
         '<div class="alert bg-red alert-dismissible" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <i class="material-icons" style="float:left; margin-right:10px">check</i> Kode Barang Sudah Ada !
-        </div>');
+        </div>'
+      );
       redirect('produksi/barang');
     }
   }
@@ -75,37 +78,38 @@ class Model_produksi extends CI_Model{
     );
 
 
-    $simpan = $this->db->update('master_barang_produksi',$data,array('kode_barang'=>$kodebarang));
-    if($simpan)
-    {
-      $this->session->set_flashdata('msg',
+    $simpan = $this->db->update('master_barang_produksi', $data, array('kode_barang' => $kodebarang));
+    if ($simpan) {
+      $this->session->set_flashdata(
+        'msg',
         '<div class="alert bg-green alert-dismissible" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <i class="material-icons" style="float:left; margin-right:10px">check</i> Data Berhasil Disimpan !
-        </div>');
+        </div>'
+      );
       redirect('produksi/barang');
     }
-
   }
 
-  function hapuspengeluaran(){
+  function hapuspengeluaran()
+  {
 
-    $nobukti    = str_replace(".","/",$this->uri->segment(3));
+    $nobukti    = str_replace(".", "/", $this->uri->segment(3));
     $this->db->query("DELETE FROM pengeluaran_gp WHERE nobukti_pengeluaran = '$nobukti' ");
     $this->db->query("DELETE FROM detail_pengeluaran_gp WHERE nobukti_pengeluaran = '$nobukti' ");
-
   }
 
-  function getdetailsaldo($bulan,$tahun){
+  function getdetailsaldo($bulan, $tahun)
+  {
 
-    if($bulan == 1){
+    if ($bulan == 1) {
       $bulan = 12;
       $tahun = $tahun - 1;
-    }else{
+    } else {
       $bulan = $bulan - 1;
       $tahun = $tahun;
     }
-    
+
     $query = "SELECT 
     master_barang_produksi.kode_barang,
     master_barang_produksi.nama_barang,
@@ -139,20 +143,20 @@ class Model_produksi extends CI_Model{
     sa.qtysaldoawal
     ";
     return $this->db->query($query);
-
   }
 
 
-  function getDetailopname($bulan,$tahun){
+  function getDetailopname($bulan, $tahun)
+  {
 
-    if($bulan == 1){
+    if ($bulan == 1) {
       $bulan = 12;
       $tahun = $tahun - 1;
-    }else{
+    } else {
       $bulan = $bulan - 1;
       $tahun = $tahun;
     }
-    
+
     $query = "SELECT 
     master_barang_produksi.kode_barang,
     master_barang_produksi.nama_barang,    
@@ -210,69 +214,75 @@ class Model_produksi extends CI_Model{
     gk.lainnya
     ";
     return $this->db->query($query);
-
   }
 
-  
-  function getKategori(){
+
+  function getKategori()
+  {
 
     return $this->db->get('kategori_barang_pembelian');
   }
 
 
-  function listproduk(){
+  function listproduk()
+  {
 
     return $this->db->get('master_barang_produksi');
   }
 
-  function ceksaldo($bulan,$tahun){
+  function ceksaldo($bulan, $tahun)
+  {
 
-    if($bulan == 1){
+    if ($bulan == 1) {
       $bulan = 12;
       $tahun = $tahun - 1;
-    }else{
+    } else {
       $bulan = $bulan - 1;
       $tahun = $tahun;
     }
 
-    return $this->db->get_where('saldoawal_gp',array('bulan'=>$bulan,'tahun'=>$tahun));
-
+    return $this->db->get_where('saldoawal_gp', array('bulan' => $bulan, 'tahun' => $tahun));
   }
 
-  function ceksaldoall(){
+  function ceksaldoall()
+  {
 
     return $this->db->get('saldoawal_gp');
   }
 
-  function ceksaldoSkrg($bulan,$tahun){
+  function ceksaldoSkrg($bulan, $tahun)
+  {
 
-    return $this->db->get_where('saldoawal_gp',array('bulan'=>$bulan,'tahun'=>$tahun));
+    return $this->db->get_where('saldoawal_gp', array('bulan' => $bulan, 'tahun' => $tahun));
   }
 
-  function cekopname($bulan,$tahun){
+  function cekopname($bulan, $tahun)
+  {
 
-    if($bulan == 1){
+    if ($bulan == 1) {
       $bulan = 12;
       $tahun = $tahun - 1;
-    }else{
+    } else {
       $bulan = $bulan - 1;
       $tahun = $tahun;
     }
 
-    return $this->db->get_where('opname_gp',array('bulan'=>$bulan,'tahun'=>$tahun,));
-
+    return $this->db->get_where('opname_gp', array('bulan' => $bulan, 'tahun' => $tahun,));
   }
 
-  function cekopnameall(){
+  function cekopnameall()
+  {
 
     return $this->db->get('opname_gp');
   }
-  function cekopnameSkrg($bulan,$tahun){
+  function cekopnameSkrg($bulan, $tahun)
+  {
 
-    return $this->db->get_where('opname_gp',array('bulan'=>$bulan,'tahun'=>$tahun));
+    return $this->db->get_where('opname_gp', array('bulan' => $bulan, 'tahun' => $tahun));
   }
 
-  function insert_opname(){
+  function insert_opname()
+  {
 
     $kode_opname      = $this->input->post('kode_opname');
     $tanggal          = $this->input->post('tanggal');
@@ -287,45 +297,47 @@ class Model_produksi extends CI_Model{
       'tahun'             => $tahun,
     );
 
-    $cek            = $this->db->get_where('opname_gp',array('kode_opname'=>$kode_opname))->num_rows();
-    $cekbulan       = $this->db->get_where('opname_gp',array('bulan'=>$bulan,'tahun'=>$tahun))->num_rows();
-    if(empty($cek) && empty($cekbulan)) {
+    $cek            = $this->db->get_where('opname_gp', array('kode_opname' => $kode_opname))->num_rows();
+    $cekbulan       = $this->db->get_where('opname_gp', array('bulan' => $bulan, 'tahun' => $tahun))->num_rows();
+    if (empty($cek) && empty($cekbulan)) {
 
-      $simpansaldo   = $this->db->insert('opname_gp',$data);
-      if($simpansaldo){
-        for($i=1; $i<=$jumproduk; $i++){
-          $kode_barang     = $this->input->post('kode_barang'.$i);
-          $qty             = $this->input->post('qty'.$i);
+      $simpansaldo   = $this->db->insert('opname_gp', $data);
+      if ($simpansaldo) {
+        for ($i = 1; $i <= $jumproduk; $i++) {
+          $kode_barang     = $this->input->post('kode_barang' . $i);
+          $qty             = $this->input->post('qty' . $i);
 
-          $detail_saldo   = array (
+          $detail_saldo   = array(
             'kode_opname'       => $kode_opname,
             'kode_barang'       => $kode_barang,
             'qty'               => $qty
           );
-          $this->db->insert('opname_gp_detail',$detail_saldo);
-
+          $this->db->insert('opname_gp_detail', $detail_saldo);
         }
-        $this->session->set_flashdata('msg',
+        $this->session->set_flashdata(
+          'msg',
           '<div class="alert bg-green alert-dismissible" role="alert">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <i class="material-icons" style="float:left; margin-right:10px">check</i> Data Berhasil Disimpan !
-          </div>');
+          </div>'
+        );
         redirect('produksi/opname');
-
       }
-
-    }else{
-      $this->session->set_flashdata('msg',
+    } else {
+      $this->session->set_flashdata(
+        'msg',
         '<div class="alert bg-red alert-dismissible" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <i class="material-icons" style="float:left; margin-right:10px">check</i> Data Sudah Ada !
-        </div>');
+        </div>'
+      );
       redirect('produksi/inputopname');
     }
   }
 
 
-  function insert_saldoawal(){
+  function insert_saldoawal()
+  {
 
     $kode_saldoawal   = $this->input->post('kode_saldoawal');
     $tanggal          = $this->input->post('tanggal');
@@ -340,68 +352,70 @@ class Model_produksi extends CI_Model{
       'tahun'             => $tahun,
     );
 
-    $cek            = $this->db->get_where('saldoawal_gp',array('kode_saldoawal'=>$kode_saldoawal))->num_rows();
-    $cekbulan       = $this->db->get_where('saldoawal_gp',array('bulan'=>$bulan,'tahun'=>$tahun))->num_rows();
-    if(empty($cek) && empty($cekbulan)) {
+    $cek            = $this->db->get_where('saldoawal_gp', array('kode_saldoawal' => $kode_saldoawal))->num_rows();
+    $cekbulan       = $this->db->get_where('saldoawal_gp', array('bulan' => $bulan, 'tahun' => $tahun))->num_rows();
+    if (empty($cek) && empty($cekbulan)) {
 
-      $simpansaldo   = $this->db->insert('saldoawal_gp',$data);
-      if($simpansaldo){
-        for($i=1; $i<=$jumproduk; $i++){
-          $kode_barang      = $this->input->post('kode_barang'.$i);
-          $qty              = $this->input->post('qty'.$i);
+      $simpansaldo   = $this->db->insert('saldoawal_gp', $data);
+      if ($simpansaldo) {
+        for ($i = 1; $i <= $jumproduk; $i++) {
+          $kode_barang      = $this->input->post('kode_barang' . $i);
+          $qty              = $this->input->post('qty' . $i);
 
-          $detail_saldo   = array (
+          $detail_saldo   = array(
             'kode_saldoawal'    => $kode_saldoawal,
             'kode_barang'       => $kode_barang,
             'qty'               => $qty
           );
-          $this->db->insert('saldoawal_gp_detail',$detail_saldo);
-
+          $this->db->insert('saldoawal_gp_detail', $detail_saldo);
         }
-        $this->session->set_flashdata('msg',
+        $this->session->set_flashdata(
+          'msg',
           '<div class="alert bg-green alert-dismissible" role="alert">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <i class="material-icons" style="float:left; margin-right:10px">check</i> Data Berhasil Disimpan !
-          </div>');
+          </div>'
+        );
         redirect('produksi/saldoawal');
-
       }
-
-    }else{
-      $this->session->set_flashdata('msg',
+    } else {
+      $this->session->set_flashdata(
+        'msg',
         '<div class="alert bg-red alert-dismissible" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
         <i class="material-icons" style="float:left; margin-right:10px">check</i> Data Sudah Ada !
-        </div>');
+        </div>'
+      );
       redirect('produksi/inputsaldoawal');
     }
   }
 
-  function hapuspemasukan(){
+  function hapuspemasukan()
+  {
 
-    $nobukti    = str_replace(".","/",$this->uri->segment(3));
+    $nobukti    = str_replace(".", "/", $this->uri->segment(3));
     $this->db->query("DELETE FROM pemasukan_gp WHERE nobukti_pemasukan = '$nobukti' ");
     $this->db->query("DELETE FROM detail_pemasukan_gp WHERE nobukti_pemasukan = '$nobukti' ");
-
   }
 
-  function hapussaldoawal(){
+  function hapussaldoawal()
+  {
 
-    $nobukti    = str_replace(".","/",$this->uri->segment(3));
+    $nobukti    = str_replace(".", "/", $this->uri->segment(3));
     $this->db->query("DELETE FROM saldoawal_gp WHERE kode_saldoawal = '$nobukti' ");
     $this->db->query("DELETE FROM saldoawal_gp_detail WHERE kode_saldoawal = '$nobukti' ");
-
   }
 
-  function hapusopname(){
+  function hapusopname()
+  {
 
-    $nobukti    = str_replace(".","/",$this->uri->segment(3));
+    $nobukti    = str_replace(".", "/", $this->uri->segment(3));
     $this->db->query("DELETE FROM opname_gp WHERE kode_opname = '$nobukti' ");
     $this->db->query("DELETE FROM opname_gp_detail WHERE kode_opname = '$nobukti' ");
-
   }
 
-  function editdetailsaldoawal(){
+  function editdetailsaldoawal()
+  {
 
     $kodesaldo    = $this->input->post('kodesaldoawal');
     $kode_barang  = $this->input->post('kodebarang');
@@ -414,98 +428,109 @@ class Model_produksi extends CI_Model{
 
     );
 
-    $this->db->where('kode_saldoawal',$kodesaldo);
-    $this->db->where('kode_barang',$kode_barang);
-    $this->db->update('saldoawal_gp_detail',$data);
-
+    $this->db->where('kode_saldoawal', $kodesaldo);
+    $this->db->where('kode_barang', $kode_barang);
+    $this->db->update('saldoawal_gp_detail', $data);
   }
 
-  function getDetailPemasukan(){
+  function getDetailPemasukan()
+  {
 
     $nobukti            = $this->input->post('nobukti');
-    $this->db->join('master_barang_produksi','detail_pemasukan_gp.kode_barang = master_barang_produksi.kode_barang');
-    return $this->db->get_where('detail_pemasukan_gp',array('detail_pemasukan_gp.nobukti_pemasukan'=>$nobukti));
+    $this->db->join('master_barang_produksi', 'detail_pemasukan_gp.kode_barang = master_barang_produksi.kode_barang');
+    return $this->db->get_where('detail_pemasukan_gp', array('detail_pemasukan_gp.nobukti_pemasukan' => $nobukti));
   }
 
-  function getDetailsaldoawal(){
+  function getDetailsaldoawal()
+  {
 
     $kode_saldoawal            = $this->input->post('kode_saldoawal');
-    $this->db->join('master_barang_produksi','saldoawal_gp_detail.kode_barang = master_barang_produksi.kode_barang');
-    return $this->db->get_where('saldoawal_gp_detail',array('saldoawal_gp_detail.kode_saldoawal'=>$kode_saldoawal));
+    $this->db->join('master_barang_produksi', 'saldoawal_gp_detail.kode_barang = master_barang_produksi.kode_barang');
+    return $this->db->get_where('saldoawal_gp_detail', array('saldoawal_gp_detail.kode_saldoawal' => $kode_saldoawal));
   }
 
-  function geteditpemasukan(){
+  function geteditpemasukan()
+  {
 
-    $nobukti    = str_replace(".","/",$this->uri->segment(3));
-    
+    $nobukti    = str_replace(".", "/", $this->uri->segment(3));
+
     // $this->db->join('detail_pemasukan_gp','pemasukan_gp.nobukti_pemasukan = detail_pemasukan_gp.nobukti_pemasukan');
-    return $this->db->get_where('pemasukan_gp',array('pemasukan_gp.nobukti_pemasukan'=>$nobukti));
+    return $this->db->get_where('pemasukan_gp', array('pemasukan_gp.nobukti_pemasukan' => $nobukti));
   }
 
 
-  function geteditpengeluaran(){
+  function geteditpengeluaran()
+  {
 
-    $nobukti    = str_replace(".","/",$this->uri->segment(3));
-    
+    $nobukti    = str_replace(".", "/", $this->uri->segment(3));
+
     // $this->db->join('detail_pemasukan_gp','pemasukan_gp.nobukti_pemasukan = detail_pemasukan_gp.nobukti_pemasukan');
-    return $this->db->get_where('pengeluaran_gp',array('pengeluaran_gp.nobukti_pengeluaran'=>$nobukti));
+    return $this->db->get_where('pengeluaran_gp', array('pengeluaran_gp.nobukti_pengeluaran' => $nobukti));
   }
 
 
-  function getDetailopnamestok(){
+  function getDetailopnamestok()
+  {
 
     $kode_opname            = $this->input->post('kode_opname');
-    $this->db->join('master_barang_produksi','opname_gp_detail.kode_barang = master_barang_produksi.kode_barang');
-    return $this->db->get_where('opname_gp_detail',array('opname_gp_detail.kode_opname'=>$kode_opname));
+    $this->db->join('master_barang_produksi', 'opname_gp_detail.kode_barang = master_barang_produksi.kode_barang');
+    return $this->db->get_where('opname_gp_detail', array('opname_gp_detail.kode_opname' => $kode_opname));
   }
 
-  function getDept(){
+  function getDept()
+  {
 
     return $this->db->get_where('departemen');
   }
 
-  function getSaldoawal(){
+  function getSaldoawal()
+  {
 
     $kode_saldoawal            = $this->input->post('kode_saldoawal');
-    return $this->db->get_where('saldoawal_gp',array('kode_saldoawal'=>$kode_saldoawal));
+    return $this->db->get_where('saldoawal_gp', array('kode_saldoawal' => $kode_saldoawal));
   }
 
-  function getOpname(){
+  function getOpname()
+  {
 
     $kode_opname            = $this->input->post('kode_opname');
-    return $this->db->get_where('opname_gp',array('kode_opname'=>$kode_opname));
+    return $this->db->get_where('opname_gp', array('kode_opname' => $kode_opname));
   }
 
-  function getPemasukan(){
+  function getPemasukan()
+  {
 
     $nobukti            = $this->input->post('nobukti');
-    return $this->db->get_where('pemasukan_gp',array('nobukti_pemasukan'=>$nobukti));
+    return $this->db->get_where('pemasukan_gp', array('nobukti_pemasukan' => $nobukti));
   }
 
-  function getDetailPengeluaran(){
+  function getDetailPengeluaran()
+  {
 
     $nobukti            = $this->input->post('nobukti');
-    $this->db->join('master_barang_produksi','detail_pengeluaran_gp.kode_barang = master_barang_produksi.kode_barang');
-    return $this->db->get_where('detail_pengeluaran_gp',array('detail_pengeluaran_gp.nobukti_pengeluaran'=>$nobukti));
+    $this->db->join('master_barang_produksi', 'detail_pengeluaran_gp.kode_barang = master_barang_produksi.kode_barang');
+    return $this->db->get_where('detail_pengeluaran_gp', array('detail_pengeluaran_gp.nobukti_pengeluaran' => $nobukti));
   }
 
-  function getPengeluaran(){
+  function getPengeluaran()
+  {
 
     $nobukti            = $this->input->post('nobukti');
-    return $this->db->get_where('pengeluaran_gp',array('nobukti_pengeluaran'=>$nobukti));
+    return $this->db->get_where('pengeluaran_gp', array('nobukti_pengeluaran' => $nobukti));
   }
 
-  public function getDataopname($rowno,$rowperpage,$kode_opname="",$tanggal=""){
+  public function getDataopname($rowno, $rowperpage, $kode_opname = "", $tanggal = "")
+  {
 
     $this->db->select('*');
     $this->db->from('opname_gp');
-    $this->db->order_by('tanggal','DESC');
+    $this->db->order_by('tanggal', 'DESC');
 
-    if($kode_opname != ''){
+    if ($kode_opname != '') {
       $this->db->like('kode_opname', $kode_opname);
     }
 
-    if($tanggal != ''){
+    if ($tanggal != '') {
       $this->db->where('tanggal', $tanggal);
     }
 
@@ -514,17 +539,18 @@ class Model_produksi extends CI_Model{
     return $query->result_array();
   }
 
-  public function getrecordopnameCount($kode_opname="",$tanggal=""){
+  public function getrecordopnameCount($kode_opname = "", $tanggal = "")
+  {
 
     $this->db->select('count(*) as allcount');
     $this->db->from('opname_gp');
-    $this->db->order_by('tanggal','DESC');
+    $this->db->order_by('tanggal', 'DESC');
 
-    if($kode_opname != ''){
+    if ($kode_opname != '') {
       $this->db->like('kode_opname', $kode_opname);
     }
 
-    if($tanggal != ''){
+    if ($tanggal != '') {
       $this->db->where('tanggal', $tanggal);
     }
 
@@ -533,17 +559,18 @@ class Model_produksi extends CI_Model{
     return $result[0]['allcount'];
   }
 
-  public function getDataSaldoawal($rowno,$rowperpage,$kode_saldoawal="",$tanggal=""){
+  public function getDataSaldoawal($rowno, $rowperpage, $kode_saldoawal = "", $tanggal = "")
+  {
 
     $this->db->select('*');
     $this->db->from('saldoawal_gp');
-    $this->db->order_by('tanggal','DESC');
+    $this->db->order_by('tanggal', 'DESC');
 
-    if($kode_saldoawal != ''){
+    if ($kode_saldoawal != '') {
       $this->db->like('kode_saldoawal', $kode_saldoawal);
     }
 
-    if($tanggal != ''){
+    if ($tanggal != '') {
       $this->db->where('tanggal', $tanggal);
     }
 
@@ -552,17 +579,18 @@ class Model_produksi extends CI_Model{
     return $query->result_array();
   }
 
-  public function getrecordSaldoawalnCount($kode_saldoawal="",$tanggal=""){
+  public function getrecordSaldoawalnCount($kode_saldoawal = "", $tanggal = "")
+  {
 
     $this->db->select('count(*) as allcount');
     $this->db->from('saldoawal_gp');
-    $this->db->order_by('tanggal','DESC');
+    $this->db->order_by('tanggal', 'DESC');
 
-    if($kode_saldoawal != ''){
+    if ($kode_saldoawal != '') {
       $this->db->like('kode_saldoawal', $kode_saldoawal);
     }
 
-    if($tanggal != ''){
+    if ($tanggal != '') {
       $this->db->where('tanggal', $tanggal);
     }
 
@@ -571,17 +599,18 @@ class Model_produksi extends CI_Model{
     return $result[0]['allcount'];
   }
 
-  public function getDataPemasukan($rowno,$rowperpage,$nobukti="",$tgl_pemasukan=""){
+  public function getDataPemasukan($rowno, $rowperpage, $nobukti = "", $tgl_pemasukan = "")
+  {
 
     $this->db->select('*');
     $this->db->from('pemasukan_gp');
-    $this->db->order_by('tgl_pemasukan','DESC');
+    $this->db->order_by('tgl_pemasukan', 'DESC');
 
-    if($nobukti != ''){
+    if ($nobukti != '') {
       $this->db->like('nobukti_pemasukan', $nobukti);
     }
 
-    if($tgl_pemasukan != ''){
+    if ($tgl_pemasukan != '') {
       $this->db->where('tgl_pemasukan', $tgl_pemasukan);
     }
 
@@ -590,17 +619,18 @@ class Model_produksi extends CI_Model{
     return $query->result_array();
   }
 
-  public function getrecordPemasukanCount($nobukti="",$tgl_pemasukan=""){
+  public function getrecordPemasukanCount($nobukti = "", $tgl_pemasukan = "")
+  {
 
     $this->db->select('count(*) as allcount');
     $this->db->from('pemasukan_gp');
-    $this->db->order_by('tgl_pemasukan','DESC');
+    $this->db->order_by('tgl_pemasukan', 'DESC');
 
-    if($nobukti != ''){
+    if ($nobukti != '') {
       $this->db->like('nobukti_pemasukan', $nobukti);
     }
 
-    if($tgl_pemasukan != ''){
+    if ($tgl_pemasukan != '') {
       $this->db->where('tgl_pemasukan', $tgl_pemasukan);
     }
 
@@ -609,17 +639,18 @@ class Model_produksi extends CI_Model{
     return $result[0]['allcount'];
   }
 
-  public function getDataPengeluaran($rowno,$rowperpage,$nobukti="",$tgl_pengeluaran=""){
+  public function getDataPengeluaran($rowno, $rowperpage, $nobukti = "", $tgl_pengeluaran = "")
+  {
 
     $this->db->select('*');
     $this->db->from('pengeluaran_gp');
-    $this->db->order_by('tgl_pengeluaran,nobukti_pengeluaran','DESC');
+    $this->db->order_by('tgl_pengeluaran,nobukti_pengeluaran', 'DESC');
 
-    if($nobukti != ''){
+    if ($nobukti != '') {
       $this->db->like('nobukti_pengeluaran', $nobukti);
     }
 
-    if($tgl_pengeluaran != ''){
+    if ($tgl_pengeluaran != '') {
       $this->db->where('tgl_pengeluaran', $tgl_pengeluaran);
     }
 
@@ -629,17 +660,18 @@ class Model_produksi extends CI_Model{
     return $query->result_array();
   }
 
-  public function getrecordPengeluaranCount($nobukti="",$tgl_pengeluaran=""){
+  public function getrecordPengeluaranCount($nobukti = "", $tgl_pengeluaran = "")
+  {
 
     $this->db->select('count(*) as allcount');
     $this->db->from('pengeluaran_gp');
-    $this->db->order_by('tgl_pengeluaran','desc');
+    $this->db->order_by('tgl_pengeluaran', 'desc');
 
-    if($nobukti != ''){
+    if ($nobukti != '') {
       $this->db->like('nobukti_pengeluaran', $nobukti);
     }
 
-    if($tgl_pengeluaran != ''){
+    if ($tgl_pengeluaran != '') {
       $this->db->where('tgl_pengeluaran', $tgl_pengeluaran);
     }
 
@@ -648,7 +680,8 @@ class Model_produksi extends CI_Model{
     return $result[0]['allcount'];
   }
 
-  function insertpemasukan_temp(){
+  function insertpemasukan_temp()
+  {
 
     $kode_barang  = $this->input->post('kodebarang');
     $kodeedit     = $this->input->post('kode_edit');
@@ -665,20 +698,20 @@ class Model_produksi extends CI_Model{
 
     );
     if ($kodeedit == "") {
-      $this->db->insert('detailpemasukan_temp_gp',$data);
-    }else{
-      $this->db->where('kode_barang',$kode_barang);
-      $this->db->update('detailpemasukan_temp_gp',$data);
+      $this->db->insert('detailpemasukan_temp_gp', $data);
+    } else {
+      $this->db->where('kode_barang', $kode_barang);
+      $this->db->update('detailpemasukan_temp_gp', $data);
     }
-
   }
 
-  function inputeditpemasukan(){
+  function inputeditpemasukan()
+  {
 
     $kode_barang  = $this->input->post('kodebarang');
     $kodeedit     = $this->input->post('kode_edit');
     $nobukti      = $this->input->post('nobukti');
-    $tgl_pemasukan= $this->input->post('tgl_pemasukan');
+    $tgl_pemasukan = $this->input->post('tgl_pemasukan');
     $departemen   = $this->input->post('departemen');
     $qty        = str_replace(",", "", $this->input->post('qty'));
     $keterangan   = $this->input->post('keterangan');
@@ -693,16 +726,16 @@ class Model_produksi extends CI_Model{
 
     );
     if ($kodeedit == "") {
-      $this->db->insert('detail_pemasukan_gp',$data2);
-    }else{
-      $this->db->where('kode_barang',$kode_barang);
-      $this->db->where('nobukti_pemasukan',$nobukti);
-      $this->db->update('detail_pemasukan_gp',$data2);
+      $this->db->insert('detail_pemasukan_gp', $data2);
+    } else {
+      $this->db->where('kode_barang', $kode_barang);
+      $this->db->where('nobukti_pemasukan', $nobukti);
+      $this->db->update('detail_pemasukan_gp', $data2);
     }
-
   }
 
-  function inputeditpengeluaran(){
+  function inputeditpengeluaran()
+  {
 
     $kode_barang      = $this->input->post('kodebarang');
     $kodeedit         = $this->input->post('kode_edit');
@@ -722,52 +755,52 @@ class Model_produksi extends CI_Model{
 
     );
     if ($kodeedit == "") {
-      $this->db->insert('detail_pengeluaran_gp',$data2);
-    }else{
-      $this->db->where('kode_barang',$kode_barang);
-      $this->db->where('nobukti_pengeluaran',$nobukti);
-      $this->db->update('detail_pengeluaran_gp',$data2);
+      $this->db->insert('detail_pengeluaran_gp', $data2);
+    } else {
+      $this->db->where('kode_barang', $kode_barang);
+      $this->db->where('nobukti_pengeluaran', $nobukti);
+      $this->db->update('detail_pengeluaran_gp', $data2);
     }
-
   }
 
-  function update_pemasukan(){
+  function update_pemasukan()
+  {
 
     $nobukti      = $this->input->post('nobukti');
-    $tgl_pemasukan= $this->input->post('tgl_pemasukan');
+    $tgl_pemasukan = $this->input->post('tgl_pemasukan');
     $departemen   = $this->input->post('departemen');
-    
+
     $data = array(
 
       'tgl_pemasukan'       => $tgl_pemasukan,
       'kode_dept'           => $departemen
 
     );
-    $this->db->where('nobukti_pemasukan',$nobukti);
-    $this->db->update('pemasukan_gp',$data);
-    redirect('produksi/pemasukan','refresh');
-
+    $this->db->where('nobukti_pemasukan', $nobukti);
+    $this->db->update('pemasukan_gp', $data);
+    redirect('produksi/pemasukan', 'refresh');
   }
 
-  function update_pengeluaran(){
+  function update_pengeluaran()
+  {
 
     $nobukti          = $this->input->post('nobukti');
     $tgl_pengeluaran  = $this->input->post('tgl_pengeluaran');
     $departemen       = $this->input->post('departemen');
-    
+
     $data = array(
 
       'tgl_pengeluaran'     => $tgl_pengeluaran,
       'kode_dept'           => $departemen
 
     );
-    $this->db->where('nobukti_pengeluaran',$nobukti);
-    $this->db->update('pengeluaran_gp',$data);
-    redirect('produksi/pengeluaran','refresh');
-
+    $this->db->where('nobukti_pengeluaran', $nobukti);
+    $this->db->update('pengeluaran_gp', $data);
+    redirect('produksi/pengeluaran', 'refresh');
   }
 
-  function insert_pemasukan(){
+  function insert_pemasukan()
+  {
 
     $nobukti              = $this->input->post('nobukti');
     $tgl_pemasukan        = $this->input->post('tgl_pemasukan');
@@ -776,12 +809,12 @@ class Model_produksi extends CI_Model{
 
     $data = array(
 
-     'nobukti_pemasukan'      => $nobukti,
-     'tgl_pemasukan'          => $tgl_pemasukan,
-     'kode_dept'              => $departemen
-   );
+      'nobukti_pemasukan'      => $nobukti,
+      'tgl_pemasukan'          => $tgl_pemasukan,
+      'kode_dept'              => $departemen
+    );
 
-    $this->db->insert('pemasukan_gp',$data);
+    $this->db->insert('pemasukan_gp', $data);
 
     $data = $this->db->query("SELECT * FROM detailpemasukan_temp_gp WHERE id_admin = '$id_admin' ");
 
@@ -795,67 +828,67 @@ class Model_produksi extends CI_Model{
         'keterangan'        => $d->keterangan
 
       );
-      $this->db->insert('detail_pemasukan_gp',$data);
+      $this->db->insert('detail_pemasukan_gp', $data);
     }
 
     $this->db->query("DELETE FROM detailpemasukan_temp_gp WHERE id_admin = '$id_admin' ");
     redirect('produksi/pemasukan');
-
   }
 
-  function getPemasukantemp(){
+  function getPemasukantemp()
+  {
 
     $id_user = $this->session->userdata('id_user');
-    $this->db->join('master_barang_produksi','detailpemasukan_temp_gp.kode_barang = master_barang_produksi.kode_barang');
-    return $this->db->get_where('detailpemasukan_temp_gp',array('id_admin'=>$id_user));
-
+    $this->db->join('master_barang_produksi', 'detailpemasukan_temp_gp.kode_barang = master_barang_produksi.kode_barang');
+    return $this->db->get_where('detailpemasukan_temp_gp', array('id_admin' => $id_user));
   }
 
-  function view_detaileditpemasukan(){
+  function view_detaileditpemasukan()
+  {
 
     $nobukti  = $this->input->post('nobukti');
-    $this->db->join('master_barang_produksi','detail_pemasukan_gp.kode_barang = master_barang_produksi.kode_barang');
-    return $this->db->get_where('detail_pemasukan_gp',array('nobukti_pemasukan'=>$nobukti));
-
+    $this->db->join('master_barang_produksi', 'detail_pemasukan_gp.kode_barang = master_barang_produksi.kode_barang');
+    return $this->db->get_where('detail_pemasukan_gp', array('nobukti_pemasukan' => $nobukti));
   }
 
-  function view_detaileditpengeluaran(){
+  function view_detaileditpengeluaran()
+  {
 
     $nobukti  = $this->input->post('nobukti');
-    $this->db->join('master_barang_produksi','detail_pengeluaran_gp.kode_barang = master_barang_produksi.kode_barang');
-    return $this->db->get_where('detail_pengeluaran_gp',array('nobukti_pengeluaran'=>$nobukti));
-
+    $this->db->join('master_barang_produksi', 'detail_pengeluaran_gp.kode_barang = master_barang_produksi.kode_barang');
+    return $this->db->get_where('detail_pengeluaran_gp', array('nobukti_pengeluaran' => $nobukti));
   }
 
-  function hapus_detailpemasukan_temp(){
+  function hapus_detailpemasukan_temp()
+  {
 
     $kodebarang  = $this->input->post('kodebarang');
     $ket         = $this->input->post('keterangan');
     $idadmin     = $this->input->post('idadmin');
-    $this->db->delete('detailpemasukan_temp_gp',array('kode_barang'=>$kodebarang,'id_admin'=>$idadmin,'keterangan'=>$ket));
-
+    $this->db->delete('detailpemasukan_temp_gp', array('kode_barang' => $kodebarang, 'id_admin' => $idadmin, 'keterangan' => $ket));
   }
 
-  function hapus_detaileditpemasukan(){
+  function hapus_detaileditpemasukan()
+  {
 
     $kodebarang   = $this->input->post('kodebarang');
     $nobukti      = $this->input->post('nobukti');
     $ket          = $this->input->post('keterangan');
-    $this->db->delete('detail_pemasukan_gp',array('kode_barang'=>$kodebarang,'nobukti_pemasukan'=>$nobukti,'keterangan'=>$ket));
-
+    $this->db->delete('detail_pemasukan_gp', array('kode_barang' => $kodebarang, 'nobukti_pemasukan' => $nobukti, 'keterangan' => $ket));
   }
 
 
-  function hapus_detaileditpengeluaran(){
+  function hapus_detaileditpengeluaran()
+  {
 
     $kodebarang   = $this->input->post('kodebarang');
     $nobukti      = $this->input->post('nobukti');
     $ket          = $this->input->post('keterangan');
-    $this->db->delete('detail_pengeluaran_gp',array('kode_barang'=>$kodebarang,'nobukti_pengeluaran'=>$nobukti,'keterangan'=>$ket));
-
+    $this->db->delete('detail_pengeluaran_gp', array('kode_barang' => $kodebarang, 'nobukti_pengeluaran' => $nobukti, 'keterangan' => $ket));
   }
 
-  function insertpengeluaran_temp(){
+  function insertpengeluaran_temp()
+  {
 
     $kode_barang  = $this->input->post('kodebarang');
     $kodeedit     = $this->input->post('kode_edit');
@@ -873,15 +906,15 @@ class Model_produksi extends CI_Model{
     );
 
     if ($kodeedit == "") {
-      $this->db->insert('detailpengeluaran_temp_gp',$data);
-    }else{
-      $this->db->where('kode_barang',$kode_barang);
-      $this->db->update('detailpengeluaran_temp_gp',$data);
+      $this->db->insert('detailpengeluaran_temp_gp', $data);
+    } else {
+      $this->db->where('kode_barang', $kode_barang);
+      $this->db->update('detailpengeluaran_temp_gp', $data);
     }
-
   }
 
-  function insert_pengeluaran(){
+  function insert_pengeluaran()
+  {
 
     $nobukti            = $this->input->post('nobukti');
     $tgl_pengeluaran    = $this->input->post('tgl_pengeluaran');
@@ -896,7 +929,7 @@ class Model_produksi extends CI_Model{
 
     );
 
-    $this->db->insert('pengeluaran_gp',$data);
+    $this->db->insert('pengeluaran_gp', $data);
 
     $data = $this->db->query("SELECT * FROM detailpengeluaran_temp_gp WHERE id_admin = '$id_admin' ")->result();
 
@@ -911,54 +944,52 @@ class Model_produksi extends CI_Model{
         'keterangan'          => $d->keterangan
 
       );
-      $this->db->insert('detail_pengeluaran_gp',$data);
+      $this->db->insert('detail_pengeluaran_gp', $data);
     }
 
     $this->db->query("DELETE FROM detailpengeluaran_temp_gp WHERE id_admin = '$id_admin' ");
     redirect('produksi/pengeluaran');
-
   }
 
-  function getPengeluarantemp(){
+  function getPengeluarantemp()
+  {
 
     $id_user = $this->session->userdata('id_user');
-    $this->db->join('master_barang_produksi','detailpengeluaran_temp_gp.kode_barang = master_barang_produksi.kode_barang');
-    return $this->db->get_where('detailpengeluaran_temp_gp',array('id_admin'=>$id_user));
-
+    $this->db->join('master_barang_produksi', 'detailpengeluaran_temp_gp.kode_barang = master_barang_produksi.kode_barang');
+    return $this->db->get_where('detailpengeluaran_temp_gp', array('id_admin' => $id_user));
   }
 
-  function hapus_detailpengeluaran_temp(){
+  function hapus_detailpengeluaran_temp()
+  {
 
     $kodebarang  = $this->input->post('kodebarang');
     $idadmin     = $this->input->post('idadmin');
     $ket         = $this->input->post('keterangan');
-    $this->db->delete('detailpengeluaran_temp_gp',array('kode_barang'=>$kodebarang,'id_admin'=>$idadmin,'keterangan'=>$ket));
-
+    $this->db->delete('detailpengeluaran_temp_gp', array('kode_barang' => $kodebarang, 'id_admin' => $idadmin, 'keterangan' => $ket));
   }
 
-  function jsonPilihAkun(){
+  function jsonPilihAkun()
+  {
 
     $this->datatables->select('set_coa_cabang.kode_akun,nama_akun');
     $this->datatables->from('set_coa_cabang');
-    $this->datatables->join('coa','set_coa_cabang.kode_akun = coa.kode_akun');
-    $this->datatables->where('kategori','pembelian');
+    $this->datatables->join('coa', 'set_coa_cabang.kode_akun = coa.kode_akun');
+    $this->datatables->where('kategori', 'pembelian');
     $this->datatables->add_column('view', '<a href="#"  data-toggle="modal" data-kode="$1" data-nama="$2" class="btn btn-danger btn-sm waves-effect pilih">Pilih</a>', 'kode_akun,nama_akun');
     return $this->datatables->generate();
-
   }
 
-  function jsonPilihBarang(){
+  function jsonPilihBarang()
+  {
 
     $departemen    = $this->uri->segment(3);
     $this->datatables->select('kode_barang,nama_barang,satuan,master_barang_produksi.kode_dept,jenis_barang');
     $this->datatables->from('master_barang_produksi');
-    $this->datatables->where('master_barang_produksi.status','Aktif');
-    if ($departemen == "Gudang" OR $departemen == "Seasoning") {
-      $this->datatables->where('master_barang_produksi.kode_dept',$departemen);
+    $this->datatables->where('master_barang_produksi.status', 'Aktif');
+    if ($departemen == "Gudang" or $departemen == "Seasoning") {
+      $this->datatables->where('master_barang_produksi.kode_dept', $departemen);
     }
     $this->datatables->add_column('view', '<a href="#"  data-toggle="modal" data-kode="$1" data-nama="$2"  data-jenis="$3" class="btn btn-danger btn-sm waves-effect pilih">Pilih</a>', 'kode_barang,nama_barang,jenis_barang');
     return $this->datatables->generate();
-
   }
-
 }
