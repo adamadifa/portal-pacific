@@ -29,8 +29,11 @@ if ($level == 'Administrator' || $level == 'admin gudang bahan') { ?>
       <a href="<?php echo base_url(); ?>gudangbahan/saldoawal_retur" class="list-group-item list-group-item-action">
         <i class="fa  fa-table mr-2"></i>SALDO AWAL RETUR
       </a>
+      <a href="<?php echo base_url(); ?>gudangbahan/returproduksi" class="list-group-item list-group-item-action">
+        <i class="fa  fa-share mr-2"></i>RETUR PRODUKSI
+      </a>
       <a href="<?php echo base_url(); ?>gudangbahan/retur" class="list-group-item list-group-item-action">
-        <i class="fa  fa-share mr-2"></i>Retur
+        <i class="fa  fa-share mr-2"></i>RETUR
       </a>
     </div>
   </div>
@@ -115,4 +118,4 @@ if ($level == 'Administrator' || $level == 'admin gudang bahan') { ?>
       </div>
     </div>
   <?php } ?>
-  <?php } ?>
+<?php } ?>

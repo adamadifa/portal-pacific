@@ -1309,22 +1309,20 @@ class Model_gudanglogistik extends CI_Model
     $qty          = str_replace(",", "", $this->input->post('jumlah'));
     $keterangan   = $this->input->post('keterangan');
     $kode_edit    = $this->input->post('kode_edit');
-    $id_admin     = $this->session->userdata('id_user');
+    $kode_cabang    = $this->input->post('kode_cabang');
 
     $data = array(
 
       'nobukti_pengeluaran' => $nobukti,
+      'kode_cabang'         => $kode_cabang,
       'kode_barang'         => $kode_barang,
       'qty'                 => $qty,
       'keterangan'          => $keterangan
 
     );
 
-    if ($kode_edit == "1") {
-      $this->db->update('detail_pengeluaran', $data, array('nobukti_pengeluaran' => $nobukti, 'kode_barang' => $kode_barang));
-    } else {
-      $this->db->insert('detail_pengeluaran', $data);
-    }
+    $this->db->delete('detail_pengeluaran', array('nobukti_pengeluaran' => $nobukti, 'kode_barang' => $kode_barang));
+    $this->db->insert('detail_pengeluaran', $data);
   }
 
   function update_pengeluaran()
@@ -1400,6 +1398,7 @@ class Model_gudanglogistik extends CI_Model
 
     $nobukti  = $this->input->post('nobukti');
     $this->db->join('master_barang_pembelian', 'detail_pengeluaran.kode_barang = master_barang_pembelian.kode_barang');
+    $this->db->join('cabang', 'cabang.kode_cabang = detail_pengeluaran.kode_cabang', 'left');
     return $this->db->get_where('detail_pengeluaran', array('nobukti_pengeluaran' => $nobukti));
   }
 

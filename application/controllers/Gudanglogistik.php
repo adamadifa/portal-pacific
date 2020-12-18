@@ -732,6 +732,7 @@ class Gudanglogistik extends CI_Controller
 
     $data['edit']    = $this->Model_gudanglogistik->geteditpengeluaran()->row_array();
     $data['dept']    = $this->Model_gudanglogistik->getDept()->result();
+    $data['cabang']   = $this->Model_cabang->view_cabang()->result();
     $this->template->load('template/template', 'gudanglogistik/edit_pengeluaran', $data);
   }
 
@@ -747,6 +748,7 @@ class Gudanglogistik extends CI_Controller
   {
 
     $data['data']  = $this->Model_gudanglogistik->getdetaileditPengeluaran();
+    $data['cabang']   = $this->Model_cabang->view_cabang()->result();
     $this->load->view('gudanglogistik/view_detaileditpengeluaran', $data);
   }
 
