@@ -92,7 +92,7 @@ class Model_komisi extends CI_Model
     WHERE
       bulan = '$bulan' AND tahun = '$tahun' 
     GROUP BY
-      id_karyawan 
+      id_karyawan,jumlah_target_cashin 
     ) komisicashin ON ( karyawan.id_karyawan = komisicashin.id_karyawan )
     
     LEFT JOIN (
