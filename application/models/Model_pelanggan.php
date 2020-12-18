@@ -167,10 +167,11 @@ class Model_pelanggan extends CI_Model
       'kode_cabang'       => $cabang,
       'id_sales'          => $salesman,
       'limitpel'          => $limitpel,
-      'kepemilikan'         => $kepemilikan,
-      'lama_berjualan'         => $lama_berjualan,
+      'kepemilikan'       => $kepemilikan,
+      'lama_berjualan'    => $lama_berjualan,
       'kecamatan'         => $kecamatan,
       'kelurahan'         => $kelurahan,
+      'jatuhtempo'        => "14",
       'latitude'          => $latitude,
       'longitude'         => $longitude,
       'foto'              => $foto
