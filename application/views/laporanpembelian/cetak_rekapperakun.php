@@ -34,9 +34,9 @@ function angka($nilai)
     foreach ($pmb as $key => $d) {
       if ($d->status == 'PNJ') {
         $debet      = $d->jurnaldebet;
-        $kredit     = $d->total - $d->jurnalkredit;
+        $kredit     = $d->total + $d->jurnalkredit;
       } else {
-        $debet      = $d->total - $d->jurnaldebet;
+        $debet      = $d->total + $d->jurnaldebet;
         $kredit     = $d->jurnalkredit;
       }
       $totaldebet += $debet;
@@ -87,10 +87,10 @@ function angka($nilai)
     foreach ($data as $key => $s) {
 
       if ($s->status == 'PNJ') {
-        $debets      = $s->pmb - $s->pnj - $s->jurnaldebet;
+        $debets      = $s->pmb - $s->pnj + $s->jurnaldebet;
         $kredits     = $s->jurnalkredit;
       } else {
-        $kredits     = $s->pmb - $s->pnj - $s->jurnalkredit;
+        $kredits     = $s->pmb - $s->pnj + $s->jurnalkredit;
         $debets      = $s->jurnaldebet ;
       }
       $totaldebets += $debets;
