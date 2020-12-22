@@ -192,7 +192,7 @@ class Model_laporanlogistik extends CI_Model
     master_barang_pembelian.kode_barang = detail_pemasukan.kode_barang
     INNER JOIN kategori_barang_pembelian ON 
     master_barang_pembelian.kode_kategori = kategori_barang_pembelian.kode_kategori
-    INNER JOIN coa ON 
+    LEFT JOIN coa ON 
     detail_pemasukan.kode_akun = coa.kode_akun
 
     LEFT JOIN (SELECT pembelian.nobukti_pembelian,tgl_pemasukan,nama_supplier FROM pembelian 

@@ -123,6 +123,14 @@ function uang($nilai)
         $hargakeluar      = (($d->totalsa * 1) + ($d->totalpemasukan * 1) + ($d->penyesuaian * 1)) / $qtyrata;
       }
 
+      if ($d->hargapemasukan == "" and $d->hargapemasukan == "0") {
+        $hargamasuk = $d->hargapemasukan + $d->penyesuaian;
+      } else if ($d->hargapemasukan != "") {
+        $hargamasuk = ($d->totalpemasukan * 1) / $d->qtypemasukan + ($d->penyesuaian * 1);
+      } else {
+        $hargamasuk = 0;
+      }
+
       $jmlhpengeluaran  = $hargakeluar * $d->qtypengeluaran;
 
       $jmlstokakhir     = $stokakhir * $hargakeluar;
@@ -176,8 +184,8 @@ function uang($nilai)
         </td>
         <?php if ($kategori == "K001") { ?>
           <td width="90px" align="right">
-            <?php if (!empty($d->hargapemasukan + $d->penyesuaian) and $d->hargapemasukan + $d->penyesuaian != "0") {
-              echo uang($d->hargapemasukan + $d->penyesuaian);
+            <?php if (!empty($hargamasuk) and $hargamasuk != "0") {
+              echo uang($hargamasuk);
             }
             ?>
           </td>
