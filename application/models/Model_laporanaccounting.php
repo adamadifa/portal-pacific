@@ -29,6 +29,11 @@ class Model_laporanaccounting extends CI_Model
     return $this->db->get();
   }
 
+  function coa($kode_akun)
+  {
+    return $this->db->query("SELECT * FROM coa WHERE sub_akun != '0' AND kode_akun = '$kode_akun' ");
+  }
+
   function getSaldoawalBB($bulan, $tahun, $kode_akun)
   {
     $this->db->where('bulan', $bulan);
