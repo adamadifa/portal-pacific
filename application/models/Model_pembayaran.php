@@ -1200,9 +1200,7 @@ class Model_pembayaran extends CI_Model
     if ($status == 1) {
       //$delete = $this->db->delete('setoran_pusat',array('no_giro'=>$id_transfer));
       //$insert = $this->db->insert('setoran_pusat',$data);
-      $update       = $this->db->update('setoran_pusat', $data, array('no_ref' => $id_transfer));
-      $deleteledger = $this->db->delete('ledger_bank', array('no_ref' => $id_transfer));
-      $insertledger = $this->db->insert('ledger_bank', $dataledger);
+
     } else if ($status == 2) {
       //$delete = $this->db->delete('setoran_pusat',array('no_ref'=>$id_transfer));
       $deleteledger = $this->db->delete('ledger_bank', array('no_ref' => $id_transfer));
@@ -1237,7 +1235,7 @@ class Model_pembayaran extends CI_Model
 
     foreach ($datatransfer as $t) {
       $batas  = date('Y-m-d', strtotime("+3 day", strtotime(date($t->tgltransaksi))));
-      // echo $tglcair . "-" . $t->tgltransaksi;
+      //gi echo $tglcair . "-" . $t->tgltransaksi;
       // die;
       if ($status == 1) {
         if ($t->total == $t->jumlah && $tglcair <= $batas) {
@@ -1281,6 +1279,9 @@ class Model_pembayaran extends CI_Model
               );
               $simpanbayar = $this->db->insert('historibayar', $databayar);
               if (!$simpanbayar) {
+                $update       = $this->db->update('setoran_pusat', $data, array('no_ref' => $id_transfer));
+                $deleteledger = $this->db->delete('ledger_bank', array('no_ref' => $id_transfer));
+                $insertledger = $this->db->insert('ledger_bank', $dataledger);
                 $this->db->update('transfer', $datatransferfailed, array('id_transfer' => $t->id_transfer));
               } else {
                 $querypenjualanpend = "SELECT * FROM penjualan_pending
