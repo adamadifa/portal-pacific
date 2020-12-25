@@ -332,7 +332,7 @@ class Model_accounting extends CI_Model
   {
 
     $thn = substr($tahun, 2, 2);
-    $qbukubesar        = "SELECT no_bukti FROM buku_besar WHERE LEFT(no_bukti,6) = 'GJ$bulan$thn' ORDER BY no_bukti DESC LIMIT 1 ";
+    $qbukubesar        = "SELECT no_bukti FROM buku_besar WHERE LEFT(no_bukti,6) = 'BB$bulan$thn' ORDER BY no_bukti DESC LIMIT 1 ";
     // $datapemb = $this->db->query("SELECT detail_pembelian.kode_akun,coa.nama_akun,kode_dept,tgl_pembelian,detail_pembelian.nobukti_pembelian,qty,harga,status,keterangan,detail_pembelian.kode_barang,nama_barang,ket_penjualan,penyesuaian 
     // FROM detail_pembelian 
     // INNER JOIN pembelian ON pembelian.nobukti_pembelian = detail_pembelian.nobukti_pembelian
@@ -371,7 +371,7 @@ class Model_accounting extends CI_Model
 
       $ceknolast      = $this->db->query($qbukubesar)->row_array();
       $nobuktilast    = $ceknolast['no_bukti'];
-      $nobukti        = buatkode($nobuktilast, 'GJ' . $bulan . $thn, 4);
+      $nobukti        = buatkode($nobuktilast, 'GJLK' . $bulan . $thn, 6);
       //var_dump($ceknolast);
       // /die;
       if ($d->status_dk == "D") {
@@ -389,6 +389,7 @@ class Model_accounting extends CI_Model
         'kode_akun' => $kode_akun,
         'debet' => $debet,
         'kredit' => $kredit,
+        'nobukti_transaksi' => $d->nobukti,
         'no_ref' => $d->id
       );
       $this->db->insert('buku_besar', $datakaskecli2);
@@ -414,7 +415,7 @@ class Model_accounting extends CI_Model
     foreach ($dataledger as $d) {
       $ceknolast      = $this->db->query($qbukubesar)->row_array();
       $nobuktilast    = $ceknolast['no_bukti'];
-      $nobukti        = buatkode($nobuktilast, 'GJ' . $bulan . $thn, 4);
+      $nobukti        = buatkode($nobuktilast, 'GJLK' . $bulan . $thn, 6);
       if (in_array($kode_akun, $this->akunbank)) {
         if ($d->status_dk == "D") {
           $kredit = $d->jumlah;
@@ -442,6 +443,7 @@ class Model_accounting extends CI_Model
         'kode_akun' => $kode_akun,
         'debet' => $debet,
         'kredit' => $kredit,
+        'nobukti_transaksi' => $d->no_bukti,
         'no_ref' => $d->no_bukti
       );
       $this->db->insert('buku_besar', $dataledger2);
@@ -612,6 +614,7 @@ class Model_accounting extends CI_Model
         'kode_akun' => $kode_akun,
         'debet' => $debet,
         'kredit' => $kredit,
+        'nobukti_transaksi' => $ledger['no_bukti'],
         'no_ref' => $noref
       );
       $simpan = $this->db->insert('buku_besar', $data);
@@ -635,6 +638,7 @@ class Model_accounting extends CI_Model
         'kode_akun' => $kodeakun,
         'debet' => $debet,
         'kredit' => $kredit,
+        'nobukti_transaksi' => $kaskecil['nobukti'],
         'no_ref' => $noref
       );
       $simpan = $this->db->insert('buku_besar', $data);

@@ -9,7 +9,7 @@ function uang($nilai)
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/table.css">
 <br>
 <b style="font-size:16px; font-family:Calibri">
-  GENERAL JURNAL<br>
+  BUKU BESAR<br>
   PERIODE <?php echo strtoupper($bulan[$bln]) . " " . $tahun; ?>
   <br>
   <br>
@@ -22,7 +22,7 @@ function uang($nilai)
     <tr>
       <td><b>NAMA AKUN</b></td>
       <td>:</td>
-
+      <td><b><?php echo $akun['nama_akun']; ?></b></td>
     </tr>
   </table>
 </b>
