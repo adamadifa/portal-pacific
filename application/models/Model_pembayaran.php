@@ -1236,7 +1236,7 @@ class Model_pembayaran extends CI_Model
 
 
     foreach ($datatransfer as $t) {
-      $batas  = date('Y-m-d', strtotime("+1 day", strtotime(date($t->tgltransaksi))));
+      $batas  = date('Y-m-d', strtotime("+3 day", strtotime(date($t->tgltransaksi))));
       // echo $tglcair . "-" . $t->tgltransaksi;
       // die;
       if ($status == 1) {
