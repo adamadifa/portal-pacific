@@ -347,6 +347,12 @@ class Accounting extends CI_Controller
     $this->load->view('accounting/view_detailsaldoawal', $data);
   }
 
+  function view_tempcostratio()
+  {
+    $data['data']      = $this->Model_accounting->getDataTempCostratio();
+    $this->load->view('accounting/view_tempcostratio', $data);
+  }
+
   function insert_saldoawal()
   {
     $this->Model_accounting->insert_saldoawal();
@@ -355,6 +361,11 @@ class Accounting extends CI_Controller
   function insert_penyesuaian()
   {
     $this->Model_accounting->insert_penyesuaian();
+  }
+
+  function insert_tempcostratio()
+  {
+    $this->Model_accounting->insert_tempcostratio();
   }
 
   function insert_jurnal_umum()
@@ -381,6 +392,11 @@ class Accounting extends CI_Controller
   function hapus_jurnal_umum_temp()
   {
     $this->Model_accounting->hapus_jurnal_umum_temp();
+  }
+
+  function hapus_costratiotemp()
+  {
+    $this->Model_accounting->hapus_costratiotemp();
   }
 
   function hapussaldoawal()

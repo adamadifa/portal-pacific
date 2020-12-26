@@ -454,38 +454,44 @@ class Model_accounting extends CI_Model
   function insertcostratiobiaya()
   {
     $tanggal = $this->input->post('tgl_transaksi');
-    $cabang = $this->input->post('cabang');
-    $kodeakun = $this->input->post('kodeakun');
+    $id_user   = $this->session->userdata('id_user');
     $keterangan = $this->input->post('keterangan');
-    $jumlah = str_replace(".", "", $this->input->post('jumlah'));
-    $sumber = $this->input->post('sumber');
-    $tgltransaksi = explode("-", $tanggal);
-    $bulan = $tgltransaksi[1];
-    $tahun = $tgltransaksi[0];
-    if (strlen($bulan) == 1) {
-      $bulan = "0" . $bulan;
-    } else {
-      $bulan = $bulan;
+    
+    $dataledger = $this->db->query("SELECT costratio_temp.kode_cabang,id,jumlah,nama_cabang,nama_akun,costratio_temp.kode_akun FROM costratio_temp 
+    INNER JOIN coa ON coa.kode_akun=costratio_temp.kode_akun
+    INNER JOIN cabang ON cabang.kode_cabang=costratio_temp.kode_cabang
+    WHERE id_user = '$id_user'
+    ")->result();
+
+    foreach ($dataledger as $d) {
+      $tgltransaksi = explode("-", $tanggal);
+      $bulan = $tgltransaksi[1];
+      $tahun = $tgltransaksi[0];
+      if (strlen($bulan) == 1) {
+        $bulan = "0" . $bulan;
+      } else {
+        $bulan = $bulan;
+      }
+      $thn = substr($tahun, 2, 2);
+      $awal = $tahun . "-" . $bulan . "-01";
+      $akhir = $tahun . "-" . $bulan . "-31";
+      $qcr = "SELECT kode_cr FROM costratio_biaya WHERE tgl_transaksi BETWEEN '$awal' AND '$akhir' ORDER BY kode_cr DESC LIMIT 1 ";
+      $ceknolast = $this->db->query($qcr)->row_array();
+      $nobuktilast = $ceknolast['kode_cr'];
+      $kodecr = buatkode($nobuktilast, "CR" . $bulan . $thn, 4);
+  
+  
+      $datacr = [
+        'kode_cr' => $kodecr,
+        'tgl_transaksi' => $tanggal,
+        'kode_akun'    => $d->kode_akun,
+        'keterangan'   => $keterangan,
+        'kode_cabang'  => $d->kode_cabang,
+        'id_sumber_costratio' => "3",
+        'jumlah' => $d->jumlah
+      ];
+      $simpan = $this->db->insert('costratio_biaya', $datacr);
     }
-    $thn = substr($tahun, 2, 2);
-    $awal = $tahun . "-" . $bulan . "-01";
-    $akhir = $tahun . "-" . $bulan . "-31";
-    $qcr = "SELECT kode_cr FROM costratio_biaya WHERE tgl_transaksi BETWEEN '$awal' AND '$akhir' ORDER BY kode_cr DESC LIMIT 1 ";
-    $ceknolast = $this->db->query($qcr)->row_array();
-    $nobuktilast = $ceknolast['kode_cr'];
-    $kodecr = buatkode($nobuktilast, "CR" . $bulan . $thn, 4);
-
-    $datacr = [
-      'kode_cr' => $kodecr,
-      'tgl_transaksi' => $tanggal,
-      'kode_akun'    => $kodeakun,
-      'keterangan'   => $keterangan,
-      'kode_cabang'  => $cabang,
-      'id_sumber_costratio' => $sumber,
-      'jumlah' => $jumlah
-    ];
-
-    $simpan = $this->db->insert('costratio_biaya', $datacr);
     if ($simpan) {
       $this->session->set_flashdata(
         'msg',
@@ -784,12 +790,37 @@ class Model_accounting extends CI_Model
     $this->db->update('buku_besar', $data);
   }
 
+  function insert_tempcostratio()
+  {
+
+    $kode_akun          = $this->input->post('kode_akun');
+    $jumlah             = str_replace(".", "", $this->input->post('jumlah'));
+    $cabang             = $this->input->post('cabang');
+    $id_user            = $this->session->userdata('id_user');
+
+    $data   = array(
+      'kode_akun'             => $kode_akun,
+      'jumlah'                => $jumlah,
+      'kode_cabang'           => $cabang,
+      'id_user'               => $id_user,
+    );
+    $this->db->insert('costratio_temp', $data);
+  }
+
   function hapus_jurnal_umum_temp()
   {
 
     $kode_akun            = $this->input->post('kode_akun');
     $id_user              = $this->session->userdata('id_user');
     return $this->db->query("DELETE FROM jurnal_umum_temp WHERE kode_akun = '$kode_akun' AND id_user = '$id_user' ");
+  }
+
+  function hapus_costratiotemp()
+  {
+
+    $id            = $this->input->post('id');
+    $id_user       = $this->session->userdata('id_user');
+    return $this->db->query("DELETE FROM costratio_temp WHERE id = '$id' AND id_user = '$id_user' ");
   }
 
   function getJurnalUmumTemp()
@@ -821,6 +852,16 @@ class Model_accounting extends CI_Model
     return $this->db->query("SELECT * FROM buku_besar 
     INNER JOIN coa ON coa.kode_akun=buku_besar.kode_akun
     WHERE sumber = 'GU' AND no_bukti = '$nobukti'
+    ");
+  }
+
+  function getDataTempCostratio()
+  {
+    $id_user   = $this->session->userdata('id_user');
+    return $this->db->query("SELECT id,jumlah,nama_cabang,nama_akun,costratio_temp.kode_akun FROM costratio_temp 
+    INNER JOIN coa ON coa.kode_akun=costratio_temp.kode_akun
+    INNER JOIN cabang ON cabang.kode_cabang=costratio_temp.kode_cabang
+    WHERE id_user = '$id_user'
     ");
   }
 }
