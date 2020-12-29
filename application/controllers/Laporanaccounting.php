@@ -24,6 +24,7 @@ class Laporanaccounting extends CI_Controller
     $data['saldoawal'] = $this->Model_laporanaccounting->getSaldoawalBB($data['bln'], $data['tahun'], $data['kode_akun'])->row_array();
     $data['bukubesar'] = $this->Model_laporanaccounting->getBukubesar($data['bln'], $data['tahun'], $data['kode_akun'])->result();
     $data['bulan'] = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember");
+    $data['akun']       = $this->Model_laporanaccounting->coa($data['kode_akun'])->row_array();
     $this->load->view('laporanaccounting/cetak_bukubesar', $data);
   }
 

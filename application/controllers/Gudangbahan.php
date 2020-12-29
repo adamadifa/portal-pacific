@@ -12,19 +12,19 @@ class Gudangbahan extends CI_Controller
   function returproduksi($rowno = 0)
   {
 
-    $nobukti           = "";
+    $nobukti          = "";
     $tgl_pengeluaran  = "";
     $kode_dept        = "";
 
     if ($this->input->post('submit') != NULL) {
 
-      $nobukti                   = $this->input->post('nobukti');
-      $tgl_pengeluaran         = $this->input->post('tgl_pengeluaran');
+      $nobukti                  = $this->input->post('nobukti');
+      $tgl_pengeluaran          = $this->input->post('tgl_pengeluaran');
       $kode_dept                = $this->input->post('kode_dept');
 
       $data   = array(
-        'nobukti'                => $nobukti,
-        'tgl_pengeluaran'      => $tgl_pengeluaran,
+        'nobukti'               => $nobukti,
+        'tgl_pengeluaran'       => $tgl_pengeluaran,
         'kode_dept'             => $kode_dept,
       );
       $this->session->set_userdata($data);

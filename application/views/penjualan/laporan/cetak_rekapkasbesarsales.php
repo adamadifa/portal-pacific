@@ -37,24 +37,32 @@ if ($dari < '2018-09-01') {
       <tr bgcolor="#024a75" style="color:white; font-size:12;">
         <th>ID SALES</th>
         <th>NAMA SALES</th>
-        <th>TOTAL KAS BESAR</th>
+        <th>Cash IN</th>
+        <th>Voucher</th>
+        <th>Total</th>
       </tr>
     </thead>
     <tbody>
-      <?php $total = 0;
+      <?php $totalvoucher = 0;
+      $totalcashin =  0;
       foreach ($rekapkasbesarsales as $r) {
-        $total = $total + $r->totalkasbesar; ?>
+        $totalcashin = $totalcashin + $r->cashin;
+        $totalvoucher = $totalvoucher + $r->voucher ?>
         <tr style="font-size:12">
           <td style="font-weight:bold"><?php echo strtoUpper($r->id_karyawan); ?></td>
           <td style="font-weight:bold"><?php echo strtoUpper($r->nama_karyawan); ?></td>
-          <td style="text-align:right; font-weight:bold"><?php echo uang($r->totalkasbesar); ?></td>
+          <td style="text-align:right; font-weight:bold"><?php echo uang($r->cashin); ?></td>
+          <td style="text-align:right; font-weight:bold"><?php echo uang($r->voucher); ?></td>
+          <td style="text-align:right; font-weight:bold"><?php echo uang($r->voucher + $r->cashin); ?></td>
         </tr>
       <?php } ?>
     </tbody>
     <tfoot>
       <tr bgcolor="#024a75" style="color:white; font-size:12;">
         <td style="font-weight:bold" colspan="2">TOTAL</td>
-        <td style="text-align:right; font-weight:bold"><?php echo uang($total); ?></td>
+        <td style="text-align:right; font-weight:bold"><?php echo uang($totalcashin); ?></td>
+        <td style="text-align:right; font-weight:bold"><?php echo uang($totalvoucher); ?></td>
+        <td style="text-align:right; font-weight:bold"><?php echo uang($totalvoucher + $totalcashin); ?></td>
       </tr>
     </tfoot>
   <?php } ?>

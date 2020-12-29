@@ -18,6 +18,12 @@
     </div>
   </div>
   <div class="row mb-3">
+    <label class="form-label">Keterangan</label>
+    <div class="form-group">
+      <input type="text" id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" />
+    </div>
+  </div>
+  <div class="row mb-3">
     <label class="form-label">Cabang</label>
     <div class="form-group">
       <select name="cabang" id="cabang2" class="form-select">
@@ -45,27 +51,34 @@
     </div>
   </div>
   <div class="row mb-3">
-    <label class="form-label">Keterangan</label>
     <div class="form-group">
-      <input type="text" id="keterangan" name="keterangan" class="form-control" placeholder="Keterangan" />
+      <a href="#" id="inserttempcostratio" class="btn btn-danger">Tambah</a>
     </div>
   </div>
   <div class="row mb-3">
-    <label class="form-label">Sumber</label>
+    <label class="form-label"></label>
     <div class="form-group">
-      <select name="sumber" id="sumber" class="form-select">
-        <option value="">-- Pilih Sumber --</option>
-        <?php foreach ($sumber as $s) { ?>
-          <option value="<?php echo $s->id_sumber_costratio; ?>"><?php echo strtoupper($s->nama_sumber); ?></option>
-        <?php } ?>
-      </select>
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped">
+          <thead class="thead-dark">
+            <th>No</th>
+            <th>Kode Akun</th>
+            <th>Nama Akun</th>
+            <th>Jumlah</th>
+            <th>Cabang</th>
+            <th>Aksi</th>
+          </thead>
+          <tbody id="loadtempcostratio">
+
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
   <div class="form-group">
     <div class="d-flex justify-content-end">
       <button type="submit" name="simpan" class="btn btn-primary btn-block" value="1"><i class="fa fa-save mr-2"></i>SIMPAN</button>
     </div>
-  </div>
   </div>
 </form>
 <script>
@@ -115,25 +128,60 @@
         swal("Oops!", "Tanggal Masih Kosong!", "warning");
         $("#tanggal").focus()
         return false;
-      } else if (cabang == "") {
-        swal("Oops!", "Cabang Masih Kosong!", "warning");
-        return false;
-      } else if (kodeakun == "") {
-        swal("Oops!", "Kode Akun Masih Kosong!", "warning");
-        return false;
       } else if (sumber == "") {
         swal("Oops!", "Sumber  Masih Kosong!", "warning");
         return false;
       } else if (keterangan == "") {
         swal("Oops!", "Keterangan  Masih Kosong!", "warning");
         return false;
-      } else if (jumlah == "") {
-        swal("Oops!", "Jumlah Masih Kosong!", "warning");
-        $("#jumlah").focus()
-        return false;
       } else {
         return true;
       }
     });
+
+    tampiltemp();
+
+    function tampiltemp() {
+      $.ajax({
+        type: 'POST',
+        url: '<?php echo base_url(); ?>accounting/view_tempcostratio',
+        data: '',
+        cache: false,
+        success: function(html) {
+
+          $("#loadtempcostratio").html(html);
+
+        }
+      });
+    }
+
+    $("#inserttempcostratio").click(function(e) {
+      var jumlah = $("#jumlah").val();
+      var kode_akun = $("#kodeakun").val();
+      var cabang = $("#cabang2").val();
+      if (jumlah == "") {
+        swal("Oops!", "Jumlah Harus Diisi !", "warning");
+      } else if (kode_akun == "") {
+        swal("Oops!", "Akun Harus Dipilih !", "warning");
+      } else {
+        $.ajax({
+          type: 'POST',
+          url: '<?php echo base_url(); ?>accounting/insert_tempcostratio',
+          data: {
+            kode_akun: kode_akun,
+            cabang: cabang,
+            jumlah: jumlah
+          },
+          cache: false,
+          success: function(respond) {
+            tampiltemp();
+
+            $('#jumlah').val("");
+            $('#cabang2').val("");
+          }
+        });
+      }
+    });
+
   })
 </script>
