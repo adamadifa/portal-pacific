@@ -258,6 +258,12 @@ if ($level == "Administrator") {
       <a href="<?php echo base_url(); ?>penjualan/penjualanpend" class="list-group-item list-group-item-action">
         <i class="fa fa-history mr-2"></i>Penjualan Pending
       </a>
+      <a href="<?php echo base_url(); ?>penjualan/limitkreditv2" class="list-group-item list-group-item-action">
+        <i class="fa fa-money mr-2"></i>Pengajuan Limit Kredit
+      </a>
+      <a href="<?php echo base_url(); ?>penjualan/jatuhtempo" class="list-group-item list-group-item-action">
+        <i class="fa fa-calendar-times-o mr-2"></i>Pengajuan Jatuh Tempo
+      </a>
     </div>
   </div>
   <div class="card">
