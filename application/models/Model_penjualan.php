@@ -4692,9 +4692,7 @@ class Model_penjualan extends CI_Model
     // die;
     foreach ($getpenjualanpending as $d) {
       $query = "SELECT
-						penjualan.no_fak_penj,
-						penjualan.total AS totalpenjualan,
-						retur.total AS totalretur,
+						
 						SUM(((IFNULL(penjualan.total, 0)) - (IFNULL(retur.total, 0)))) AS totalpiutang,
 						SUM(jmlbayar) AS jmlbayar
 					FROM penjualan
@@ -4717,8 +4715,7 @@ class Model_penjualan extends CI_Model
 						penjualan.no_fak_penj = retur.no_fak_penj
 					)
 					WHERE
-            penjualan.kode_pelanggan = '$kode_pelanggan'
-            GROUP BY penjualan.no_fak_penj";
+            penjualan.kode_pelanggan = '$kode_pelanggan'";
 
 
 
@@ -4800,18 +4797,28 @@ class Model_penjualan extends CI_Model
             $simpanbayar = $this->db->insert('historibayar', $databayar);
           }
         }
+        $this->session->set_flashdata(
+          'msg',
+          '<div class="alert bg-green text-white alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <i class="fa fa-check" style="float:left; margin-right:10px"></i> Data Berhasil Disimpan !
+          </div>'
+        );
+        redirect('penjualan/penjualanpend');
+      } else {
+        $this->session->set_flashdata(
+          'msg',
+          '<div class="alert bg-orange text-white alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <i class="fa fa-info" style="float:left; margin-right:10px"></i> Data Transaksi Masih Melebihi Limit!
+          </div>'
+        );
+        redirect('penjualan/penjualanpend');
       }
     }
 
     // die;
-    $this->session->set_flashdata(
-      'msg',
-      '<div class="alert bg-green text-white alert-dismissible" role="alert">
-					<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-					<i class="fa fa-check" style="float:left; margin-right:10px"></i> Data Berhasil Disimpan !
-			</div>'
-    );
-    redirect('penjualan/penjualanpend');
+
   }
 
   function inputsetorangiro()

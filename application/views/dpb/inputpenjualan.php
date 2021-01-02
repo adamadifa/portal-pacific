@@ -304,6 +304,7 @@
 
 
     });
+
     $('#mytable tbody').on('click', 'a', function() {
       $("#nodpb").val($(this).attr("data-nodpb"));
       $("#tgl_pengambilan").val($(this).attr("data-tglpengambilan"));
@@ -315,7 +316,6 @@
       $("#datadpb").modal("hide");
       loadNoMutasi();
     });
-
 
   });
 </script>

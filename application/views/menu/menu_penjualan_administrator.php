@@ -262,7 +262,24 @@ if ($level == "Administrator") {
         <i class="fa fa-money mr-2"></i>Pengajuan Limit Kredit
       </a>
       <a href="<?php echo base_url(); ?>penjualan/jatuhtempo" class="list-group-item list-group-item-action">
+<<<<<<< HEAD
         <i class="fa fa-calendar-times-o mr-2"></i>Pengajuan Jatuh Tempo
+=======
+        <i class="fa fa-money mr-2"></i>Pengajuan Jatuh Tempo
+      </a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="list-group">
+      <a href="#" class="list-group-item list-group-item-action active">
+        Approval Pengajuan
+      </a>
+      <a href="<?php echo base_url(); ?>penjualan/approvallimitv2" class="list-group-item list-group-item-action">
+        <i class="fa fa-check-square mr-2"></i>Approval Limit Kredit
+      </a>
+      <a href="<?php echo base_url(); ?>penjualan/approvejatuhtempo" class="list-group-item list-group-item-action">
+        <i class="fa fa-calendar-check-o mr-2"></i>Approval Jatuh Tempo
+>>>>>>> f1a16dc29df78f73db9c62d159f16b149ee2db51
       </a>
     </div>
   </div>
