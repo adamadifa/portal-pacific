@@ -185,7 +185,7 @@ $level = $this->session->userdata('level_user');
                     <td align="center">
                       <?php
 
-                      if ($level == 'Administrator') {
+                      if ($level == 'Administrator' or $level == 'manager accounting') {
                         if ($cek == 0) {
                       ?>
                           <?php if ($d['status'] != '2') { ?>
