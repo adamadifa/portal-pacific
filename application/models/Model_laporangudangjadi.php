@@ -606,9 +606,9 @@ class Model_laporangudangjadi extends CI_Model
 			,jumlah,0)) as sisamutasi,
 
 			SUM(IF(mc.tgl_mutasi_gudang_cabang >= '$mulai' AND mc.tgl_mutasi_gudang_cabang < '$dari' AND mc.kode_cabang='$cabang'
-				AND kondisi !='BAD' AND inout_bad='IN'
+				AND kondisi ='BAD' AND inout_bad='IN'
 			,jumlah,0)) - SUM(IF(mc.tgl_mutasi_gudang_cabang >= '$mulai' AND mc.tgl_mutasi_gudang_cabang < '$dari' AND mc.kode_cabang='$cabang'
-				AND kondisi !='BAD' AND inout_bad='OUT'
+				AND kondisi ='BAD' AND inout_bad='OUT'
 			,jumlah,0)) as sisamutasibad
 		FROM master_barang m
 		LEFT JOIN

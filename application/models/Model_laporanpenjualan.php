@@ -138,6 +138,7 @@ GROUP BY
 		}
 		$query = "SELECT
 					penjualan_pending.no_fak_penj AS no_fak_penj,
+					penjualan.no_fak_penj as cekpenjualan,
 					penjualan_pending.tgltransaksi AS tgltransaksi,
 					penjualan_pending.kode_pelanggan AS kode_pelanggan,
 					pelanggan.nama_pelanggan AS nama_pelanggan,
@@ -169,21 +170,17 @@ GROUP BY
 					karyawan.nama_karyawan AS nama_karyawan,
 					penjualan_pending.jatuhtempo AS jatuhtempo
 				FROM
-					(
-					(
-					(
-					( penjualan_pending JOIN pelanggan ON ( ( penjualan_pending.kode_pelanggan = pelanggan.kode_pelanggan ) ) )
-					JOIN karyawan ON ( ( penjualan_pending.id_karyawan = karyawan.id_karyawan ) )
-					)
+					(((( penjualan_pending
+					JOIN pelanggan ON (( penjualan_pending.kode_pelanggan = pelanggan.kode_pelanggan)))
+					JOIN karyawan ON (( penjualan_pending.id_karyawan = karyawan.id_karyawan )))
 					LEFT JOIN
 					(
 						select retur.no_fak_penj AS no_fak_penj,sum(retur.subtotal_gb) AS totalgb,sum(retur.subtotal_pf) AS totalpf from retur WHERE tglretur BETWEEN '$dari' AND '$sampai' group by retur.no_fak_penj
-					) r ON ( penjualan_pending.no_fak_penj = r.no_fak_penj )
-					)
-					LEFT JOIN view_historibayar ON ( ( penjualan_pending.no_fak_penj = view_historibayar.no_fak_penj ) )
-					)
+					) r ON ( penjualan_pending.no_fak_penj = r.no_fak_penj ))
+					LEFT JOIN view_historibayar ON ( ( penjualan_pending.no_fak_penj = view_historibayar.no_fak_penj )))
+					LEFT JOIN penjualan ON penjualan_pending.no_fak_penj = penjualan.no_fak_penj
 
-				WHERE tgltransaksi BETWEEN '$dari' AND '$sampai'"
+				WHERE penjualan_pending.tgltransaksi BETWEEN '$dari' AND '$sampai'"
 			. $cabang
 			. $salesman
 			. $pelanggan
