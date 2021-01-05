@@ -1,6 +1,6 @@
 <?php
 $level = $this->session->userdata('level_user');
-if ($level == "Administrator" || $level == "admin pembelian 2" || $level == "admin pembelian") {
+if ($level == "Administrator" || $level == "admin pembelian 2" || $level == "admin pembelian" || $level == "manager pembelian") {
 ?>
   <div class="card">
     <div class="list-group">
@@ -28,6 +28,9 @@ if ($level == "Administrator" || $level == "admin pembelian 2" || $level == "adm
       </a>
       <a href="<?php echo base_url(); ?>pembelian/jurnalkoreksi" class="list-group-item list-group-item-action">
         <i class="fa  fa-file-text-o mr-2"></i>Jurnal Koreksi
+      </a>
+      <a href="<?php echo base_url(); ?>pembelian/jatuhtempo" class="list-group-item list-group-item-action">
+        <i class="fa  fa-file-text-o mr-2"></i>Jatuh Tempo
       </a>
     </div>
   </div>
@@ -65,6 +68,9 @@ if ($level == "Administrator" || $level == "admin pembelian 2" || $level == "adm
       </a>
       <a href="<?php echo base_url(); ?>laporanpembelian/rekapperakun" class="list-group-item list-group-item-action">
         <i class="fa  fa-file-o mr-2"></i>Laporan Rekap Per-Akun
+      </a>
+      <a href="<?php echo base_url(); ?>laporanpembelian/rekapkontrabon" class="list-group-item list-group-item-action">
+        <i class="fa  fa-file-o mr-2"></i>Rekap Kontrabons
       </a>
     </div>
   </div>

@@ -179,6 +179,8 @@ class Dashboard extends CI_Controller
       $this->template->load('template/template', 'dashboard/dashboard_admingdl.php');
     } elseif ($level_user == "spv accounting 2") {
       $this->template->load('template/template', 'dashboard/dashboard_admingdl.php');
+    } elseif ($level_user == "manager pembelian") {
+      $this->template->load('template/template', 'dashboard/dashboard_admingdl.php');
     }
   }
 

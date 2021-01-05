@@ -494,6 +494,8 @@ class Pembelian extends CI_Controller
   {
     $this->Model_pembelian->update_kontrabon();
   }
+
+
   function index($rowno = 0)
   {
     // Search text
@@ -958,12 +960,15 @@ class Pembelian extends CI_Controller
         $dari = $this->session->userdata('dari');
       }
       if ($this->session->userdata('sampai') != NULL) {
-        $dari = $this->session->userdata('sampai');
+        $sampai = $this->session->userdata('sampai');
       }
       if ($this->session->userdata('departemen') != NULL) {
         $departemen = $this->session->userdata('departemen');
       }
     }
+
+    //echo $dari;
+    //die;
     // Row per page
     $rowperpage = 100;
     // Row position
@@ -1301,5 +1306,44 @@ class Pembelian extends CI_Controller
   function hapusjurnalkoreksi()
   {
     $this->Model_pembelian->hapusjurnalkoreksi();
+  }
+
+  function addkontrabon()
+  {
+    $nobukti = str_replace(".", "/", $this->uri->segment(3));
+    $id_user = $this->session->userdata('id_user');
+    $pembelian = $this->Model_pembelian->getAlldatapembelian($nobukti)->row_array();
+    $data = array(
+      'nobukti_pembelian' => $nobukti,
+      'kode_supplier' => $pembelian['kode_supplier'],
+      'jmlbayar' => $pembelian['harga'] + $pembelian['penyesuaian'],
+      'id_admin' => $id_user
+    );
+
+    $simpan = $this->Model_pembelian->insertkbfromjatuhtempo($data);
+    if ($simpan == 1) {
+      $this->session->set_flashdata('msg', '<div class="alert alert-success">Data Berhasil Ditambahkan </div>');
+      redirect('pembelian/jatuhtempo');
+    }
+  }
+
+  function approvekontrabon()
+  {
+    $nokontrabon = str_replace(".", "/", $this->uri->segment(3));
+    $update = $this->Model_pembelian->approvekontrabon($nokontrabon);
+    if ($update == 1) {
+      $this->session->set_flashdata('msg', '<div class="alert alert-success">No Kontrabon Berhasil di Approve </div>');
+      redirectPreviousPage();
+    }
+  }
+
+  function batalkankontrabon()
+  {
+    $nokontrabon = str_replace(".", "/", $this->uri->segment(3));
+    $update = $this->Model_pembelian->batalkankontrabon($nokontrabon);
+    if ($update == 1) {
+      $this->session->set_flashdata('msg', '<div class="alert alert-success">No Kontrabon Berhasil di Batalkan </div>');
+      redirectPreviousPage();
+    }
   }
 }

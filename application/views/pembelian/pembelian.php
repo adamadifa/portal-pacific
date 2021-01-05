@@ -97,6 +97,7 @@
                     <th>Peny JK</th>
                     <th>Total</th>
                     <th>Bayar</th>
+                    <th>KB</th>
                     <th>Ket</th>
                     <?php
                     if ($this->session->userdata('level_user') == 'Administrator' || $this->session->userdata('level_user') == 'admin pembelian 2' || $this->session->userdata('level_user') == 'admin pajak' || $this->session->userdata('level_user') == 'admin pembelian') {
@@ -130,6 +131,13 @@
                       <td align="Right"><?php echo number_format($d['penyesuaian'], '2', ',', '.'); ?></td>
                       <td align="Right"><?php echo number_format($d['harga'] + $d['penyesuaian'], '2', ',', '.'); ?></td>
                       <td align="Right"><?php echo number_format($d['jmlbayar'], '2', ',', '.'); ?></td>
+                      <td>
+                        <?php
+                        if (!empty($d['kontrabon'])) {
+                          echo '<span class="badge bg-green">' . $d['kontrabon'] . '</span>';
+                        }
+                        ?>
+                      </td>
                       <td>
                         <?php
                         $totalharga = $d['harga'] + $d['penyesuaian'];

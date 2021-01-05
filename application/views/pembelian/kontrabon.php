@@ -33,7 +33,8 @@
                         <line x1="8" y1="3" x2="8" y2="7" />
                         <line x1="4" y1="11" x2="20" y2="11" />
                         <line x1="11" y1="15" x2="12" y2="15" />
-                        <line x1="12" y1="15" x2="12" y2="18" /></svg>
+                        <line x1="12" y1="15" x2="12" y2="18" />
+                      </svg>
                     </span>
                   </div>
                 </div>
@@ -93,6 +94,7 @@
                   <th>Total Bayar</th>
                   <th>Keterangan</th>
                   <th>Jenis Bayar</th>
+                  <th>Status</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
@@ -122,15 +124,40 @@
                     </td>
                     <td><?php echo $d['jenisbayar']; ?></td>
                     <td>
+                      <?php
+                      if ($d['status'] == 1) {
+                        echo "<span class='badge bg-green'>Approved</span>";
+                      } else {
+                        echo "<span class='badge bg-orange'>Pending</span>";
+                      }
+                      ?>
+                    </td>
+                    <td>
 
                       <a href="#" data-nokontrabon="<?php echo $d['no_kontrabon']; ?>" class="btn btn-sm btn-primary detail">Detail</a>
-                      <a href="<?php echo base_url(); ?>pembelian/cetakkontrabon/<?php echo $nokontrabon; ?>" class="btn btn-sm btn-primary">Cetak</a>
                       <?php
-                      if (empty($d['tglbayar']) && $d['kategori'] != 'TN') {
+                      if ($this->session->userdata('level_user') == "manager pembelian") {
+                        if (empty($d['tglbayar'])) {
+                          if ($d['status'] == 1) {
                       ?>
-                        <a href="<?php echo base_url(); ?>pembelian/editkontrabon/<?php echo $nokontrabon; ?>" class="btn btn-sm btn-info">Edit</a>
-                        <a href="#" data-href="<?php echo base_url(); ?>pembelian/hapuskontrabon/<?php echo $nokontrabon; ?>" class="btn btn-sm btn-danger hapus">Hapus</a>
+                            <a href="<?php echo base_url(); ?>pembelian/batalkankontrabon/<?php echo $nokontrabon; ?>" class="btn btn-sm btn-danger">Batalkan</a>
+                          <?php
+                          } else {
+                          ?>
+                            <a href="<?php echo base_url(); ?>pembelian/approvekontrabon/<?php echo $nokontrabon; ?>" class="btn btn-sm btn-success">Approve</a>
+                        <?php
+                          }
+                        }
+                      } else {
+                        ?>
+                        <a href="<?php echo base_url(); ?>pembelian/cetakkontrabon/<?php echo $nokontrabon; ?>" class="btn btn-sm btn-primary">Cetak</a>
+                        <?php
+                        if (empty($d['tglbayar']) && $d['kategori'] != 'TN') {
+                        ?>
+                          <a href="<?php echo base_url(); ?>pembelian/editkontrabon/<?php echo $nokontrabon; ?>" class="btn btn-sm btn-info">Edit</a>
+                          <a href="#" data-href="<?php echo base_url(); ?>pembelian/hapuskontrabon/<?php echo $nokontrabon; ?>" class="btn btn-sm btn-danger hapus">Hapus</a>
                       <?php
+                        }
                       }
                       ?>
 
