@@ -960,9 +960,14 @@ class Laporanpenjualan extends CI_Controller
     $tglbeforebulan   = $cekbeforebulan['tgl_diterimapusat'];
     if (empty($tglnextbulan)) {
       $data['sampai'] = date("Y-m-t", strtotime($dari));
+      $b = "A";
     } else {
+      $b = "B";
       $data['sampai'] = $ceknextbulan['tgl_diterimapusat'];
     }
+
+    echo $b . $data['sampai'];
+
 
     if (empty($tglbeforebulan)) {
       $data['fromlast'] = $dari;

@@ -2282,15 +2282,21 @@ GROUP BY
 		$this->db->order_by('tgl_diterimapusat', 'desc');
 		$this->db->limit(1);
 		return $this->db->get_where('setoran_pusat', array(
-			'omset_bulan' => $bulan, 'omset_tahun' => $thn, 'MONTH(tgl_diterimapusat)' => $bln,
+			'omset_bulan' => $bulan, 'omset_tahun' => $tahun, 'MONTH(tgl_diterimapusat)' => $bln,
 			'YEAR(tgl_diterimapusat)' => $thn, 'kode_cabang' => $cabang
 		));
 	}
 
 	function cekBeforeBulan($cabang, $bulan, $tahun)
 	{
-		$bln = $bulan - 1;
-		$thn = $tahun;
+		if ($bulan == 1) {
+			$bln = 12;
+			$thn = $tahun - 1;
+		} else {
+
+			$bln = $bulan - 1;
+			$thn = $tahun;
+		}
 		$this->db->order_by('tgl_diterimapusat', 'desc');
 		$this->db->limit(1);
 		return $this->db->get_where('setoran_pusat', array(
