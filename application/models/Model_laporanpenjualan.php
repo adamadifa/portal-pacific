@@ -2203,7 +2203,7 @@ GROUP BY
 		$tahun 	 = $tanggal[0];
 		$mulai   = $tahun . "-" . $bulan . "-" . "01";
 		$this->db->where('tgl_lhp >=', $mulai);
-		$this->db->where('tgl_lhp <', $dari);
+		$this->db->where('tgl_lhp <=', $dari);
 		$this->db->where('kode_cabang', $cabang);
 		$this->db->select('SUM(setoran_logam) as uanglogam,SUM(setoran_kertas) as uangkertas,SUM(setoran_bg) as giro,SUM(girotocash) as girotocash,SUM(setoran_transfer) as transfer');
 		$this->db->from('setoran_penjualan');
