@@ -538,7 +538,7 @@ GROUP BY
 	function kasbesar($dari, $sampai, $cabang = null, $salesman = null, $pelanggan = null, $jenisbayar = null)
 	{
 
-		$this->db->select('historibayar.no_fak_penj,nama_karyawan,tgltransaksi,tglbayar,bayar,bayar as bayarterakhir,girotocash,status_bayar,date_format(historibayar.date_created, "%d %M %Y %H:%i:%s") as date_created, date_format(historibayar.date_updated, "%d %M %Y %H:%i:%s") as date_updated,
+		$this->db->select('historibayar.no_fak_penj,karyawan.nama_karyawan,k.nama_karyawan as penagih,tgltransaksi,tglbayar,bayar,bayar as bayarterakhir,girotocash,status_bayar,date_format(historibayar.date_created, "%d %M %Y %H:%i:%s") as date_created, date_format(historibayar.date_updated, "%d %M %Y %H:%i:%s") as date_updated,
 			(
 				SELECT IFNULL(penjualan.total, 0) - (ifnull(r.totalpf, 0) - ifnull(r.totalgb, 0)) AS totalpiutang
 				FROM penjualan
@@ -562,6 +562,7 @@ GROUP BY
 		$this->db->join('v_movefaktur', 'historibayar.no_fak_penj = v_movefaktur.no_fak_penj');
 		$this->db->join('pelanggan', 'penjualan.kode_pelanggan = pelanggan.kode_pelanggan');
 		$this->db->join('karyawan', 'penjualan.id_karyawan = karyawan.id_karyawan');
+		$this->db->join('karyawan k', 'historibayar.id_karyawan = k.id_karyawan');
 		$this->db->order_by('tglbayar,historibayar.no_fak_penj', 'ASC');
 		$this->db->where('tglbayar >=', $dari);
 		$this->db->where('tglbayar <=', $sampai);

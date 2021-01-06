@@ -117,12 +117,15 @@ function uang($nilai)
             $qsetoran     = "SELECT SUM(lhp_tunai+lhp_tagihan) as totallhp FROM setoran_penjualan WHERE tgl_lhp='$dari' AND 
           id_karyawan='$s->id_karyawan' GROUP BY tgl_lhp,id_karyawan";
             $setoran      = $this->db->query($qsetoran)->row_array();
+            $setoranlhp = $setoran['totallhp'];
+          } else {
+            $setoranlhp = 0;
           }
 
-          $totalsetoran = $totalsetoran + $setoran['totallhp'];
+          $totalsetoran = $totalsetoran + $setoranlhp;
         ?>
-          <td style="text-align:right; font-weight:bold"><?php if (!empty($setoran['totallhp'])) {
-                                                            echo uang($setoran['totallhp']);
+          <td style="text-align:right; font-weight:bold"><?php if (!empty($setoranlhp)) {
+                                                            echo uang($setoranlhp);
                                                           } ?></td>
         <?php
         }
