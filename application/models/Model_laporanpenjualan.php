@@ -797,15 +797,22 @@ GROUP BY
 	}
 
 
-	function aup($cabang = null, $salesman = null, $pelanggan = null, $tanggal)
+	function aup($cabang = null, $salesman = null, $pelanggan = null, $tanggal, $filter)
 	{
 
 		$tgl = '2020-01-01';
 		if ($cabang 	!= "") {
 			$cabang = "AND cabangbarunew = '" . $cabang . "'";
+			$cabang2 = "";
 		} else {
 			if ($tanggal < $tgl) {
 				$cabang = "AND cabangbarunew !='GRT' ";
+			}
+
+			if ($filter == 1) {
+				$cabang2 = "AND cabangbarunew !='PST' ";
+			} else {
+				$cabang2 = "";
 			}
 		}
 		if ($salesman != "") {
@@ -896,6 +903,7 @@ GROUP BY
 			penjualan.jenistransaksi != 'tunai' 
 			AND tgltransaksi <= '$tanggal'"
 			. $cabang
+			. $cabang2
 			. $salesman
 			. $pelanggan
 			. "

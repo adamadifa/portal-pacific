@@ -42,7 +42,8 @@
             <line x1="8" y1="3" x2="8" y2="7" />
             <line x1="4" y1="11" x2="20" y2="11" />
             <line x1="11" y1="15" x2="12" y2="15" />
-            <line x1="12" y1="15" x2="12" y2="18" /></svg>
+            <line x1="12" y1="15" x2="12" y2="18" />
+          </svg>
         </span>
       </div>
     </div>
@@ -285,6 +286,30 @@
             notEmpty: {
               message: 'Hari Harus Diisi !'
             }
+          }
+        },
+
+        latitude: {
+          validators: {
+            notEmpty: {
+              message: 'Latitude Harus Diisi !'
+            },
+            stringLength: {
+              min: 7,
+              message: 'Latitude Harus Diisi Dengan Benar !'
+            },
+          }
+        },
+
+        longitude: {
+          validators: {
+            notEmpty: {
+              message: 'Longitude Harus Diisi !'
+            },
+            stringLength: {
+              min: 7,
+              message: 'Longitude Harus Diisi Dengan Benar !'
+            },
           }
         },
 

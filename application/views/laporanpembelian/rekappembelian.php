@@ -76,7 +76,6 @@
                         <input class="form-check-input" name="sortby" value="jenisbarang" type="radio">
                         <span class="form-check-label">Jenis Barang</span>
                       </label>
-
                     </div>
                   </div>
                   <div class="form-group">

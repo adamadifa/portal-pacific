@@ -24,7 +24,7 @@ class Model_kaskecil extends CI_Model
       $this->db->where('kaskecil_detail.kode_akun', $kodeakun);
     }
     $this->db->select('id,nobukti,tgl_kaskecil,kaskecil_detail.keterangan,kaskecil_detail.jumlah,kaskecil_detail.kode_akun,status_dk,nama_akun,kaskecil_detail.kode_klaim,klaim.keterangan as ket_klaim,no_ref,
-    costratio_biaya.kode_cr');
+    costratio_biaya.kode_cr,peruntukan');
     $this->db->from('kaskecil_detail');
     $this->db->join('coa', 'kaskecil_detail.kode_akun=coa.kode_akun');
     $this->db->join('klaim', 'kaskecil_detail.kode_klaim=klaim.kode_klaim', 'left');
@@ -261,8 +261,9 @@ class Model_kaskecil extends CI_Model
 
     $temp = $this->db->get_where('kaskecil_detail_temp', array('nobukti' => $nobukti))->result();
     foreach ($temp as $t) {
+      $cekakun = substr($t->kode_akun, 0, 3);
+      if ($t->status_dk == 'D' and $cekakun == '6-1' or $t->status_dk == 'D' and $cekakun == '6-2') {
 
-      if ($t->status_dk == 'D') {
         $tgltransaksi = explode("-", $tanggal);
         $bulan = $tgltransaksi[1];
         $tahun = $tgltransaksi[0];
@@ -287,6 +288,7 @@ class Model_kaskecil extends CI_Model
           'kode_cabang'  => $t->kode_cabang,
           'status_dk'    => $t->status_dk,
           'order'        => 2,
+          'peruntukan'   => $t->peruntukan,
           'kode_cr'      => $kodecr
         );
 
@@ -302,7 +304,9 @@ class Model_kaskecil extends CI_Model
         $simpandebet = $this->db->insert('kaskecil_detail', $data);
         //Simpan Cost Ratio
         if ($simpandebet) {
-          $this->db->insert('costratio_biaya', $datacr);
+          if ($t->peruntukan != "MP") {
+            $this->db->insert('costratio_biaya', $datacr);
+          }
         }
       } else {
         $data = array(
@@ -313,6 +317,7 @@ class Model_kaskecil extends CI_Model
           'kode_akun'    => $t->kode_akun,
           'kode_cabang'  => $t->kode_cabang,
           'status_dk'    => $t->status_dk,
+          'peruntukan'   => $t->peruntukan,
           'order'        => 2,
         );
         $simpankredit = $this->db->insert('kaskecil_detail', $data);
@@ -356,6 +361,7 @@ class Model_kaskecil extends CI_Model
     $keterangan = $this->input->post('keterangan');
     $jumlah     = str_replace(".", "", $this->input->post('jumlah'));
     $akun       = $this->input->post('kodeakun');
+    $peruntukan = $this->input->post('peruntukan');
 
     $data = array(
       'tgl_kaskecil' => $tanggal,
@@ -364,7 +370,8 @@ class Model_kaskecil extends CI_Model
       'jumlah'       => $jumlah,
       'kode_akun'    => $akun,
       'kode_cabang'  => $cabang,
-      'status_dk'    => $status_dk
+      'status_dk'    => $status_dk,
+      'peruntukan'   => $peruntukan
     );
 
     $simpan = $this->db->insert('kaskecil_detail_temp', $data);
@@ -575,9 +582,10 @@ class Model_kaskecil extends CI_Model
     $jumlah       = str_replace(".", "", $this->input->post('jumlah'));
     $akun         = $this->input->post('kodeakun');
     $kodecr       = $this->input->post('kodecr');
+    $peruntukan   = $this->input->post('peruntukan');
     echo $kodecr;
-
-    if ($status_dk == 'D') {
+    $cekakun = substr($akun, 0, 3);
+    if ($status_dk == 'D' and $peruntukan != "MP" and $cekakun == '6-1' or $status_dk == 'D' and $peruntukan != "MP" and $cekakun == '6-2') {
       if (empty($kodecr)) {
         $tgltransaksi = explode("-", $tanggal);
         $bulan = $tgltransaksi[1];
@@ -611,7 +619,8 @@ class Model_kaskecil extends CI_Model
           'jumlah'       => $jumlah,
           'kode_akun'    => $akun,
           'status_dk'    => $status_dk,
-          'kode_cr'      => $kodecrnew
+          'kode_cr'      => $kodecrnew,
+          'peruntukan'   => $peruntukan
         );
       } else {
         $datacr = [
@@ -628,7 +637,8 @@ class Model_kaskecil extends CI_Model
           'jumlah'       => $jumlah,
           'kode_akun'    => $akun,
           'status_dk'    => $status_dk,
-          'kode_cr'      => $kodecr
+          'kode_cr'      => $kodecr,
+          'peruntukan'   => $peruntukan
         );
       }
 
@@ -648,7 +658,8 @@ class Model_kaskecil extends CI_Model
         'jumlah'       => $jumlah,
         'kode_akun'    => $akun,
         'status_dk'    => $status_dk,
-        'kode_cr'      => NULL
+        'kode_cr'      => NULL,
+        'peruntukan'   => $peruntukan
       );
 
       $update = $this->db->update('kaskecil_detail', $data, array('id' => $id));
