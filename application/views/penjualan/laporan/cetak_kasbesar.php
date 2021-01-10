@@ -34,7 +34,8 @@
 			<th rowspan="2">Tgl Pembayaran</th>
 			<th rowspan="2">No Faktur</th>
 			<th rowspan="2">Tgl Faktur</th>
-			<th rowspan="2">Sales Penagih</th>
+			<th rowspan="2">Sales (Faktur)</th>
+			<th rowspan="2">Sales (Penagih)</th>
 			<th rowspan="2">Kode Pel.</th>
 			<th rowspan="2">Nama Pelanggan</th>
 			<th rowspan="2">TUNAI</th>
@@ -127,6 +128,7 @@
 					<td><?php echo $k->no_fak_penj; ?></td>
 					<td><?php echo DateToIndo2($k->tgltransaksi); ?></td>
 					<td><?php echo $k->nama_karyawan; ?></td>
+					<td><?php echo $k->penagih; ?></td>
 					<td><?php echo $k->kode_pelanggan; ?></td>
 					<td><?php echo $k->nama_pelanggan; ?></td>
 					<td style="text-align:right"><?php if (!empty($tunai)) {

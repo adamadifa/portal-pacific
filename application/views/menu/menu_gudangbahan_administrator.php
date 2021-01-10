@@ -65,7 +65,7 @@ if ($level == 'Administrator' || $level == 'admin gudang bahan') { ?>
   </div>
 <?php } ?>
 
-<?php if ($level == 'manager accounting' || $level == 'admin gudang pusat' || $level == 'emf1' || $level == 'admin pembelian' || $level == 'audit') { ?>
+<?php if ($level == 'manager accounting' || $level == 'admin gudang pusat' || $level == 'spv accounting' || $level == 'emf1' || $level == 'admin pembelian' || $level == 'audit') { ?>
   <div class="card">
     <div class="list-group">
       <a href="#" class="list-group-item list-group-item-action active">

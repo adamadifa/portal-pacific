@@ -1294,6 +1294,11 @@ GROUP BY
 
 	function rekapbg($cabang, $dari, $sampai, $bulan, $tahun, $sampaibayar)
 	{
+		if ($bulan == 12) {
+			$bulannext = "= 1";
+		} else {
+			$bulannext = "> " . $bulan;
+		}
 		$query = "SELECT tgl_giro,penjualan.id_karyawan,nama_karyawan,giro.no_fak_penj,nama_pelanggan,namabank,no_giro,tglcair as jatuhtempo,jumlah,tglbayar as tgl_pencairan
 							FROM giro
 							INNER JOIN penjualan
@@ -1306,7 +1311,7 @@ GROUP BY
 							ON giro.id_giro = hb.id_giro
 							WHERE tgl_giro BETWEEN '$dari' AND '$sampai' AND pelanggan.kode_cabang='$cabang'
 							OR omset_bulan ='$bulan' AND omset_tahun='$tahun' AND pelanggan.kode_cabang='$cabang'
-							OR tgl_giro < '$dari' AND omset_bulan > '$bulan' AND omset_tahun >='$tahun'   AND pelanggan.kode_cabang='$cabang'
+							OR tgl_giro < '$dari' AND omset_bulan" . $bulannext . " AND omset_tahun >='$tahun'   AND pelanggan.kode_cabang='$cabang'
 							ORDER BY tgl_giro,no_giro ASC
 							";
 		return $this->db->query($query);
@@ -2203,7 +2208,7 @@ GROUP BY
 		$tahun 	 = $tanggal[0];
 		$mulai   = $tahun . "-" . $bulan . "-" . "01";
 		$this->db->where('tgl_lhp >=', $mulai);
-		$this->db->where('tgl_lhp <', $dari);
+		$this->db->where('tgl_lhp <=', $dari);
 		$this->db->where('kode_cabang', $cabang);
 		$this->db->select('SUM(setoran_logam) as uanglogam,SUM(setoran_kertas) as uangkertas,SUM(setoran_bg) as giro,SUM(girotocash) as girotocash,SUM(setoran_transfer) as transfer');
 		$this->db->from('setoran_penjualan');

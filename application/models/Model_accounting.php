@@ -456,7 +456,7 @@ class Model_accounting extends CI_Model
     $tanggal = $this->input->post('tgl_transaksi');
     $id_user   = $this->session->userdata('id_user');
     $keterangan = $this->input->post('keterangan');
-    
+
     $dataledger = $this->db->query("SELECT costratio_temp.kode_cabang,id,jumlah,nama_cabang,nama_akun,costratio_temp.kode_akun FROM costratio_temp 
     INNER JOIN coa ON coa.kode_akun=costratio_temp.kode_akun
     INNER JOIN cabang ON cabang.kode_cabang=costratio_temp.kode_cabang
@@ -479,8 +479,8 @@ class Model_accounting extends CI_Model
       $ceknolast = $this->db->query($qcr)->row_array();
       $nobuktilast = $ceknolast['kode_cr'];
       $kodecr = buatkode($nobuktilast, "CR" . $bulan . $thn, 4);
-  
-  
+
+
       $datacr = [
         'kode_cr' => $kodecr,
         'tgl_transaksi' => $tanggal,
@@ -493,6 +493,10 @@ class Model_accounting extends CI_Model
       $simpan = $this->db->insert('costratio_biaya', $datacr);
     }
     if ($simpan) {
+
+      $id_user       = $this->session->userdata('id_user');
+      $this->db->query("DELETE FROM costratio_temp WHERE id_user = '$id_user' ");
+
       $this->session->set_flashdata(
         'msg',
 
