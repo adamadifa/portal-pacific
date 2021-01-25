@@ -58,11 +58,28 @@ if ($level == "Administrator" || $level == "manager accounting" || $level == "sp
   <div class="card">
     <div class="list-group">
       <a href="#" class="list-group-item list-group-item-action active">
+        Data Komisi
+      </a>
+
+      <a href="<?php echo base_url(); ?>komisi/targetkomisi" class="list-group-item list-group-item-action">
+        <i class="fa  fa-file-text mr-2"></i>Target Komisi
+      </a>
+      <a href="<?php echo base_url(); ?>komisi/kategoripoinqty" class="list-group-item list-group-item-action">
+        <i class="fa  fa-file-text mr-2"></i>Kategori Poin Qty
+      </a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="list-group">
+      <a href="#" class="list-group-item list-group-item-action active">
         Laporan
       </a>
 
       <a href="<?php echo base_url(); ?>laporanpenjualan/costratio" class="list-group-item list-group-item-action">
         <i class="fa  fa-file-text mr-2"></i>Cost Rasio
+      </a>
+      <a href="<?php echo base_url(); ?>komisi/laporankomisi" class="list-group-item list-group-item-action">
+        <i class="fa  fa-file-text mr-2"></i>Komisi
       </a>
     </div>
   </div>

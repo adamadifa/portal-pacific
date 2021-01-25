@@ -45,8 +45,8 @@ class Model_laporanbahan extends CI_Model
 
     $query = "
     SELECT * FROM master_barang_pembelian WHERE kode_dept = 'GDB' "
-    .$kode_barang
-    ."
+      . $kode_barang
+      . "
     ORDER BY nama_barang
     ";
     return $this->db->query($query);
@@ -64,8 +64,8 @@ class Model_laporanbahan extends CI_Model
     FROM saldoawal_gb_detail 
     INNER JOIN saldoawal_gb ON saldoawal_gb.kode_saldoawal_gb=saldoawal_gb_detail.kode_saldoawal_gb
     WHERE bulan = '$bulan' AND tahun = '$tahun' "
-    .$kode_barang
-    ."
+      . $kode_barang
+      . "
     ";
     return $this->db->query($query);
   }
@@ -86,6 +86,7 @@ class Model_laporanbahan extends CI_Model
     gm.qtypemb2,
     gm.qtylainnya2,
     gm.qtypengganti2,
+    gm.qtypengganti1,
     gk.qtyprod3,
     gk.qtyseas3,
     gk.qtypdqc3,
@@ -113,6 +114,7 @@ class Model_laporanbahan extends CI_Model
     detail_pemasukan_gb.kode_barang,
     SUM( IF( departemen = 'Pembelian' , qty_unit ,0 )) AS qtypemb1,
     SUM( IF( departemen = 'Lainnya' , qty_unit ,0 )) AS qtylainnya1,
+    SUM( IF( departemen = 'Retur Pengganti' , qty_unit ,0 )) AS qtypengganti1,
 
     SUM( IF( departemen = 'Pembelian' , qty_berat ,0 )) AS qtypemb2,
     SUM( IF( departemen = 'Lainnya' , qty_berat ,0 )) AS qtylainnya2,
