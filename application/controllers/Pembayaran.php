@@ -1508,4 +1508,9 @@ class Pembayaran extends CI_Controller
 
 		$this->template->load('template/template', 'pembayaran/list_transferpenjpending', $data);
 	}
+
+	function updateledgerpenjualan()
+	{
+		$update = $this->Model_pembayaran->updateledgerpenjualan();
+	}
 }

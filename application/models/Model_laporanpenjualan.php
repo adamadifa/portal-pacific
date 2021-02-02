@@ -863,19 +863,19 @@ GROUP BY
 					ON pelanggan.id_sales = karyawan.id_karyawan 
 			
 					
-					LEFT JOIN (
-          SELECT pj.no_fak_penj,
-          IF(salesbaru IS NULL,pj.id_karyawan,salesbaru) as salesbarunew, karyawan.nama_karyawan as nama_sales,
-          IF(cabangbaru IS NULL,karyawan.kode_cabang,cabangbaru) as cabangbarunew
-          FROM penjualan pj
-          INNER JOIN karyawan ON pj.id_karyawan = karyawan.id_karyawan
-          LEFT JOIN (
-            SELECT MAX(id_move) as id_move,no_fak_penj,move_faktur.id_karyawan as salesbaru,karyawan.kode_cabang as cabangbaru
-            FROM move_faktur
-            INNER JOIN karyawan ON move_faktur.id_karyawan = karyawan.id_karyawan
-						WHERE tgl_move <='$tanggal'
-            GROUP BY no_fak_penj,move_faktur.id_karyawan,karyawan.kode_cabang
-          ) move_fak ON (pj.no_fak_penj = move_fak.no_fak_penj)
+				LEFT JOIN (
+				SELECT pj.no_fak_penj,
+				IF(salesbaru IS NULL,pj.id_karyawan,salesbaru) as salesbarunew, karyawan.nama_karyawan as nama_sales,
+				IF(cabangbaru IS NULL,karyawan.kode_cabang,cabangbaru) as cabangbarunew
+				FROM penjualan pj
+				INNER JOIN karyawan ON pj.id_karyawan = karyawan.id_karyawan
+				LEFT JOIN (
+					SELECT MAX(id_move) as id_move,no_fak_penj,move_faktur.id_karyawan as salesbaru,karyawan.kode_cabang as cabangbaru
+					FROM move_faktur
+					INNER JOIN karyawan ON move_faktur.id_karyawan = karyawan.id_karyawan
+					WHERE tgl_move <='$tanggal'
+					GROUP BY no_fak_penj,move_faktur.id_karyawan,karyawan.kode_cabang
+				) move_fak ON (pj.no_fak_penj = move_fak.no_fak_penj)
           
       ) pjmove ON (penjualan.no_fak_penj = pjmove.no_fak_penj)
 
@@ -917,16 +917,20 @@ GROUP BY
 		return $this->db->query($query);
 	}
 
-	function detailaup($cabang = null, $salesman = null, $pelanggan = null, $tanggal, $lama = null)
+	function detailaup($cabang = null, $salesman = null, $pelanggan = null, $tanggal, $lama = null, $filter = null)
 	{
 
 		if ($cabang 	!= "all") {
-			$cabang = "AND pelanggan.kode_cabang = '" . $cabang . "' ";
+			$cabang = "AND cabangbarunew = '" . $cabang . "' ";
 		} else {
 			$cabang = "";
 		}
 
-
+		if ($filter == 1) {
+			$cabang2 = "AND cabangbarunew !='PST' ";
+		} else {
+			$cabang2 = "";
+		}
 
 		if ($salesman != "all") {
 			$salesman = "AND salesbarunew = '" . $salesman . "' ";
@@ -941,83 +945,78 @@ GROUP BY
 		}
 
 		if ($lama == "duaminggu") {
-			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) <=15";
+			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) <='15'";
 		} else if ($lama == "satubulan") {
-			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >15 AND datediff( '" . $tanggal . "', tgltransaksi ) <=31";
+			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >'15' AND datediff( '" . $tanggal . "', tgltransaksi ) <='31' ";
 		} else if ($lama == "satubulan15") {
-			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >31 AND datediff( '" . $tanggal . "', tgltransaksi ) <=46";
+			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >'31' AND datediff( '" . $tanggal . "', tgltransaksi ) <='46' ";
 		} else if ($lama == "duabulan") {
-			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >46 AND datediff( '" . $tanggal . "', tgltransaksi ) <=60";
+			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >'46' AND datediff( '" . $tanggal . "', tgltransaksi ) <='60' ";
 		} else if ($lama == "tigabulan") {
-			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >60 AND datediff( '" . $tanggal . "', tgltransaksi ) <=90";
+			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >'60' AND datediff( '" . $tanggal . "', tgltransaksi ) <='90' ";
 		} else if ($lama == "enambulan") {
-			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >90 AND datediff( '" . $tanggal . "', tgltransaksi ) <=180";
+			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >'90' AND datediff( '" . $tanggal . "', tgltransaksi ) <='180' ";
 		} else if ($lama == "duabelasbulan") {
-			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >180 AND datediff( '" . $tanggal . "', tgltransaksi ) <=360";
+			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >'180' AND datediff( '" . $tanggal . "', tgltransaksi ) <='360' ";
 		} else if ($lama == "duatahun") {
-			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >360 AND datediff( '" . $tanggal . "', tgltransaksi ) <=720";
+			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >'360' AND datediff( '" . $tanggal . "', tgltransaksi ) <='720' ";
 		} else if ($lama == "lebihduatahun") {
-			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >=720";
+			$lama = "AND datediff( '" . $tanggal . "', tgltransaksi ) >='720'";
 		} else {
 			$lama = "";
 		}
-
-
 		$query = "SELECT
-		penjualan.no_fak_penj,tgltransaksi,penjualan.kode_pelanggan,nama_pelanggan,pasar,hari,pelanggan.jatuhtempo AS jt,nama_karyawan,
-			(ifnull(penjualan.total,0) - IFNULL(retur.total,0)-ifnull(jmlbayar,0)) AS jumlah					
+		penjualan.no_fak_penj,tgltransaksi,
+		penjualan.kode_pelanggan,
+		nama_pelanggan,
+		karyawan.nama_karyawan,
+		pasar,
+		hari,
+		pelanggan.jatuhtempo as jt,
+		((IFNULL( penjualan.total, 0 ))-(IFNULL( retur.total, 0 )))-(IFNULL( jmlbayar, 0 )) as jumlah
 		FROM
-			penjualan 
-			JOIN
-					karyawan 
-					ON penjualan.id_karyawan = karyawan.id_karyawan 
-			JOIN
-					pelanggan 
-					ON penjualan.kode_pelanggan = pelanggan.kode_pelanggan 
-
-			LEFT JOIN (
-				SELECT pj.no_fak_penj,
-				IF(salesbaru IS NULL,pj.id_karyawan,salesbaru) as salesbarunew
-				FROM penjualan pj
-				LEFT JOIN (SELECT no_fak_penj,id_karyawan as salesbaru FROM move_faktur WHERE tgl_move<= '$tanggal' 
-				AND id_move IN (SELECT MAX(id_move)
-				FROM move_faktur WHERE tgl_move <='$tanggal'
-				GROUP BY no_fak_penj)) move_fak ON (pj.no_fak_penj = move_fak.no_fak_penj)
-				WHERE tgltransaksi <= '$tanggal'
-			) pjmove ON (penjualan.no_fak_penj = pjmove.no_fak_penj)
-					
-			LEFT JOIN (
-				SELECT no_fak_penj,sum( historibayar.bayar ) AS jmlbayar
-				FROM historibayar
-				WHERE tglbayar <= '$tanggal'
-				GROUP BY no_fak_penj
-			) hblalu ON (penjualan.no_fak_penj = hblalu.no_fak_penj)
-			
-			
-			LEFT JOIN (
-				SELECT retur.no_fak_penj AS no_fak_penj,
-				SUM(total) AS total
+		penjualan
+		JOIN pelanggan ON penjualan.kode_pelanggan = pelanggan.kode_pelanggan
+		JOIN karyawan ON pelanggan.id_sales = karyawan.id_karyawan
+		LEFT JOIN (
+			SELECT
+				pj.no_fak_penj,
+				IF(salesbaru IS NULL, pj.id_karyawan, salesbaru ) AS salesbarunew,karyawan.nama_karyawan AS nama_sales,
+				IF(cabangbaru IS NULL, karyawan.kode_cabang, cabangbaru ) AS cabangbarunew 
 				FROM
-					retur
-				WHERE tglretur <= '$tanggal'
+				penjualan pj
+				INNER JOIN karyawan ON pj.id_karyawan = karyawan.id_karyawan
+				LEFT JOIN (
+				SELECT
+					MAX( id_move ) AS id_move,
+					no_fak_penj,
+					move_faktur.id_karyawan AS salesbaru,
+					karyawan.kode_cabang AS cabangbaru 
+				FROM
+					move_faktur
+				INNER JOIN karyawan ON move_faktur.id_karyawan = karyawan.id_karyawan 
+				WHERE
+					tgl_move <= '$tanggal' 
 				GROUP BY
-					retur.no_fak_penj
-			) retur ON (penjualan.no_fak_penj = retur.no_fak_penj)
-			
-		
-		WHERE
-			penjualan.jenisbayar != 'tunai' 
-			AND tgltransaksi <= '$tanggal'"
+					no_fak_penj,move_faktur.id_karyawan,karyawan.kode_cabang ) move_fak ON ( pj.no_fak_penj = move_fak.no_fak_penj )) 
+					pjmove ON ( penjualan.no_fak_penj = pjmove.no_fak_penj )
+				LEFT JOIN ( SELECT no_fak_penj, sum( historibayar.bayar ) AS jmlbayar FROM historibayar WHERE tglbayar <= '$tanggal' GROUP BY no_fak_penj ) hblalu ON ( penjualan.no_fak_penj = hblalu.no_fak_penj )
+				LEFT JOIN ( SELECT retur.no_fak_penj AS no_fak_penj, SUM( total ) AS total FROM retur WHERE tglretur <= '$tanggal' GROUP BY retur.no_fak_penj ) retur ON ( penjualan.no_fak_penj = retur.no_fak_penj ) 
+				WHERE
+					penjualan.jenistransaksi != 'tunai' 
+					AND tgltransaksi <= '$tanggal' 
+					"
 			. $cabang
+			. $cabang2
+			. $lama
 			. $salesman
 			. $pelanggan
-			. $lama
 			. "
-			AND (ifnull(penjualan.total,0) - (ifnull(retur.total,0))) != IFNULL(jmlbayar,0)
-			
-		
-		ORDER BY
-			nama_pelanggan,penjualan.kode_pelanggan ASC";
+					
+					AND (ifnull( penjualan.total, 0 ) - (ifnull( retur.total, 0 ))) != IFNULL( jmlbayar, 0 ) 
+					ORDER BY
+					nama_pelanggan,
+		penjualan.no_fak_penj ASC";
 
 		return $this->db->query($query);
 	}
@@ -2758,7 +2757,7 @@ GROUP BY
 			penjualan.jenisbayar <> 'tunai' 
 			AND penjualan.tgltransaksi <= '$tanggal' 
 			AND ifnull(penjualan.total, 0) - ifnull(retur.total, 0) <> ifnull(hblalu.jmlbayar, 0) 
-			AND to_days('$tanggal') - to_days(penjualan.tgltransaksi) > 30
+			AND to_days('$tanggal') - to_days(penjualan.tgltransaksi) > 31
 		";
 
 		return $this->db->query($query);
@@ -2927,7 +2926,7 @@ GROUP BY
 			penjualan.jenisbayar <> 'tunai' 
 			AND penjualan.tgltransaksi <= '$tanggal' 
 			AND ifnull(penjualan.total, 0) - ifnull(retur.total, 0) <> ifnull(hblalu.jmlbayar, 0) 
-			AND to_days('$tanggal') - to_days(penjualan.tgltransaksi) > 30 AND cabangbarunew = '$cabang'
+			AND to_days('$tanggal') - to_days(penjualan.tgltransaksi) > 31 AND cabangbarunew = '$cabang'
 		";
 
 		return $this->db->query($query);
@@ -3002,5 +3001,10 @@ GROUP BY
 		WHERE no_kendaraan = '$nokendaraan' AND tgl_pengambilan BETWEEN '$dari' AND '$sampai'
 		GROUP BY tgl_pengambilan";
 		return $this->db->query($query);
+	}
+
+	function getKendaraan($nokendaraan)
+	{
+		return $this->db->get_where('kendaraan', array('no_polisi' => $nokendaraan));
 	}
 }

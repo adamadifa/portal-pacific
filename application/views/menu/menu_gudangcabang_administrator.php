@@ -15,17 +15,17 @@ if ($level == "Administrator" || $level == "admin gudang" || $level == "kepala a
       </a>
     </div>
   </div>
-  <?php if($this->session->userdata('cabang')=='TSM'){ ?>
-  <div class="card">
-    <div class="list-group">
-      <a href="#" class="list-group-item list-group-item-action active">
-        Permintaan Pengiriman
-      </a>
-      <a href="<?php echo base_url(); ?>oman/permintaan_pengiriman" class="list-group-item list-group-item-action">
-        <i class="fa  fa-truck mr-2"></i>Permintaan Pengiriman
-      </a>
+  <?php if ($this->session->userdata('cabang') == 'TSM') { ?>
+    <div class="card">
+      <div class="list-group">
+        <a href="#" class="list-group-item list-group-item-action active">
+          Permintaan Pengiriman
+        </a>
+        <a href="<?php echo base_url(); ?>oman/permintaan_pengiriman" class="list-group-item list-group-item-action">
+          <i class="fa  fa-truck mr-2"></i>Permintaan Pengiriman
+        </a>
+      </div>
     </div>
-  </div>
   <?php } ?>
   <div class="card">
     <div class="list-group">
@@ -130,13 +130,69 @@ if ($level == "Administrator" || $level == "admin gudang" || $level == "kepala a
   $level == "audit" || $level == "emf1" || $level == "general manager" || $level == "kepala cabang" || $level == "manager accounting" || $level == "manager marketing"
   || $level == "spv accounting"
 ) { ?>
-<div class="card">
+  <div class="card">
     <div class="list-group">
       <a href="#" class="list-group-item list-group-item-action active">
         Data Perincian Barang (DPB)
       </a>
       <a href="<?php echo base_url(); ?>dpb" class="list-group-item list-group-item-action">
         <i class="fa  fa-file-text mr-2"></i>DPB
+      </a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="list-group">
+      <a href="#" class="list-group-item list-group-item-action active">
+        TRANSAKSI IN
+      </a>
+      <a href="<?php echo base_url(); ?>oman/suratjalan_gjcab" class="list-group-item list-group-item-action">
+        <i class="fa  fa-truck mr-2"></i>Surat Jalan
+      </a>
+      <a href="<?php echo base_url(); ?>oman/transit_in" class="list-group-item list-group-item-action">
+        <i class="fa  fa-truck mr-2"></i>Transit IN
+      </a>
+      <a href="<?php echo base_url(); ?>dpb/retur" class="list-group-item list-group-item-action">
+        <i class="fa  fa-history mr-2"></i>Retur
+      </a>
+      <a href="<?php echo base_url(); ?>dpb/hutangkirim" class="list-group-item list-group-item-action">
+        <i class="fa  fa-car mr-2"></i>Hutang Kirim
+      </a>
+      <a href="<?php echo base_url(); ?>dpb/plttr" class="list-group-item list-group-item-action">
+        <i class="fa  fa-copy mr-2"></i>Pelunasan TTR
+      </a>
+      <a href="<?php echo base_url(); ?>repackreject/repackcab" class="list-group-item list-group-item-action">
+        <i class="fa  fa-refresh mr-2"></i>Repack
+      </a>
+    </div>
+  </div>
+  <div class="card">
+    <div class="list-group">
+      <a href="#" class="list-group-item list-group-item-action active">
+        TRANSAKSI OUT
+      </a>
+      <a href="<?php echo base_url(); ?>dpb/penjualan" class="list-group-item list-group-item-action">
+        <i class="fa  fa-shopping-cart mr-2"></i>Penjualan
+      </a>
+      <a href="<?php echo base_url(); ?>dpb/gantibarang" class="list-group-item list-group-item-action">
+        <i class="fa  fa-refresh mr-2"></i>Ganti Barang
+      </a>
+      <a href="<?php echo base_url(); ?>repackreject/reject_gudang" class="list-group-item list-group-item-action">
+        <i class="fa fa-sign-out mr-2"></i>Reject Gudang
+      </a>
+      <a href="<?php echo base_url(); ?>dpb/rejectpasar" class="list-group-item list-group-item-action">
+        <i class="fa fa-sign-out mr-2"></i>Reject Pasar
+      </a>
+      <a href="<?php echo base_url(); ?>dpb/plhutangkirim" class="list-group-item list-group-item-action">
+        <i class="fa  fa-car mr-2"></i>Pelunasan Hutang Kirim
+      </a>
+      <a href="<?php echo base_url(); ?>dpb/ttr" class="list-group-item list-group-item-action">
+        <i class="fa  fa-copy mr-2"></i>TTR
+      </a>
+      <a href="<?php echo base_url(); ?>dpb/promosi" class="list-group-item list-group-item-action">
+        <i class="fa fa-credit-card mr-2"></i>Promosi
+      </a>
+      <a href="<?php echo base_url(); ?>repackreject/kirimpusat" class="list-group-item list-group-item-action">
+        <i class="fa fa-truck mr-2"></i>Kirim Pusat
       </a>
     </div>
   </div>

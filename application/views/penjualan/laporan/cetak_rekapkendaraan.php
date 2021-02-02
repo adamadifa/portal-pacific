@@ -10,7 +10,7 @@ function uang($nilai)
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/table.css">
 
 <br>
-<b style="font-size:14px; font-family:Calibri">
+<b style="font-size:18px; font-family:Calibri">
 
 
   <?php
@@ -22,7 +22,8 @@ function uang($nilai)
   ?>
   <br>
   REKAP PENJUALAN BERDASARKAN KENDARAAN<br>
-  NO POLISI : <?php echo $kendaraan; ?>
+  NO POLISI : <?php echo $kendaraan['no_polisi']; ?> /
+  MODEL : <?php echo $kendaraan['model']; ?>
   <br>PERIODE <?php echo DateToIndo2($dari) . " s/d " . DateToIndo2($sampai); ?><br>
 
 </b>

@@ -128,7 +128,11 @@
                           echo "<span class='badge bg-green'>Approved Manag. Purchasing</span>";
                         }
                       } else {
+                        if($d['kategori'] !="TN"){
                         echo "<span class='badge bg-orange'>Pending</span>";
+                        }else{
+                          echo "<span class='badge bg-green'>Tunai</span>";
+                        }
                       }
                       ?>
                     </td>
@@ -148,8 +152,13 @@
                           <?php
                           }
                         } else {
+                          if ($d['kategori'] != 'TN') {
                           ?>
                           <a href="#" class="btn btn-sm btn-warning"><i class="fa fa-hourglass-2 mr-2"></i> Waiting Approval</a>
+                          <?php }else{ ?>
+                            <a href="<?php echo base_url(); ?>pembelian/editkontrabon/<?php echo $nokontrabon; ?>" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>
+                            <a href="#" data-nokontrabon="<?php echo $d['no_kontrabon']; ?>" data-href="" class="btn btn-sm btn-success proses">Proses</a>
+                          <?php } ?>
                         <?php
                         }
                       } else {

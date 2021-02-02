@@ -245,6 +245,12 @@ function uang($nilai)
       $dari = $tahunskrg . "-" . $bulanskrg . "-01";
       $sampai = $tahunskrg . "-" . $bulanskrg . "-31";
       $totalgmnow = 0;
+
+      if ($bulanskrg == 12) {
+        $om_bulan = "AND omset_bulan = '1'";
+      } else {
+        $om_bulan = "AND omset_bulan > '$bulanskrg'";
+      }
       foreach ($salesman as $s) {
         //echo $s->id_karyawan;
         $qgmnow  = "SELECT
@@ -261,7 +267,7 @@ function uang($nilai)
           OR
           giro.id_karyawan = '$s->id_karyawan' AND
           tgl_giro >= '$dari' AND tgl_giro <= '$sampai'
-          AND tglbayar >=  '$end' AND omset_bulan >  '$bulanskrg' AND omset_tahun >= '$tahunskrg' 
+          AND tglbayar >=  '$end'" . $om_bulan . " AND omset_tahun >= '$tahunskrg' 
 
 
           GROUP BY giro.id_karyawan";
@@ -307,6 +313,11 @@ function uang($nilai)
       $sampai = $tahunskrg . "-" . $bulanskrg . "-31";
       $grandall     = 0;
       $grandtotal   = 0;
+      if ($bulanskrg == 12) {
+        $om_bulan = "AND omset_bulan = '1'";
+      } else {
+        $om_bulan = "AND omset_bulan > '$bulanskrg'";
+      }
       foreach ($salesman as $s) {
 
         $qsetoranbulanlast = "SELECT jumlah FROM belumsetor_detail 
@@ -338,7 +349,7 @@ function uang($nilai)
           OR
           giro.id_karyawan = '$s->id_karyawan' AND
           tgl_giro >= '$dari' AND tgl_giro <= '$sampai'
-          AND tglbayar >=  '$end' AND omset_bulan >  '$bulanskrg' AND omset_tahun >= '$tahunskrg' 
+          AND tglbayar >=  '$end' " . $om_bulan . " AND omset_tahun >= '$tahunskrg' 
           GROUP BY giro.id_karyawan";
         $gmnow = $this->db->query($qgmnow)->row_array();
 

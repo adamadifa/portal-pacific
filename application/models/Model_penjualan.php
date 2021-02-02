@@ -130,6 +130,7 @@ class Model_penjualan extends CI_Model
     if ($cabang != "pusat") {
       $this->datatables->where('pelanggan.kode_cabang', $cabang);
     }
+    $this->datatables->where('pelanggan.status_pelanggan', 1);
     $this->datatables->select('kode_pelanggan,nama_pelanggan,alamat_pelanggan,pelanggan.no_hp,pasar,hari,pelanggan.kode_cabang,nama_cabang,id_sales,nama_karyawan,limitpel');
     $this->datatables->from('pelanggan');
     $this->datatables->join('cabang', 'pelanggan.kode_cabang = cabang.kode_cabang');
@@ -2948,14 +2949,14 @@ class Model_penjualan extends CI_Model
 
   function getsetoranpusat($dari, $sampai, $cabang, $bulan, $tahun)
   {
-    // if ($bulan == 1) {
-    //   $bulan = 12;
-    //   $tahun = $tahun - 1;
-    // } else {
-    //   $bulan = $bulan - 1;
-    //   $tahun = $tahun;
-    // }
-    $bulan = $bulan - 1;
+    if ($bulan == 1) {
+      $bulan = 12;
+      $tahun = $tahun - 1;
+    } else {
+      $bulan = $bulan - 1;
+      $tahun = $tahun;
+    }
+    // $bulan = $bulan - 1;
     $querysetpusat = "SELECT SUM(uang_kertas) as uangkertas,
 		SUM(uang_logam) as uanglogam,SUM(giro) as giro,SUM(transfer) as transfer
 		FROM setoran_pusat

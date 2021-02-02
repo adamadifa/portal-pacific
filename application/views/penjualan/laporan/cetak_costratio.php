@@ -10,7 +10,7 @@ function uang($nilai)
 <b style="font-size:14px; font-family:Calibri">
   COST RATIO <br>
   PACIFIC-MAKMUR PERMATA <br>
-  PERIODE
+  PERIODE BULAN <?php echo $bln . "TAHUN " . $tahun; ?>
 </b>
 
 <br>
@@ -60,7 +60,7 @@ function uang($nilai)
     ?>
       <tr>
         <td><?php echo $no; ?></td>
-        <td><?php echo $d->kode_akun; ?></td>
+        <td><?php echo "'" . $d->kode_akun; ?></td>
         <td><?php echo $d->nama_akun; ?></td>
         <td align="right"><?php if (!empty($d->TSM)) {
                             echo uang($d->TSM);

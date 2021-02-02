@@ -323,6 +323,9 @@ if ($level == "Administrator") {
       <a href="<?php echo base_url(); ?>laporanpenjualan/penjualanpending" class="list-group-item list-group-item-action">
         <i class="fa fa-file mr-2"></i>Penjualan Pending
       </a>
+      <a href="<?php echo base_url(); ?>laporanpenjualan/rekapkendaraan" class="list-group-item list-group-item-action">
+        <i class="fa fa-file mr-2"></i>Rekap Kendaraan
+      </a>
     </div>
   </div>
 <?php } else if ($level == "general manager" || $level == "kepala cabang" || $level == "manager marketing") { ?>

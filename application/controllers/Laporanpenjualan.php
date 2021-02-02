@@ -462,7 +462,7 @@ class Laporanpenjualan extends CI_Controller
 
     $data['salesman']  = $this->Model_sales->get_sales($salesman)->row_array();
     $data['cb']      = $this->Model_cabang->get_cabang($cabang)->row_array();
-
+    $data['filter']  = $filter;
     //print_r($data['cabang']);
     //die;
     $data['pelanggan']  = $this->Model_pelanggan->get_pelanggan($pelanggan)->row_array();
@@ -491,7 +491,7 @@ class Laporanpenjualan extends CI_Controller
     $pelanggan         = $this->uri->segment(5);
     $tanggal           = $this->uri->segment(6);
     $lama             = $this->uri->segment(7);
-
+    $filter           = $this->uri->segment(8);
     $data['salesman']  = $this->Model_sales->get_sales($salesman)->row_array();
     $data['cb']        = $this->Model_cabang->get_cabang($cabang)->row_array();
 
@@ -500,7 +500,7 @@ class Laporanpenjualan extends CI_Controller
     $data['pelanggan']  = $this->Model_pelanggan->get_pelanggan($pelanggan)->row_array();
     $data['tanggal']    = $tanggal;
     $data['lama']        = $lama;
-    $data['detail_aup'] = $this->Model_laporanpenjualan->detailaup($cabang, $salesman, $pelanggan, $tanggal, $lama)->result();
+    $data['detail_aup'] = $this->Model_laporanpenjualan->detailaup($cabang, $salesman, $pelanggan, $tanggal, $lama, $filter)->result();
     $this->load->view('penjualan/laporan/cetak_detailaup', $data);
   }
 
@@ -1196,6 +1196,16 @@ class Laporanpenjualan extends CI_Controller
     $cabang = $this->input->post('cabang');
     $bulan = $this->input->post('bulan');
     $tahun = $this->input->post('tahun');
+    $bln = array("", "Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember");
+    $data['bln'] = $bln[$bulan];
+    $data['tahun'] = $tahun;
+    if (isset($_POST['export'])) {
+      // Fungsi header dengan mengirimkan raw data excel
+      header("Content-type: application/vnd-ms-excel");
+
+      // Mendefinisikan nama file ekspor "hasil-export.xls"
+      header("Content-Disposition: attachment; filename=CostRatio.xls");
+    }
     if (empty($cabang)) {
       $data['biaya'] = $this->Model_laporanpenjualan->costratiobiaya($bulan, $tahun)->result();
       $data['swan'] = $this->Model_laporanpenjualan->netpenjualan($bulan, $tahun, 'SWAN')->row_array();
@@ -1227,15 +1237,15 @@ class Laporanpenjualan extends CI_Controller
   function cetak_rekapkendaraan()
   {
     $cabang = $this->input->post('cabang');
-    $kendaraan = $this->input->post('kendaraan');
+    $nokendaraan = $this->input->post('kendaraan');
     $dari = $this->input->post('dari');
     $sampai = $this->input->post('sampai');
     $data['dari'] = $dari;
     $data['sampai'] = $sampai;
     $data['cabang'] = $cabang;
-    $data['kendaraan'] = $kendaraan;
-    $data['histori'] = $this->Model_laporanpenjualan->historikendaraan($dari, $sampai, $kendaraan)->result();
-    $data['rekapkendaraan'] = $this->Model_laporanpenjualan->rekapkendaraan($dari, $sampai, $kendaraan)->result();
+    $data['kendaraan'] = $this->Model_laporanpenjualan->getKendaraan($nokendaraan)->row_array();
+    $data['histori'] = $this->Model_laporanpenjualan->historikendaraan($dari, $sampai, $nokendaraan)->result();
+    $data['rekapkendaraan'] = $this->Model_laporanpenjualan->rekapkendaraan($dari, $sampai, $nokendaraan)->result();
     $this->load->view('penjualan/laporan/cetak_rekapkendaraan', $data);
   }
 }

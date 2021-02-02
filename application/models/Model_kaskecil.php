@@ -583,6 +583,9 @@ class Model_kaskecil extends CI_Model
     $akun         = $this->input->post('kodeakun');
     $kodecr       = $this->input->post('kodecr');
     $peruntukan   = $this->input->post('peruntukan');
+
+    // echo $peruntukan;
+    // die;
     echo $kodecr;
     $cekakun = substr($akun, 0, 3);
     if ($status_dk == 'D' and $peruntukan != "MP" and $cekakun == '6-1' or $status_dk == 'D' and $peruntukan != "MP" and $cekakun == '6-2') {
@@ -703,9 +706,11 @@ class Model_kaskecil extends CI_Model
     //$jumlah       = str_replace(".", "", $this->input->post('jumlah'));
     $akun         = $this->input->post('kodeakun');
     $kodecr       = $this->input->post('kodecr');
+    $peruntukan   = $this->input->post('peruntukan');
     if (empty($kodecr)) {
       $data = array(
         'kode_akun'    => $akun,
+        'peruntukan'   => $peruntukan
       );
       $update = $this->db->update('kaskecil_detail', $data, array('id' => $id));
     } else {
@@ -714,7 +719,8 @@ class Model_kaskecil extends CI_Model
       ];
       $data = array(
         'kode_akun'    => $akun,
-        'kode_cr'      => $kodecr
+        'kode_cr'      => $kodecr,
+        'peruntukan'   => $peruntukan
       );
       $update = $this->db->update('kaskecil_detail', $data, array('id' => $id));
       $this->db->update('costratio_biaya', $datacr, array('kode_cr' => $kodecr));

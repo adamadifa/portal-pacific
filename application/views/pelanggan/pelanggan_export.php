@@ -1,4 +1,3 @@
-
 <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/table.css">
 
 <br>
@@ -27,35 +26,37 @@
 			<th>Latitude</th>
 			<th>Longitude</th>
 			<th>Limit</th>
+			<th>Tanggal Input</th>
 		</tr>
 	</thead>
 	<tbody>
-			<?php
-				$no = 1;
-				foreach($pelanggan as $d){
-			?>
-				<tr>
-					<td><?php echo $no; ?></td>
-					<td><?php echo $d->kode_pelanggan; ?></td>
-					<td><?php echo $d->nik; ?></td>
-					<td><?php echo $d->no_kk; ?></td>
-					<td><?php echo $d->nama_pelanggan; ?></td>
-					<td><?php echo $d->tgl_lahir; ?></td>
-					<td><?php echo $d->no_hp; ?></td>
-					<td><?php echo $d->kecamatan; ?></td>
-					<td><?php echo $d->kelurahan; ?></td>
-					<td><?php echo $d->alamat_pelanggan; ?></td>
-					<td><?php echo $d->pasar; ?></td>
-					<td><?php echo $d->hari; ?></td>
-					<td><?php echo $d->kode_cabang; ?></td>
-					<td><?php echo $d->nama_karyawan; ?></td>
-					<td><?php echo $d->latitude; ?></td>
-					<td><?php echo $d->longitude; ?></td>
-					<td><?php echo number_format($d->limitpel,'0','','.'); ?></td>
-				</tr>
-			<?php
-					$no++; 
-				}
-			?>
+		<?php
+		$no = 1;
+		foreach ($pelanggan as $d) {
+		?>
+			<tr>
+				<td><?php echo $no; ?></td>
+				<td><?php echo $d->kode_pelanggan; ?></td>
+				<td><?php echo $d->nik; ?></td>
+				<td><?php echo $d->no_kk; ?></td>
+				<td><?php echo $d->nama_pelanggan; ?></td>
+				<td><?php echo $d->tgl_lahir; ?></td>
+				<td><?php echo $d->no_hp; ?></td>
+				<td><?php echo $d->kecamatan; ?></td>
+				<td><?php echo $d->kelurahan; ?></td>
+				<td><?php echo $d->alamat_pelanggan; ?></td>
+				<td><?php echo $d->pasar; ?></td>
+				<td><?php echo $d->hari; ?></td>
+				<td><?php echo $d->kode_cabang; ?></td>
+				<td><?php echo $d->nama_karyawan; ?></td>
+				<td><?php echo $d->latitude; ?></td>
+				<td><?php echo $d->longitude; ?></td>
+				<td><?php echo number_format($d->limitpel, '0', '', '.'); ?></td>
+				<td><?php echo $d->time_stamps; ?></td>
+			</tr>
+		<?php
+			$no++;
+		}
+		?>
 	</tbody>
 </table>

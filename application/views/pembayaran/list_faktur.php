@@ -144,7 +144,7 @@
                             <td><?php echo ucwords($p->nama_karyawan); ?></td>
                             <td><span class="badge <?php echo $color ?>"><?php echo $ket; ?></span></td>
                             <td>
-                              <a href="#" class="btn btn-danger btn-sm hapus" data-href="<?php echo base_url(); ?>penjualan/hapus/<?php echo $p->no_fak_penj; ?>/<?php echo $p->kode_pelanggan; ?>"><i class="fa fa-trash-o"></i></a>
+                              <a href="#" class="btn btn-danger btn-sm hapus" data-href="<?php echo base_url(); ?>penjualan/hapus/<?php echo $p->no_fak_penj; ?>/<?php echo $pel['kode_pelanggan']; ?>"><i class="fa fa-trash-o"></i></a>
                             </td>
                           </tr>
                         <?php } ?>

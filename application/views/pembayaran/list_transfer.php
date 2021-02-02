@@ -33,7 +33,8 @@
                         <line x1="8" y1="3" x2="8" y2="7" />
                         <line x1="4" y1="11" x2="20" y2="11" />
                         <line x1="11" y1="15" x2="12" y2="15" />
-                        <line x1="12" y1="15" x2="12" y2="18" /></svg>
+                        <line x1="12" y1="15" x2="12" y2="18" />
+                      </svg>
                     </span>
                   </div>
                 </div>
@@ -48,7 +49,8 @@
                         <line x1="8" y1="3" x2="8" y2="7" />
                         <line x1="4" y1="11" x2="20" y2="11" />
                         <line x1="11" y1="15" x2="12" y2="15" />
-                        <line x1="12" y1="15" x2="12" y2="18" /></svg>
+                        <line x1="12" y1="15" x2="12" y2="18" />
+                      </svg>
                     </span>
                   </div>
                 </div>
@@ -86,6 +88,7 @@
                   <th>Jumlah</th>
                   <th>Jatuh Tempo</th>
                   <th>Status</th>
+                  <th>Ledger</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
@@ -120,8 +123,60 @@
                       ?>
                     </td>
                     <td>
+                      <?php
+                      if ($d['status'] == 1) {
+                        if (!empty($d['jmlnoref'])) {
+                          if ($d['jmlnoref'] == 1) {
+                            echo "<span class='badge bg-green'><i class='fa fa-check'></i></span>";
+                          } else {
+                            echo "<span class='badge bg-orange'>D</span>";
+                          }
+                        } else {
+                          echo "<span class='badge bg-red'><i class='fa fa-close'></i></span>";
+                        }
+                      }
+                      ?>
+                    </td>
+                    <td>
+                      <?php
+                      if ($d['status'] == 1) {
+                        if (!empty($d['jmlnoref'])) {
+                          if ($d['jmlnoref'] == 1) {
+                          } else {
+                            echo "<form action='" . base_url() . "pembayaran/updateledgerpenjualan' method='POST'>
+                              <input type='hidden' name='no_ref' value='" . $d['kode_transfer'] . "'>
+                              <input type='hidden' name='tgl_giro' value='" . $d['tgl_transfer'] . "'>
+                              <input type='hidden' name='tgl_ledger' value='" . $d['tglbayar'] . "'>
+                              <input type='hidden' name='pelanggan' value='" . $d['nama_pelanggan'] . "'>
+                              <input type='hidden' name='bank' value='" . $d['bank_penerima'] . "'>
+                              <input type='hidden' name='cabang' value='" . $d['kode_cabang'] . "'>
+                              <input type='hidden' name='jumlah' value='" . $d['jumlah'] . "'>
+                              <input type='hidden' name='status_dk' value='K'>
+                              <input type='hidden' name='status_validasi' value='1'>
+                              <input type='hidden' name='kategori' value='PNJ'>
+                              <button class='btn btn-info btn-sm' type='submit' name='submit'><i class='fa fa-refresh'></i></button> 
+                              ";
+                          }
+                        } else {
+                          echo "<form action='" . base_url() . "pembayaran/updateledgerpenjualan' method='POST'>
+                              <input type='hidden' name='no_ref' value='" . $d['kode_transfer'] . "'>
+                              <input type='hidden' name='tgl_giro' value='" . $d['tgl_transfer'] . "'>
+                              <input type='hidden' name='tgl_ledger' value='" . $d['tglbayar'] . "'>
+                              <input type='hidden' name='pelanggan' value='" . $d['nama_pelanggan'] . "'>
+                              <input type='hidden' name='bank' value='" . $d['bank_penerima'] . "'>
+                              <input type='hidden' name='cabang' value='" . $d['kode_cabang'] . "'>
+                              <input type='hidden' name='jumlah' value='" . $d['jumlah'] . "'>
+                              <input type='hidden' name='status_dk' value='K'>
+                              <input type='hidden' name='status_validasi' value='1'>
+                              <input type='hidden' name='kategori' value='PNJ'>
+                              <button class='btn btn-info btn-sm' type='submit' name='submit'><i class='fa fa-refresh'></i></button> 
+                              ";
+                        }
+                      }
+                      ?>
                       <a href="#" data-id="<?php echo $d['kode_transfer'] ?>" class="btn btn-success btn-sm edittransfer"><i class="fa fa-pencil"></i></a>
                       <a href="#" data-id="<?php echo $d['kode_transfer']; ?>" class="btn btn-primary btn-sm detail"><i class="fa fa-list"></i></a>
+                      <?php echo "</form>"; ?>
                     </td>
                   </tr>
                 <?php $sno++;

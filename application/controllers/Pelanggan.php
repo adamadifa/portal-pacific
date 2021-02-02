@@ -83,11 +83,11 @@ class Pelanggan extends CI_Controller
       if ($rowno != 0) {
         $rowno = ($rowno - 1) * $rowperpage;
       }
-
+      $status = 1;
       // All records count
-      $allcount     = $this->Model_pelanggan->getrecordPelanggan($cbg, $salesman, $namapel, $dari, $sampai, $kodepel);
+      $allcount     = $this->Model_pelanggan->getrecordPelanggan($cbg, $salesman, $namapel, $dari, $sampai, $kodepel, $status);
       // Get records
-      $users_record = $this->Model_pelanggan->getdataPelanggan($rowno, $rowperpage, $cbg, $salesman, $namapel, $dari, $sampai, $kodepel);
+      $users_record = $this->Model_pelanggan->getdataPelanggan($rowno, $rowperpage, $cbg, $salesman, $namapel, $dari, $sampai, $kodepel, $status);
       // Pagination Configuration
       $config['base_url']         = base_url() . 'pelanggan/view_pelanggan';
       $config['use_page_numbers'] = TRUE;
@@ -126,10 +126,127 @@ class Pelanggan extends CI_Controller
       $data['sampai']             = $sampai;
       $data['cabang']             = $this->Model_cabang->view_cabang()->result();
       $data['sess_cab']           = $this->session->userdata('cabang');
+      $data['status']             = $status;
       $this->template->load('template/template', 'pelanggan/view_pelanggan', $data);
     }
   }
 
+  function view_pelangganonaktif($rowno = 0)
+  {
+    // Search text
+    $sess_cab   = $this->session->userdata('cabang');
+    if ($sess_cab == 'pusat') {
+      $cbg   = "";
+    } else {
+      $cbg   = $sess_cab;
+    }
+
+    $salesman = "";
+    $namapel = "";
+    $dari = "";
+    $sampai = "";
+    $kodepel = "";
+    if ($this->input->post('submit') != NULL) {
+      $cbg      = $this->input->post('cabang');
+      $salesman = $this->input->post('salesman');
+      $kodepel = $this->input->post('kodepel');
+      $namapel = $this->input->post('namapel');
+      $dari     = $this->input->post('dari');
+      $sampai   = $this->input->post('sampai');
+
+      $data     = array(
+        'cbg'        => $cbg,
+        'salesman'   => $salesman,
+        'kodepel'   => $kodepel,
+        'namapel'   => $namapel,
+        'dari'       => $dari,
+        'sampai'     => $sampai
+      );
+      $this->session->set_userdata($data);
+    } else {
+      if ($this->session->userdata('cbg') != NULL) {
+        $cbg = $this->session->userdata('cbg');
+      }
+      if ($this->session->userdata('salesman') != NULL) {
+        $salesman = $this->session->userdata('salesman');
+      }
+
+      if ($this->session->userdata('kodepel') != NULL) {
+        $kodepel = $this->session->userdata('kodepel');
+      }
+
+      if ($this->session->userdata('namapel') != NULL) {
+        $namapel = $this->session->userdata('namapel');
+      }
+
+      if ($this->session->userdata('dari') != NULL) {
+        $dari = $this->session->userdata('dari');
+      }
+      if ($this->session->userdata('sampai') != NULL) {
+        $sampai = $this->session->userdata('sampai');
+      }
+    }
+
+    if (isset($_POST['export'])) {
+      header("Content-type: application/vnd-ms-excel");
+      // Mendefinisikan nama file ekspor "hasil-export.xls"
+      header("Content-Disposition: attachment; filename=Data Pelanggan.xls");
+      $data['pelanggan'] = $this->Model_pelanggan->Exportpelanggan($cbg, $salesman, $namapel, $dari, $sampai)->result();
+      $this->load->view('pelanggan/pelanggan_export', $data);
+    } else {
+      // Row per page
+      $rowperpage = 10;
+      // Row position
+      if ($rowno != 0) {
+        $rowno = ($rowno - 1) * $rowperpage;
+      }
+      $status = 0;
+      // All records count
+      $allcount     = $this->Model_pelanggan->getrecordPelanggan($cbg, $salesman, $namapel, $dari, $sampai, $kodepel, $status);
+      // Get records
+      $users_record = $this->Model_pelanggan->getdataPelanggan($rowno, $rowperpage, $cbg, $salesman, $namapel, $dari, $sampai, $kodepel, $status);
+      // Pagination Configuration
+      $config['base_url']         = base_url() . 'pelanggan/view_pelangganonaktif';
+      $config['use_page_numbers'] = TRUE;
+      $config['total_rows']       = $allcount;
+      $config['per_page']         = $rowperpage;
+
+      $config['first_link']       = 'First';
+      $config['last_link']        = 'Last';
+      $config['next_link']        = 'Next';
+      $config['prev_link']        = 'Prev';
+      $config['full_tag_open']    = '<div class="pagging text-center"><nav><ul class="pagination justify-content-center">';
+      $config['full_tag_close']   = '</ul></nav></div>';
+      $config['num_tag_open']     = '<li class="page-item"><span class="page-link">';
+      $config['num_tag_close']    = '</span></li>';
+      $config['cur_tag_open']     = '<li class="page-item active"><span class="page-link">';
+      $config['cur_tag_close']    = '<span class="sr-only">(current)</span></span></li>';
+      $config['next_tag_open']    = '<li class="page-item"><span class="page-link">';
+      $config['next_tagl_close']  = '<span aria-hidden="true">&raquo;</span></span></li>';
+      $config['prev_tag_open']    = '<li class="page-item"><span class="page-link">';
+      $config['prev_tagl_close']  = '</span>Next</li>';
+      $config['first_tag_open']   = '<li class="page-item"><span class="page-link">';
+      $config['first_tagl_close'] = '</span></li>';
+      $config['last_tag_open']    = '<li class="page-item"><span class="page-link">';
+      $config['last_tagl_close']  = '</span></li>';
+      // Initialize
+      $this->pagination->initialize($config);
+      $data['pagination']         = $this->pagination->create_links();
+      $data['result']             = $users_record;
+      $data['allcount']           = $allcount;
+      $data['row']                = $rowno;
+      $data['cbg']                = $cbg;
+      $data['salesman']           = $salesman;
+      $data['kodepel']            = $kodepel;
+      $data['namapel']            = $namapel;
+      $data['dari']               = $dari;
+      $data['sampai']             = $sampai;
+      $data['cabang']             = $this->Model_cabang->view_cabang()->result();
+      $data['sess_cab']           = $this->session->userdata('cabang');
+      $data['status']             = $status;
+      $this->template->load('template/template', 'pelanggan/view_pelanggan', $data);
+    }
+  }
 
   function input_pelanggan()
   {
@@ -190,7 +307,7 @@ class Pelanggan extends CI_Controller
     // die;
     if (isset($_POST['simpan'])) {
       if (!empty($_FILES["foto"]["name"])) {
-      
+
         $config['upload_path']          = './upload/toko';
         $config['allowed_types']        = 'gif|jpg|png';
         $config['max_size']             = 0;

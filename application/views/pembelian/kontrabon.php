@@ -124,11 +124,19 @@
                     </td>
                     <td><?php echo $d['jenisbayar']; ?></td>
                     <td>
-                      <?php
-                      if ($d['status'] == 1) {
-                        echo "<span class='badge bg-green'>Approved</span>";
+                    <?php
+                      if ($d['status'] == 1 or !empty($d['tglbayar'])) {
+                        if (!empty($d['tglbayar'])) {
+                          echo "<span class='badge bg-blue'>Done</span>";
+                        } else {
+                          echo "<span class='badge bg-green'>Approved</span>";
+                        }
                       } else {
+                        if($d['kategori'] !="TN"){
                         echo "<span class='badge bg-orange'>Pending</span>";
+                        }else{
+                          echo "<span class='badge bg-green'>Tunai</span>";
+                        }
                       }
                       ?>
                     </td>
@@ -143,9 +151,11 @@
                             <a href="<?php echo base_url(); ?>pembelian/batalkankontrabon/<?php echo $nokontrabon; ?>" class="btn btn-sm btn-danger">Batalkan</a>
                           <?php
                           } else {
+                            if($d['kategori'] != "TN"){
                           ?>
                             <a href="<?php echo base_url(); ?>pembelian/approvekontrabon/<?php echo $nokontrabon; ?>" class="btn btn-sm btn-success">Approve</a>
                         <?php
+                            }
                           }
                         }
                       } else {

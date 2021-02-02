@@ -17,8 +17,14 @@
           <h4 class="card-title">Data Pelanggan</h4>
         </div>
         <div class="card-body">
-
-          <form method="POST" action="<?php echo base_url(); ?>pelanggan/view_pelanggan" autocomplete="off" class="mb-4">
+          <?php
+          if ($status == 1) {
+            $page = "view_pelanggan";
+          } else {
+            $page = "view_pelangganonaktif";
+          }
+          ?>
+          <form method="POST" action="<?php echo base_url(); ?>pelanggan/<?php echo $page; ?>" autocomplete="off" class="mb-4">
             <?php if ($sess_cab == 'pusat') { ?>
               <div class="mb-3">
                 <select name="cabang" id="cabang" class="form-select">
@@ -56,7 +62,8 @@
                         <line x1="8" y1="3" x2="8" y2="7" />
                         <line x1="4" y1="11" x2="20" y2="11" />
                         <line x1="11" y1="15" x2="12" y2="15" />
-                        <line x1="12" y1="15" x2="12" y2="18" /></svg>
+                        <line x1="12" y1="15" x2="12" y2="18" />
+                      </svg>
                     </span>
                   </div>
                 </div>
@@ -71,7 +78,8 @@
                         <line x1="8" y1="3" x2="8" y2="7" />
                         <line x1="4" y1="11" x2="20" y2="11" />
                         <line x1="11" y1="15" x2="12" y2="15" />
-                        <line x1="12" y1="15" x2="12" y2="18" /></svg>
+                        <line x1="12" y1="15" x2="12" y2="18" />
+                      </svg>
                     </span>
                   </div>
                 </div>
@@ -83,7 +91,11 @@
             </div>
           </form>
           <a href="#" class="btn btn-danger mb-2" id="tambahpel"> <i class="fa fa-plus mr-2"></i> Tambah Data </a>
-
+          <?php if ($status == 1) { ?>
+            <a href="<?php echo base_url(); ?>pelanggan/view_pelangganonaktif" class="btn btn-danger mb-2"> <i class="fa  fa-user-times mr-2"></i> Data Pelanggan NonAktif </a>
+          <?php } else { ?>
+            <a href="<?php echo base_url(); ?>pelanggan/view_pelanggan" class="btn btn-success mb-2"> <i class="fa  fa-check mr-2"></i> Data Pelanggan Aktif </a>
+          <?php } ?>
           <p>
             Jumlah Data : <b><?php echo $allcount; ?></b> <br>
           </p>
@@ -94,17 +106,18 @@
               <thead class="thead-dark">
                 <tr>
                   <th width="10px">No</th>
-                  <th>Kode Pelanggan</th>
+                  <th>Kode</th>
                   <th>Nama Pelanggan</th>
                   <th>HP</th>
                   <th>Pasar</th>
-                  <th>Jatuh Tempo</th>
+                  <th>JT</th>
                   <th>Limit</th>
                   <th>Cabang</th>
                   <th>Salesman</th>
                   <th>Foto</th>
                   <th>Koordinat</th>
                   <th>Tanggal Input</th>
+                  <th>Status</th>
                   <th>Aksi</th>
                 </tr>
               </thead>
@@ -119,7 +132,7 @@
                     <td><?php echo $d['nama_pelanggan']; ?></td>
                     <td><?php echo $d['no_hp']; ?></td>
                     <td><?php echo $d['pasar']; ?></td>
-                    <td align="right">
+                    <td align="center">
                       <?php
                       if ($d['jatuhtempo'] == 14) {
                         $lama = "14 Hari";
@@ -141,7 +154,7 @@
                       echo $lama;
                       ?>
                     </td>
-                    <td><?php echo number_format($d['limitpel'],'0','','.'); ?></td>
+                    <td><?php echo number_format($d['limitpel'], '0', '', '.'); ?></td>
                     <td><?php echo $d['nama_cabang']; ?></td>
                     <td><?php echo $d['nama_karyawan']; ?></td>
                     <td>
@@ -157,6 +170,18 @@
                     </td>
                     <td><?php echo $d['longitude']; ?></td>
                     <td><?php echo $d['time_stamps']; ?></td>
+                    <td>
+                      <?php
+                      if ($status == "1") {
+                        $color = "green";
+                        $text = "Aktif";
+                      } else {
+                        $color = "red";
+                        $text = "NonAktif";
+                      }
+                      ?>
+                      <span class="badge bg-<?php echo $color; ?>"><?php echo $text; ?></span>
+                    </td>
                     <td>
                       <a href="<?php echo base_url(); ?>pelanggan/edit_pelanggan/<?php echo $d['kode_pelanggan'] ?>" class="btn btn-sm btn-primary"><i class="fa fa-pencil"></i></a>
                     </td>

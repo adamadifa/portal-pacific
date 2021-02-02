@@ -169,7 +169,7 @@
 		?>
 	</tbody>
 	<tr bgcolor="#024a75" style="color:white; font-size:12;">
-		<td colspan="6">TOTAL</td>
+		<td colspan="7">TOTAL</td>
 		<td style="text-align: right"><?php echo number_format($totaltunai, '0', '', '.');  ?></td>
 		<td style="text-align: right"><?php echo number_format($totaltitip, '0', '', '.');  ?></td>
 		<td style="text-align: right"><?php echo number_format($totalpelunasan, '0', '', '.');  ?></td>

@@ -2450,7 +2450,7 @@ WHERE tgl_pembelian BETWEEN '$dari' AND '$sampai'"
     $this->db->where('tgl_pembelian >=', $dari);
     $this->db->where('tgl_pembelian <=', $sampai);
     $this->db->where('detail_pembelian.kode_barang', $barang);
-    $this->db->order_by('pembelian.kode_supplier', 'ASC');
+    $this->db->order_by('pembelian.kode_supplier,pembelian.tgl_pembelian', 'ASC');
     return $this->db->get('detail_pembelian');
   }
 

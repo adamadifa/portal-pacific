@@ -54,7 +54,7 @@ class Model_pelanggan extends CI_Model
     return $this->datatables->generate();
   }
 
-  public function getrecordPelanggan($cabang = "", $salesman = "", $namapel = "", $dari = "", $sampai = "", $kodepel = "")
+  public function getrecordPelanggan($cabang = "", $salesman = "", $namapel = "", $dari = "", $sampai = "", $kodepel = "", $status = "")
   {
     $this->db->select('count(*) as allcount');
     $this->db->from('pelanggan');
@@ -81,19 +81,22 @@ class Model_pelanggan extends CI_Model
     if ($sampai !=  '') {
       $this->db->where('time_stamps <=', $sampai);
     }
+
+    $this->db->where('pelanggan.status_pelanggan', $status);
     $query  = $this->db->get();
     $result = $query->result_array();
     return $result[0]['allcount'];
   }
 
-  public function getdataPelanggan($rowno, $rowperpage, $cabang = "", $salesman = "", $namapel = "", $dari = "", $sampai = "", $kodepel = "")
+  public function getdataPelanggan($rowno, $rowperpage, $cabang = "", $salesman = "", $namapel = "", $dari = "", $sampai = "", $kodepel = "", $status = "")
   {
-    $this->db->select('kode_pelanggan,limitpel,nama_pelanggan,alamat_pelanggan,pelanggan.no_hp,pasar,hari,nama_cabang,nama_karyawan,latitude,longitude,time_stamps,jatuhtempo,foto');
+    $this->db->select('kode_pelanggan,limitpel,nama_pelanggan,alamat_pelanggan,pelanggan.no_hp,pasar,hari,nama_cabang,nama_karyawan,latitude,longitude,time_stamps,jatuhtempo,foto,status_pelanggan');
     $this->db->from('pelanggan');
     $this->db->join('cabang', 'pelanggan.kode_cabang = cabang.kode_cabang');
     $this->db->join('karyawan', 'pelanggan.id_sales = karyawan.id_karyawan');
     $this->db->where('nama_pelanggan !=', 'BATAL');
     $this->db->order_by('kode_pelanggan', 'desc');
+    // $this->db->where('pelanggan.status_pelanggan', $status);
     if ($cabang != "") {
       $this->db->where('pelanggan.kode_cabang', $cabang);
     }
@@ -201,6 +204,7 @@ class Model_pelanggan extends CI_Model
     $lama_berjualan        = $this->input->post('lama_berjualan');
     $latitude       = $this->input->post('latitude');
     $longitude       = $this->input->post('longitude');
+    $status_pelanggan = $this->input->post('status_pelanggan');
 
     $data = array(
       'kode_pelanggan'     => $kode_pelanggan,
@@ -221,7 +225,8 @@ class Model_pelanggan extends CI_Model
       'kelurahan'          => $kelurahan,
       'latitude'          => $latitude,
       'longitude'          => $longitude,
-      'foto'              => $foto
+      'foto'              => $foto,
+      'status_pelanggan' => $status_pelanggan
     );
     $this->db->update('pelanggan', $data, array('kode_pelanggan' => $kode_pelanggan));
   }
@@ -232,7 +237,7 @@ class Model_pelanggan extends CI_Model
     $foto = $pelanggan['foto'];
     $hapus = $this->db->delete('pelanggan', array('kode_pelanggan' => $id_pelanggan));
     if ($hapus) {
-      unlink("gambar/" . $_id->image);
+      unlink("gambar/" . $pelanggan->image);
     }
   }
 

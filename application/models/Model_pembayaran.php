@@ -408,14 +408,15 @@ class Model_pembayaran extends CI_Model
     if ($sess_cab != 'pusat') {
       $this->db->where('karyawan.kode_cabang', $sess_cab);
     }
-    $this->db->select('tgl_giro,penjualan.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,no_giro,namabank,sum(jumlah) as jumlah,tglcair,giro.status,tglbayar,kode_setoranpusat,tgl_setoranpusat,ket');
+    $this->db->select('tgl_giro,penjualan.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,no_giro,namabank,sum(jumlah) as jumlah,tglcair,giro.status,tglbayar,kode_setoranpusat,tgl_setoranpusat,ket,jmlnoref,bank_penerima');
     $this->db->from('giro');
     $this->db->join('historibayar', 'giro.id_giro = historibayar.id_giro', 'left');
     $this->db->join('penjualan', 'giro.no_fak_penj = penjualan.no_fak_penj');
     $this->db->join('karyawan', 'giro.id_karyawan = karyawan.id_karyawan');
     $this->db->join('pelanggan', 'penjualan.kode_pelanggan = pelanggan.kode_pelanggan');
     $this->db->join('setoran_pusat', 'giro.no_giro = setoran_pusat.no_ref', 'left');
-    $this->db->group_by('tgl_giro,penjualan.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,giro.no_giro,namabank,tglcair,giro.status,tglbayar,kode_setoranpusat,tgl_setoranpusat,ket');
+    $this->db->join('v_ledger_noref', 'giro.no_giro = v_ledger_noref.no_ref', 'left');
+    $this->db->group_by('tgl_giro,penjualan.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,giro.no_giro,namabank,tglcair,giro.status,tglbayar,kode_setoranpusat,tgl_setoranpusat,ket,jmlnoref,bank_penerima');
     $this->db->order_by('tglcair,no_giro', 'desc');
     if ($namapel != '') {
       $this->db->like('nama_pelanggan', $namapel, 'after');
@@ -445,14 +446,15 @@ class Model_pembayaran extends CI_Model
     if ($sess_cab != 'pusat') {
       $this->db->where('karyawan.kode_cabang', $sess_cab);
     }
-    $this->db->select('tgl_giro,penjualan.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,no_giro,namabank,sum(jumlah) as jumlah,tglcair,giro.status,tglbayar,kode_setoranpusat');
+    $this->db->select('tgl_giro,penjualan.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,no_giro,namabank,sum(jumlah) as jumlah,tglcair,giro.status,tglbayar,kode_setoranpusat,jmlnoref,bank_penerima');
     $this->db->from('giro');
     $this->db->join('historibayar', 'giro.id_giro = historibayar.id_giro', 'left');
     $this->db->join('penjualan', 'giro.no_fak_penj = penjualan.no_fak_penj');
     $this->db->join('karyawan', 'giro.id_karyawan = karyawan.id_karyawan');
     $this->db->join('pelanggan', 'penjualan.kode_pelanggan = pelanggan.kode_pelanggan');
     $this->db->join('setoran_pusat', 'giro.no_giro = setoran_pusat.no_ref', 'left');
-    $this->db->group_by('tgl_giro,penjualan.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,giro.no_giro,namabank,tglcair,giro.status,tglbayar,kode_setoranpusat');
+    $this->db->join('v_ledger_noref', 'giro.no_giro = v_ledger_noref.no_ref', 'left');
+    $this->db->group_by('tgl_giro,penjualan.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,giro.no_giro,namabank,tglcair,giro.status,tglbayar,kode_setoranpusat,jmlnoref,bank_penerima');
     if ($namapel != '') {
       $this->db->like('nama_pelanggan', $namapel, 'after');
     }
@@ -482,14 +484,15 @@ class Model_pembayaran extends CI_Model
     if ($sess_cab != 'pusat') {
       $this->db->where('karyawan.kode_cabang', $sess_cab);
     }
-    $this->db->select('tgl_transfer,penjualan.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,kode_transfer,namabank,sum(jumlah) as jumlah,tglcair,transfer.status,tglbayar,kode_setoranpusat,tgl_setoranpusat,transfer.ket');
+    $this->db->select('tgl_transfer,penjualan.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,kode_transfer,namabank,sum(jumlah) as jumlah,tglcair,transfer.status,tglbayar,kode_setoranpusat,tgl_setoranpusat,transfer.ket,jmlnoref,bank_penerima');
     $this->db->from('transfer');
     $this->db->join('historibayar', 'transfer.id_transfer = historibayar.id_transfer', 'left');
     $this->db->join('penjualan', 'transfer.no_fak_penj = penjualan.no_fak_penj');
     $this->db->join('karyawan', 'transfer.id_karyawan = karyawan.id_karyawan');
     $this->db->join('pelanggan', 'penjualan.kode_pelanggan = pelanggan.kode_pelanggan');
     $this->db->join('setoran_pusat', 'transfer.kode_transfer = setoran_pusat.no_ref', 'left');
-    $this->db->group_by('tgl_transfer,penjualan.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,transfer.kode_transfer,namabank,tglcair,transfer.status,tglbayar,kode_setoranpusat,tgl_setoranpusat,transfer.ket');
+    $this->db->join('v_ledger_noref', 'transfer.kode_transfer = v_ledger_noref.no_ref', 'left');
+    $this->db->group_by('tgl_transfer,penjualan.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,transfer.kode_transfer,namabank,tglcair,transfer.status,tglbayar,kode_setoranpusat,tgl_setoranpusat,transfer.ket,jmlnoref,bank_penerima');
     $this->db->order_by('tglcair,nama_pelanggan', 'desc');
     if ($namapel != '') {
       $this->db->like('nama_pelanggan', $namapel, 'after');
@@ -519,14 +522,15 @@ class Model_pembayaran extends CI_Model
     if ($sess_cab != 'pusat') {
       $this->db->where('karyawan.kode_cabang', $sess_cab);
     }
-    $this->db->select('tgl_transfer,penjualan.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,kode_transfer,namabank,sum(jumlah) as jumlah,tglcair,transfer.status,tglbayar,kode_setoranpusat,transfer.ket');
+    $this->db->select('tgl_transfer,penjualan.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,kode_transfer,namabank,sum(jumlah) as jumlah,tglcair,transfer.status,tglbayar,kode_setoranpusat,transfer.ket,jmlnoref,bank_penerima');
     $this->db->from('transfer');
     $this->db->join('historibayar', 'transfer.id_transfer = historibayar.id_transfer', 'left');
     $this->db->join('penjualan', 'transfer.no_fak_penj = penjualan.no_fak_penj');
     $this->db->join('karyawan', 'transfer.id_karyawan = karyawan.id_karyawan');
     $this->db->join('pelanggan', 'penjualan.kode_pelanggan = pelanggan.kode_pelanggan');
     $this->db->join('setoran_pusat', 'transfer.kode_transfer = setoran_pusat.no_ref', 'left');
-    $this->db->group_by('tgl_transfer,penjualan.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,transfer.kode_transfer,namabank,tglcair,transfer.status,tglbayar,kode_setoranpusat,transfer.ket');
+    $this->db->join('v_ledger_noref', 'transfer.kode_transfer = v_ledger_noref.no_ref', 'left');
+    $this->db->group_by('tgl_transfer,penjualan.kode_pelanggan,nama_pelanggan,karyawan.kode_cabang,transfer.kode_transfer,namabank,tglcair,transfer.status,tglbayar,kode_setoranpusat,transfer.ket,jmlnoref,bank_penerima');
     $this->db->order_by('tglcair', 'desc');
     if ($namapel != '') {
       $this->db->like('nama_pelanggan', $namapel, 'after');
@@ -975,6 +979,7 @@ class Model_pembayaran extends CI_Model
         $datatransfer = array(
           'status'            => $status,
           'norek'             => $t->norek,
+          'bank_penerima'     => $bankpenerima,
           'namapemilikrek'    => $t->namapemilikrek,
           'jumlah'            => $t->jumlah,
           'omset_bulan'       => $bulan,
@@ -1793,5 +1798,80 @@ class Model_pembayaran extends CI_Model
 
     //echo $sampai;
     return $query->num_rows();
+  }
+
+  function updateledgerpenjualan()
+  {
+    $no_ref = $this->input->post('no_ref');
+    $tgl_penerimaan = $this->input->post('tgl_giro');
+    $tgl_ledger = $this->input->post('tgl_ledger');
+    $pelanggan = $this->input->post('pelanggan');
+    $bank = $this->input->post('bank');
+    $cabang = $this->input->post('cabang');
+    $status_dk = $this->input->post('status_dk');
+    $status_validasi = $this->input->post('status_validasi');
+    $kategori = $this->input->post('kategori');
+    $jumlah = $this->input->post('jumlah');
+    //Nobukti Ledger
+    $tanggal        = explode("-", $tgl_ledger);
+    $tahun          = substr($tanggal[0], 2, 2);
+    $qledger        = "SELECT no_bukti FROM ledger_bank WHERE LEFT(no_bukti,7) ='LR$cabang$tahun'ORDER BY no_bukti DESC LIMIT 1 ";
+    $ceknolast      = $this->db->query($qledger)->row_array();
+    $nobuktilast    = $ceknolast['no_bukti'];
+    $no_bukti       = buatkode($nobuktilast, 'LR' . $cabang . $tahun, 4);
+    $getgiro        = $this->db->get_where('giro', array('no_giro' => $no_ref))->result();
+    $listnofaktur   = '';
+    foreach ($getgiro as $g) {
+      $listnofaktur = $listnofaktur .= $g->no_fak_penj . ",";
+    }
+
+    // echo $cabang;
+    // die;
+    if ($cabang == 'TSM') {
+      $akun = "1-1468";
+    } else if ($cabang == 'BDG') {
+      $akun = "1-1402";
+    } else if ($cabang == 'BGR') {
+      $akun = "1-1403";
+    } else if ($cabang == 'PWT') {
+      $akun = "1-1404";
+    } else if ($cabang == 'TGL') {
+      $akun = "1-1405";
+    } else if ($cabang == "SKB") {
+      $akun = "1-1407";
+    } else if ($cabang == "GRT") {
+      $akun = "1-1468";
+    } else if ($cabang == "SMR") {
+      $akun = "1-1488";
+    } else if ($cabang == "SBY") {
+      $akun = "1-1486";
+    } else if ($cabang == "PST") {
+      $akun = "1-1401";
+    }
+
+    $dataledger = array(
+      'no_bukti'        => $no_bukti,
+      'no_ref'          => $no_ref,
+      'bank'            => $bank,
+      'tgl_ledger'      => $tgl_ledger,
+      'tgl_penerimaan'  => $tgl_penerimaan,
+      'pelanggan'       => $pelanggan,
+      'keterangan'      => "INV " . $listnofaktur,
+      'kode_akun'       => $akun,
+      'jumlah'          => $jumlah,
+      'status_dk'       => $status_dk,
+      'status_validasi' => $status_validasi,
+      'kategori'        => $kategori
+    );
+
+    $deleteledger = $this->db->delete('ledger_bank', array('no_ref' => $no_ref));
+    if ($deleteledger) {
+      $insertledger = $this->db->insert('ledger_bank', $dataledger);
+      if ($insertledger) {
+        redirectPreviousPage();
+
+        // echo "OK";
+      }
+    }
   }
 }

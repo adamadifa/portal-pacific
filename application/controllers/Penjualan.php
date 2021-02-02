@@ -1732,6 +1732,8 @@ class Penjualan extends CI_Controller
       $setoranpustransfer   = $setoranpusat['transfer'];
 
       $kertas   = $saldokertas + $setoranpenjkertas + $kkertas - $lkertas + $gantikertas + $girotocash - $setoranpuskertas;
+
+      //echo $saldokertas . "-" . $setoranpenjkertas . "-" . $kkertas . "-" . $lkertas . "-" . $gantikertas . "-" . $girotocash . "-" . $setoranpuskertas;
       $logam    = $saldologam + $setoranpenjlogam + $klogam - $llogam - $gantikertas - $setoranpuslogam;
       $giro     = $saldogiro + $setoranpenjgiro - $setoranpusgiro - $girotocash;
       $transfer = $saldotransfer + $setoranpenjtransfer - $setoranpustransfer;
@@ -2309,20 +2311,20 @@ class Penjualan extends CI_Controller
     $salesman = "";
     $dari     = "";
     $sampai   = "";
-    $status   = "";
+    $statuspenjpending   = "";
     if ($this->input->post('submit') != NULL) {
       $cbg      = $this->input->post('cabang');
       $salesman = $this->input->post('salesman');
       $dari     = $this->input->post('dari');
       $sampai   = $this->input->post('sampai');
-      $status   = $this->input->post('status');
+      $statuspenjpending   = $this->input->post('statuspenjpending');
 
       $data     = array(
         'cbg'        => $cbg,
         'salesman'   => $salesman,
         'dari'       => $dari,
         'sampai'     => $sampai,
-        'status'     => $status
+        'statuspenjpending'     => $statuspenjpending
       );
       $this->session->set_userdata($data);
     } else {
@@ -2339,8 +2341,8 @@ class Penjualan extends CI_Controller
         $sampai = $this->session->userdata('sampai');
       }
 
-      if ($this->session->userdata('status') != NULL) {
-        $status = $this->session->userdata('status');
+      if ($this->session->userdata('statuspenjpending') != NULL) {
+        $statuspenjpending = $this->session->userdata('statuspenjpending');
       }
     }
     // Row per page
@@ -2351,9 +2353,9 @@ class Penjualan extends CI_Controller
     }
 
     // All records count
-    $allcount     = $this->Model_penjualan->getrecordPenjualanpendCount($cbg, $salesman, $dari, $sampai, $status);
+    $allcount     = $this->Model_penjualan->getrecordPenjualanpendCount($cbg, $salesman, $dari, $sampai, $statuspenjpending);
     // Get records
-    $users_record = $this->Model_penjualan->getDataPenjualanpend($rowno, $rowperpage, $cbg, $salesman, $dari, $sampai, $status);
+    $users_record = $this->Model_penjualan->getDataPenjualanpend($rowno, $rowperpage, $cbg, $salesman, $dari, $sampai, $statuspenjpending);
 
     // Pagination Configuration
     $config['base_url']         = base_url() . 'penjualan/penjualanpend';
@@ -2389,7 +2391,7 @@ class Penjualan extends CI_Controller
     $data['sess_cab']   = $this->session->userdata('cabang');
     $data['dari']       = $dari;
     $data['sampai']     = $sampai;
-    $data['status']     = $status;
+    $data['status']     = $statuspenjpending;
     // Load view
     $this->template->load('template/template', 'penjualan/penjualanpending', $data);
   }
