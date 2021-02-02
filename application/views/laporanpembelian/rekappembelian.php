@@ -33,7 +33,8 @@
                               <line x1="8" y1="3" x2="8" y2="7" />
                               <line x1="4" y1="11" x2="20" y2="11" />
                               <line x1="11" y1="15" x2="12" y2="15" />
-                              <line x1="12" y1="15" x2="12" y2="18" /></svg>
+                              <line x1="12" y1="15" x2="12" y2="18" />
+                            </svg>
                           </span>
                         </div>
                       </div>
@@ -48,7 +49,8 @@
                               <line x1="8" y1="3" x2="8" y2="7" />
                               <line x1="4" y1="11" x2="20" y2="11" />
                               <line x1="11" y1="15" x2="12" y2="15" />
-                              <line x1="12" y1="15" x2="12" y2="18" /></svg>
+                              <line x1="12" y1="15" x2="12" y2="18" />
+                            </svg>
                           </span>
                         </div>
                       </div>
@@ -62,6 +64,19 @@
                       <option value="KEMASAN">KEMASAN</option>
                       <option value="LAINNYA">LAINNYA</option>
                     </select>
+                  </div>
+                  <div class="mb-3">
+                    <div class="form-label">Urutkan Berdasarkan</div>
+                    <div>
+                      <label class="form-check form-check-inline">
+                        <input class="form-check-input" name="sortby" value="supplier" type="radio" checked>
+                        <span class="form-check-label">Supplier</span>
+                      </label>
+                      <label class="form-check form-check-inline">
+                        <input class="form-check-input" name="sortby" value="jenisbarang" type="radio">
+                        <span class="form-check-label">Jenis Barang</span>
+                      </label>
+                    </div>
                   </div>
                   <div class="form-group">
                     <div class="row">

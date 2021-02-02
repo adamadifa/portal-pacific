@@ -960,7 +960,6 @@ class Model_pembelian extends CI_Model
   {
 
     $this->db->select('nobukti_pembelian,tgl_pembelian,tgl_jatuhtempo,ppn,no_fak_pajak,pembelian.kode_supplier,nama_supplier,pembelian.kode_dept,nama_dept,jenistransaksi,ref_tunai,
-
     (SELECT SUM( IF ( STATUS = "PMB", ((qty*harga)+penyesuaian), 0 ) ) - SUM( IF ( STATUS = "PNJ",(qty*harga), 0 ) ) FROM detail_pembelian dp WHERE dp.nobukti_pembelian = pembelian.nobukti_pembelian  ) as harga,
     (SELECT COUNT(nobukti_pembelian) FROM detail_kontrabon k WHERE k.nobukti_pembelian = pembelian.nobukti_pembelian) as kontrabon,
     (SELECT (SUM(IF(status_dk="K" AND kode_akun="2-1200" OR status_dk="K" AND kode_akun="2-1300" ,(qty*harga),0))-SUM(IF(status_dk="D" AND kode_akun="2-1200" OR status_dk="D" AND kode_akun="2-1300" ,(qty*harga),0))) FROM jurnal_koreksi j WHERE j.nobukti_pembelian = pembelian.nobukti_pembelian GROUP BY j.nobukti_pembelian) as penyesuaian,
@@ -1102,7 +1101,7 @@ class Model_pembelian extends CI_Model
   public function getDataKontraBon($rowno, $rowperpage, $nokontrabon = "", $tgl_kontrabon = "", $supplier = "", $status = "", $kategori = "")
   {
 
-    $this->db->select('kontrabon.no_kontrabon,no_dokumen,kontrabon.kode_supplier,nama_supplier,jenisbayar,via,
+    $this->db->select('kontrabon.no_kontrabon,no_dokumen,kontrabon.kode_supplier,nama_supplier,jenisbayar,via,status,
     (SELECT SUM(jmlbayar) FROM detail_kontrabon d WHERE d.no_kontrabon = kontrabon.no_kontrabon) as totalbayar,
     (SELECT COUNT(no_ref) FROM kaskecil_detail k WHERE k.no_ref = kontrabon.no_kontrabon) as cekkk,
     (SELECT COUNT(p.nobukti_pembelian) FROM detail_pembelian  p
@@ -1436,14 +1435,20 @@ WHERE tgl_pembelian BETWEEN '$dari' AND '$sampai'"
     return $this->db->get();
   }
 
-  function cetak_rekappembelian($dari = "", $sampai = "", $jenis = "")
+  function cetak_rekappembelian($dari = "", $sampai = "", $jenis = "", $sortby)
   {
 
     if ($jenis != "") {
       $jenis = "AND jenis_barang = '" . $jenis . "' ";
     }
+
+    if ($sortby == "supplier") {
+      $sort = "ORDER BY pembelian.kode_supplier ASC";
+    } else {
+      $sort = "ORDER BY jenis_barang,pembelian.kode_supplier ASC";
+    }
     $query = "SELECT detail_pembelian.nobukti_pembelian,tgl_pembelian,pembelian.kode_supplier,nama_supplier,
- detail_pembelian.kode_barang,nama_barang,pembelian.kode_dept,nama_dept,detail_pembelian.keterangan,
+ detail_pembelian.kode_barang,nama_barang,jenis_barang,pembelian.kode_dept,nama_dept,detail_pembelian.keterangan,
  detail_pembelian.kode_akun,nama_akun,ppn,qty,harga,penyesuaian
  FROM detail_pembelian
  INNER JOIN pembelian ON detail_pembelian.nobukti_pembelian = pembelian.nobukti_pembelian
@@ -1452,7 +1457,7 @@ WHERE tgl_pembelian BETWEEN '$dari' AND '$sampai'"
  INNER JOIN coa ON detail_pembelian.kode_akun = coa.kode_akun
  INNER JOIN master_barang_pembelian ON detail_pembelian.kode_barang = master_barang_pembelian.kode_barang
  WHERE tgl_pembelian BETWEEN '$dari' AND '$sampai'"
-      . $jenis . "ORDER BY pembelian.kode_supplier";
+      . $jenis . $sort;
     return $this->db->query($query);
   }
 
@@ -2447,5 +2452,53 @@ WHERE tgl_pembelian BETWEEN '$dari' AND '$sampai'"
     $this->db->where('detail_pembelian.kode_barang', $barang);
     $this->db->order_by('pembelian.kode_supplier', 'ASC');
     return $this->db->get('detail_pembelian');
+  }
+
+  function getAlldatapembelian($nobukti)
+  {
+    $this->db->select('nobukti_pembelian,tgl_pembelian,tgl_jatuhtempo,ppn,no_fak_pajak,pembelian.kode_supplier,nama_supplier,pembelian.kode_dept,nama_dept,jenistransaksi,ref_tunai,
+    (SELECT SUM( IF ( STATUS = "PMB", ((qty*harga)+penyesuaian), 0 ) ) - SUM( IF ( STATUS = "PNJ",(qty*harga), 0 ) ) FROM detail_pembelian dp WHERE dp.nobukti_pembelian = pembelian.nobukti_pembelian  ) as harga,
+    (SELECT COUNT(nobukti_pembelian) FROM detail_kontrabon k WHERE k.nobukti_pembelian = pembelian.nobukti_pembelian) as kontrabon,
+    (SELECT (SUM(IF(status_dk="K" AND kode_akun="2-1200" OR status_dk="K" AND kode_akun="2-1300" ,(qty*harga),0))-SUM(IF(status_dk="D" AND kode_akun="2-1200" OR status_dk="D" AND kode_akun="2-1300" ,(qty*harga),0))) FROM jurnal_koreksi j WHERE j.nobukti_pembelian = pembelian.nobukti_pembelian GROUP BY j.nobukti_pembelian) as penyesuaian,
+    (SELECT SUM(jmlbayar) FROM historibayar_pembelian hb
+    INNER JOIN detail_kontrabon on hb.no_kontrabon = detail_kontrabon.no_kontrabon
+    WHERE nobukti_pembelian = pembelian.nobukti_pembelian
+    GROUP BY nobukti_pembelian) as jmlbayar');
+    $this->db->from('pembelian');
+    $this->db->join('departemen', 'pembelian.kode_dept = departemen.kode_dept');
+    $this->db->join('supplier', 'pembelian.kode_supplier = supplier.kode_supplier');
+    $this->db->order_by('tgl_pembelian,nobukti_pembelian', 'DESC');
+    $this->db->where('nobukti_pembelian', $nobukti);
+    return $this->db->get();
+  }
+
+  function insertkbfromjatuhtempo($data)
+  {
+    $simpan = $this->db->insert('detailkontrabon_temp', $data);
+    if ($simpan) {
+      return 1;
+    }
+  }
+
+  function approvekontrabon($nokontrabon)
+  {
+    $data = [
+      'status' => 1
+    ];
+    $update = $this->db->update('kontrabon', $data, array('no_kontrabon' => $nokontrabon));
+    if ($update) {
+      return 1;
+    }
+  }
+
+  function batalkankontrabon($nokontrabon)
+  {
+    $data = [
+      'status' => 0
+    ];
+    $update = $this->db->update('kontrabon', $data, array('no_kontrabon' => $nokontrabon));
+    if ($update) {
+      return 1;
+    }
   }
 }

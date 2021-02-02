@@ -456,6 +456,7 @@ class Laporanpenjualan extends CI_Controller
     $salesman       = $this->input->post('salesman');
     $pelanggan      = $this->input->post('pelanggan');
     $tanggal       = $this->input->post('tanggal');
+    $filter       = $this->input->post('filter');
     //$sampai     		= $this->input->post('sampai');
 
 
@@ -467,7 +468,7 @@ class Laporanpenjualan extends CI_Controller
     $data['pelanggan']  = $this->Model_pelanggan->get_pelanggan($pelanggan)->row_array();
     $data['tanggal']  = $tanggal;
     //$data['sampai']		= $sampai;
-    $data['aup']      = $this->Model_laporanpenjualan->aup($cabang, $salesman, $pelanggan, $tanggal)->result();
+    $data['aup']      = $this->Model_laporanpenjualan->aup($cabang, $salesman, $pelanggan, $tanggal, $filter)->result();
 
 
 

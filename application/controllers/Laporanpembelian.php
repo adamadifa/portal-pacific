@@ -126,14 +126,19 @@ class laporanpembelian extends CI_Controller
 		$data['dari'] 		=	$this->input->post('dari');
 		$data['sampai'] 	= $this->input->post('sampai');
 		$data['jenis']		= $this->input->post('jenis_barang');
-		$data['pmb']			= $this->Model_pembelian->cetak_rekappembelian($data['dari'], $data['sampai'], $data['jenis'])->result();
+		$sortby 					= $this->input->post('sortby');
+		$data['pmb']			= $this->Model_pembelian->cetak_rekappembelian($data['dari'], $data['sampai'], $data['jenis'], $sortby)->result();
 		if (isset($_POST['export'])) {
 			// Fungsi header dengan mengirimkan raw data excel
 			header("Content-type: application/vnd-ms-excel");
 			// Mendefinisikan nama file ekspor "hasil-export.xls"
 			header("Content-Disposition: attachment; filename=Rekap Pembelian.xls");
 		}
-		$this->load->view('laporanpembelian/cetak_rekappembelian', $data);
+		if ($sortby == "supplier") {
+			$this->load->view('laporanpembelian/cetak_rekappembelian', $data);
+		} else {
+			$this->load->view('laporanpembelian/cetak_rekappembelian_jenisbarang', $data);
+		}
 	}
 
 

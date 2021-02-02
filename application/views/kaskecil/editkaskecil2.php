@@ -14,7 +14,8 @@
             <line x1="8" y1="3" x2="8" y2="7" />
             <line x1="4" y1="11" x2="20" y2="11" />
             <line x1="11" y1="15" x2="12" y2="15" />
-            <line x1="12" y1="15" x2="12" y2="18" /></svg>
+            <line x1="12" y1="15" x2="12" y2="18" />
+          </svg>
         </span>
       </div>
     </div>
@@ -62,24 +63,41 @@
       </select>
     </div>
   </div>
-  <div class="row mb-3">
-    <div class="col-md-12">
-      <div class="custom-controls-stacked">
-        <label class="custom-control custom-radio custom-control-inline">
-          <input type="radio" class="custom-control-input" name="inout" value="K" <?php if ($kaskecil['status_dk'] == 'K') {
-                                                                                    echo "checked";
-                                                                                  } ?>>
-          <span class="custom-control-label">IN</span>
+  <div class="mb-3">
+    <div>
+      <label class="form-check form-check-inline">
+        <input class="form-check-input" name="inout" value="K" type="radio" <?php if ($kaskecil['status_dk'] == 'K') {
+                                                                              echo "checked";
+                                                                            } ?>>
+        <span class="form-check-label">IN</span>
+      </label>
+      <label class="form-check form-check-inline">
+        <input class="form-check-input" name="inout" value="D" type="radio" <?php if ($kaskecil['status_dk'] == 'D') {
+                                                                              echo "checked";
+                                                                            } ?>>
+        <span class="form-check-label">OUT</span>
+      </label>
+    </div>
+  </div>
+
+  <?php if ($this->session->userdata('cabang') == "pusat") { ?>
+    <div class="mb-3">
+      <div>
+        <label class="form-check form-check-inline">
+          <input class="form-check-input" name="peruntukan" value="PCF" type="radio" <?php if ($kaskecil['peruntukan'] == 'PCF') {
+                                                                                        echo "checked";
+                                                                                      } ?>>
+          <span class="form-check-label">Pacific</span>
         </label>
-        <label class="custom-control custom-radio custom-control-inline">
-          <input type="radio" class="custom-control-input" name="inout" value="D" <?php if ($kaskecil['status_dk'] == 'D') {
-                                                                                    echo "checked";
-                                                                                  } ?>>
-          <span class="custom-control-label">OUT</span>
+        <label class="form-check form-check-inline">
+          <input class="form-check-input" name="peruntukan" value="MP" type="radio" <?php if ($kaskecil['peruntukan'] == 'MP') {
+                                                                                      echo "checked";
+                                                                                    } ?>>
+          <span class="form-check-label">Makmur Permata</span>
         </label>
       </div>
     </div>
-  </div>
+  <?php } ?>
   <div class="row mt-6">
     <div class="form-group">
       <div class="d-flex justify-content-end">

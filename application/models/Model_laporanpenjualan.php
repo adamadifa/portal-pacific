@@ -138,6 +138,7 @@ GROUP BY
 		}
 		$query = "SELECT
 					penjualan_pending.no_fak_penj AS no_fak_penj,
+					penjualan.no_fak_penj as cekpenjualan,
 					penjualan_pending.tgltransaksi AS tgltransaksi,
 					penjualan_pending.kode_pelanggan AS kode_pelanggan,
 					pelanggan.nama_pelanggan AS nama_pelanggan,
@@ -169,21 +170,17 @@ GROUP BY
 					karyawan.nama_karyawan AS nama_karyawan,
 					penjualan_pending.jatuhtempo AS jatuhtempo
 				FROM
-					(
-					(
-					(
-					( penjualan_pending JOIN pelanggan ON ( ( penjualan_pending.kode_pelanggan = pelanggan.kode_pelanggan ) ) )
-					JOIN karyawan ON ( ( penjualan_pending.id_karyawan = karyawan.id_karyawan ) )
-					)
+					(((( penjualan_pending
+					JOIN pelanggan ON (( penjualan_pending.kode_pelanggan = pelanggan.kode_pelanggan)))
+					JOIN karyawan ON (( penjualan_pending.id_karyawan = karyawan.id_karyawan )))
 					LEFT JOIN
 					(
 						select retur.no_fak_penj AS no_fak_penj,sum(retur.subtotal_gb) AS totalgb,sum(retur.subtotal_pf) AS totalpf from retur WHERE tglretur BETWEEN '$dari' AND '$sampai' group by retur.no_fak_penj
-					) r ON ( penjualan_pending.no_fak_penj = r.no_fak_penj )
-					)
-					LEFT JOIN view_historibayar ON ( ( penjualan_pending.no_fak_penj = view_historibayar.no_fak_penj ) )
-					)
+					) r ON ( penjualan_pending.no_fak_penj = r.no_fak_penj ))
+					LEFT JOIN view_historibayar ON ( ( penjualan_pending.no_fak_penj = view_historibayar.no_fak_penj )))
+					LEFT JOIN penjualan ON penjualan_pending.no_fak_penj = penjualan.no_fak_penj
 
-				WHERE tgltransaksi BETWEEN '$dari' AND '$sampai'"
+				WHERE penjualan_pending.tgltransaksi BETWEEN '$dari' AND '$sampai'"
 			. $cabang
 			. $salesman
 			. $pelanggan
@@ -541,7 +538,7 @@ GROUP BY
 	function kasbesar($dari, $sampai, $cabang = null, $salesman = null, $pelanggan = null, $jenisbayar = null)
 	{
 
-		$this->db->select('historibayar.no_fak_penj,nama_karyawan,tgltransaksi,tglbayar,bayar,bayar as bayarterakhir,girotocash,status_bayar,date_format(historibayar.date_created, "%d %M %Y %H:%i:%s") as date_created, date_format(historibayar.date_updated, "%d %M %Y %H:%i:%s") as date_updated,
+		$this->db->select('historibayar.no_fak_penj,karyawan.nama_karyawan,k.nama_karyawan as penagih,tgltransaksi,tglbayar,bayar,bayar as bayarterakhir,girotocash,status_bayar,date_format(historibayar.date_created, "%d %M %Y %H:%i:%s") as date_created, date_format(historibayar.date_updated, "%d %M %Y %H:%i:%s") as date_updated,
 			(
 				SELECT IFNULL(penjualan.total, 0) - (ifnull(r.totalpf, 0) - ifnull(r.totalgb, 0)) AS totalpiutang
 				FROM penjualan
@@ -565,6 +562,7 @@ GROUP BY
 		$this->db->join('v_movefaktur', 'historibayar.no_fak_penj = v_movefaktur.no_fak_penj');
 		$this->db->join('pelanggan', 'penjualan.kode_pelanggan = pelanggan.kode_pelanggan');
 		$this->db->join('karyawan', 'penjualan.id_karyawan = karyawan.id_karyawan');
+		$this->db->join('karyawan k', 'historibayar.id_karyawan = k.id_karyawan');
 		$this->db->order_by('tglbayar,historibayar.no_fak_penj', 'ASC');
 		$this->db->where('tglbayar >=', $dari);
 		$this->db->where('tglbayar <=', $sampai);
@@ -799,15 +797,22 @@ GROUP BY
 	}
 
 
-	function aup($cabang = null, $salesman = null, $pelanggan = null, $tanggal)
+	function aup($cabang = null, $salesman = null, $pelanggan = null, $tanggal, $filter)
 	{
 
 		$tgl = '2020-01-01';
 		if ($cabang 	!= "") {
 			$cabang = "AND cabangbarunew = '" . $cabang . "'";
+			$cabang2 = "";
 		} else {
 			if ($tanggal < $tgl) {
 				$cabang = "AND cabangbarunew !='GRT' ";
+			}
+
+			if ($filter == 1) {
+				$cabang2 = "AND cabangbarunew !='PST' ";
+			} else {
+				$cabang2 = "";
 			}
 		}
 		if ($salesman != "") {
@@ -898,6 +903,7 @@ GROUP BY
 			penjualan.jenistransaksi != 'tunai' 
 			AND tgltransaksi <= '$tanggal'"
 			. $cabang
+			. $cabang2
 			. $salesman
 			. $pelanggan
 			. "
@@ -1296,6 +1302,11 @@ GROUP BY
 
 	function rekapbg($cabang, $dari, $sampai, $bulan, $tahun, $sampaibayar)
 	{
+		if ($bulan == 12) {
+			$bulannext = "= 1";
+		} else {
+			$bulannext = "> " . $bulan;
+		}
 		$query = "SELECT tgl_giro,penjualan.id_karyawan,nama_karyawan,giro.no_fak_penj,nama_pelanggan,namabank,no_giro,tglcair as jatuhtempo,jumlah,tglbayar as tgl_pencairan
 							FROM giro
 							INNER JOIN penjualan
@@ -1308,7 +1319,7 @@ GROUP BY
 							ON giro.id_giro = hb.id_giro
 							WHERE tgl_giro BETWEEN '$dari' AND '$sampai' AND pelanggan.kode_cabang='$cabang'
 							OR omset_bulan ='$bulan' AND omset_tahun='$tahun' AND pelanggan.kode_cabang='$cabang'
-							OR tgl_giro < '$dari' AND omset_bulan > '$bulan' AND omset_tahun >='$tahun'   AND pelanggan.kode_cabang='$cabang'
+							OR tgl_giro < '$dari' AND omset_bulan" . $bulannext . " AND omset_tahun >='$tahun'   AND pelanggan.kode_cabang='$cabang'
 							ORDER BY tgl_giro,no_giro ASC
 							";
 		return $this->db->query($query);
@@ -2205,7 +2216,7 @@ GROUP BY
 		$tahun 	 = $tanggal[0];
 		$mulai   = $tahun . "-" . $bulan . "-" . "01";
 		$this->db->where('tgl_lhp >=', $mulai);
-		$this->db->where('tgl_lhp <', $dari);
+		$this->db->where('tgl_lhp <=', $dari);
 		$this->db->where('kode_cabang', $cabang);
 		$this->db->select('SUM(setoran_logam) as uanglogam,SUM(setoran_kertas) as uangkertas,SUM(setoran_bg) as giro,SUM(girotocash) as girotocash,SUM(setoran_transfer) as transfer');
 		$this->db->from('setoran_penjualan');
@@ -2285,15 +2296,21 @@ GROUP BY
 		$this->db->order_by('tgl_diterimapusat', 'desc');
 		$this->db->limit(1);
 		return $this->db->get_where('setoran_pusat', array(
-			'omset_bulan' => $bulan, 'omset_tahun' => $thn, 'MONTH(tgl_diterimapusat)' => $bln,
+			'omset_bulan' => $bulan, 'omset_tahun' => $tahun, 'MONTH(tgl_diterimapusat)' => $bln,
 			'YEAR(tgl_diterimapusat)' => $thn, 'kode_cabang' => $cabang
 		));
 	}
 
 	function cekBeforeBulan($cabang, $bulan, $tahun)
 	{
-		$bln = $bulan - 1;
-		$thn = $tahun;
+		if ($bulan == 1) {
+			$bln = 12;
+			$thn = $tahun - 1;
+		} else {
+
+			$bln = $bulan - 1;
+			$thn = $tahun;
+		}
 		$this->db->order_by('tgl_diterimapusat', 'desc');
 		$this->db->limit(1);
 		return $this->db->get_where('setoran_pusat', array(

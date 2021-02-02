@@ -33,7 +33,8 @@
 												<line x1="8" y1="3" x2="8" y2="7" />
 												<line x1="4" y1="11" x2="20" y2="11" />
 												<line x1="11" y1="15" x2="12" y2="15" />
-												<line x1="12" y1="15" x2="12" y2="18" /></svg>
+												<line x1="12" y1="15" x2="12" y2="18" />
+											</svg>
 										</span>
 									</div>
 								</div>
@@ -48,7 +49,8 @@
 												<line x1="8" y1="3" x2="8" y2="7" />
 												<line x1="4" y1="11" x2="20" y2="11" />
 												<line x1="11" y1="15" x2="12" y2="15" />
-												<line x1="12" y1="15" x2="12" y2="18" /></svg>
+												<line x1="12" y1="15" x2="12" y2="18" />
+											</svg>
 										</span>
 									</div>
 								</div>
@@ -75,6 +77,9 @@
 									<th>Penerimaan</th>
 									<th>Pengeluaran</th>
 									<th>Saldo</th>
+									<?php if ($this->session->userdata('cabang') == "pusat") { ?>
+										<th>Peruntukan</th>
+									<?php } ?>
 									<th>CR</th>
 									<th>Aksi</th>
 								</tr>
@@ -133,6 +138,9 @@
 										<td align="right" style="color:black"><?php if (!empty($saldo)) {
 																														echo number_format($saldo, '0', '', '.');
 																													} ?></td>
+										<?php if ($this->session->userdata('cabang') == "pusat") { ?>
+											<td><?php echo $d['peruntukan']; ?></td>
+										<?php } ?>
 										<td>
 											<?php if (!empty($d['kode_cr'])) { ?>
 												<span class="badge bg-green">CR</span>

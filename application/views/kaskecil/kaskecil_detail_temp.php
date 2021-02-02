@@ -16,6 +16,9 @@ foreach ($temp as $t) { ?>
       } ?>
       <label class="badge bg-<?php echo $color; ?>"><?php echo $inout; ?></label>
     </td>
+    <?php if ($this->session->userdata('cabang') == "pusat") { ?>
+      <td><?php echo $t->peruntukan; ?></td>
+    <?php } ?>
     <td>
       <a href="#" class="btn btn-sm btn-danger hapus" data-id="<?php echo $t->id; ?>"><i class="fa fa-trash-o"></i></a>
     </td>
