@@ -979,7 +979,6 @@ class Model_pembayaran extends CI_Model
         $datatransfer = array(
           'status'            => $status,
           'norek'             => $t->norek,
-          'bank_penerima'     => $bankpenerima,
           'namapemilikrek'    => $t->namapemilikrek,
           'jumlah'            => $t->jumlah,
           'omset_bulan'       => $bulan,
@@ -1239,16 +1238,15 @@ class Model_pembayaran extends CI_Model
 
 
     foreach ($datatransfer as $t) {
-<<<<<<< HEAD
       $batas  = date('Y-m-d', strtotime("+3 day", strtotime(date($t->tgltransaksi))));
+
+
       // echo $tglcair . "-" . $t->tgltransaksi;
 
       // echo $tglcair . "-" . $t->tgltransaksi;
       //gi echo $tglcair . "-" . $t->tgltransaksi;
+
       // die;
-=======
-      $batas  = date('Y-m-d', strtotime("+5 day", strtotime(date($t->tgltransaksi))));
->>>>>>> 5acb44e351094749c5a9d6540fb2347624fdd11f
       if ($status == 1) {
         if ($t->total == $t->jumlah && $tglcair <= $batas) {
           $datatransfer = array(
@@ -1807,80 +1805,5 @@ class Model_pembayaran extends CI_Model
 
     //echo $sampai;
     return $query->num_rows();
-  }
-
-  function updateledgerpenjualan()
-  {
-    $no_ref = $this->input->post('no_ref');
-    $tgl_penerimaan = $this->input->post('tgl_giro');
-    $tgl_ledger = $this->input->post('tgl_ledger');
-    $pelanggan = $this->input->post('pelanggan');
-    $bank = $this->input->post('bank');
-    $cabang = $this->input->post('cabang');
-    $status_dk = $this->input->post('status_dk');
-    $status_validasi = $this->input->post('status_validasi');
-    $kategori = $this->input->post('kategori');
-    $jumlah = $this->input->post('jumlah');
-    //Nobukti Ledger
-    $tanggal        = explode("-", $tgl_ledger);
-    $tahun          = substr($tanggal[0], 2, 2);
-    $qledger        = "SELECT no_bukti FROM ledger_bank WHERE LEFT(no_bukti,7) ='LR$cabang$tahun'ORDER BY no_bukti DESC LIMIT 1 ";
-    $ceknolast      = $this->db->query($qledger)->row_array();
-    $nobuktilast    = $ceknolast['no_bukti'];
-    $no_bukti       = buatkode($nobuktilast, 'LR' . $cabang . $tahun, 4);
-    $getgiro        = $this->db->get_where('giro', array('no_giro' => $no_ref))->result();
-    $listnofaktur   = '';
-    foreach ($getgiro as $g) {
-      $listnofaktur = $listnofaktur .= $g->no_fak_penj . ",";
-    }
-
-    // echo $cabang;
-    // die;
-    if ($cabang == 'TSM') {
-      $akun = "1-1468";
-    } else if ($cabang == 'BDG') {
-      $akun = "1-1402";
-    } else if ($cabang == 'BGR') {
-      $akun = "1-1403";
-    } else if ($cabang == 'PWT') {
-      $akun = "1-1404";
-    } else if ($cabang == 'TGL') {
-      $akun = "1-1405";
-    } else if ($cabang == "SKB") {
-      $akun = "1-1407";
-    } else if ($cabang == "GRT") {
-      $akun = "1-1468";
-    } else if ($cabang == "SMR") {
-      $akun = "1-1488";
-    } else if ($cabang == "SBY") {
-      $akun = "1-1486";
-    } else if ($cabang == "PST") {
-      $akun = "1-1401";
-    }
-
-    $dataledger = array(
-      'no_bukti'        => $no_bukti,
-      'no_ref'          => $no_ref,
-      'bank'            => $bank,
-      'tgl_ledger'      => $tgl_ledger,
-      'tgl_penerimaan'  => $tgl_penerimaan,
-      'pelanggan'       => $pelanggan,
-      'keterangan'      => "INV " . $listnofaktur,
-      'kode_akun'       => $akun,
-      'jumlah'          => $jumlah,
-      'status_dk'       => $status_dk,
-      'status_validasi' => $status_validasi,
-      'kategori'        => $kategori
-    );
-
-    $deleteledger = $this->db->delete('ledger_bank', array('no_ref' => $no_ref));
-    if ($deleteledger) {
-      $insertledger = $this->db->insert('ledger_bank', $dataledger);
-      if ($insertledger) {
-        redirectPreviousPage();
-
-        // echo "OK";
-      }
-    }
   }
 }

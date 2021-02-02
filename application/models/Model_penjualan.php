@@ -1033,11 +1033,17 @@ class Model_penjualan extends CI_Model
     $tgltransaksi    = $this->input->post('tgltransaksi');
     $sales           = $this->input->post('sales');
     $jenistransaksi = $this->input->post('jenistransaksi');
+    if ($jenistransaksi == "tunai") {
+      $jenisbayar = "tunai";
+    } else {
+      $jenisbayar = "titipan";
+    }
     $data = array(
       'no_fak_penj'     => $no_faktur,
       'tgltransaksi'    => $tgltransaksi,
       'id_karyawan'      => $sales,
-      'jenistransaksi'  => $jenistransaksi
+      'jenistransaksi'  => $jenistransaksi,
+      'jenisbayar'  => $jenisbayar
     );
 
     $updatepenjualan = $this->db->update('penjualan', $data, array('no_fak_penj' => $nofaktur));

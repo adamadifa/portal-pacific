@@ -474,7 +474,7 @@ GROUP BY
 	{
 
 
-		$this->db->select('no_retur_penj,retur.no_fak_penj,penjualan.kode_pelanggan,nama_pelanggan,pasar,hari,karyawan.kode_cabang,tglretur,subtotal_gb,
+		$this->db->select('no_retur_penj,no_ref,retur.no_fak_penj,penjualan.kode_pelanggan,nama_pelanggan,pasar,hari,karyawan.kode_cabang,tglretur,subtotal_gb,
 		  subtotal_pf,retur.total,jenistransaksi,retur.date_created,retur.date_updated');
 		$this->db->from('retur');
 		$this->db->join('penjualan', 'retur.no_fak_penj = penjualan.no_fak_penj');
@@ -1601,7 +1601,7 @@ GROUP BY
 			$pelanggan = "AND penjualan.kode_pelanggan = '" . $pelanggan . "' ";
 		}
 
-		$query = "SELECT tgltransaksi,penjualan.kode_pelanggan,nama_pelanggan,alamat_pelanggan,penjualan.id_karyawan,nama_karyawan,
+		$query = "SELECT tgltransaksi,penjualan.kode_pelanggan,nama_pelanggan,pasar,alamat_pelanggan,penjualan.id_karyawan,nama_karyawan,
 					SUM( IF ( kode_produk = 'BB', jumlah/isipcsdus, 0 ) ) AS BB,
 					SUM( IF ( kode_produk = 'AB', jumlah/isipcsdus, 0 ) ) AS AB,
 					SUM( IF ( kode_produk = 'AR', jumlah/isipcsdus, 0 ) ) AS AR,

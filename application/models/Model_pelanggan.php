@@ -117,6 +117,8 @@ class Model_pelanggan extends CI_Model
     if ($sampai !=  '') {
       $this->db->where('time_stamps <=', $sampai);
     }
+
+    $this->db->where('status_pelanggan', $status);
     $this->db->limit($rowperpage, $rowno);
     $query = $this->db->get();
     return $query->result_array();

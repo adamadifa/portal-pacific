@@ -816,7 +816,7 @@ class Model_pembelian extends CI_Model
       }
       $qdetailtmp = "SELECT * FROM detailpembelian_temp
     INNER JOIN master_barang_pembelian ON detailpembelian_temp.kode_barang = master_barang_pembelian.kode_barang
-    WHERE master_barang_pembelian.kode_dept = '$departemen' AND detailpembelian_temp.id_admin='$id_user' ORDER BY id ASC";
+    WHERE master_barang_pembelian.kode_dept = '$departemen' AND detailpembelian_temp.id_admin='$id_user' GROUP BY id ORDER BY id ASC";
       $detailtmp  =  $this->db->query($qdetailtmp)->result();
       $no = 1;
       foreach ($detailtmp as $d) {
@@ -2215,6 +2215,7 @@ WHERE tgl_pembelian BETWEEN '$dari' AND '$sampai'"
   {
     $nobukti        = $this->input->post('nobukti');
     $kodebarang     = $this->input->post('kodebarang');
+    $no_urut        = $this->input->post('no_urut');
     $qty            = $this->input->post('qty');
     $harga          = str_replace(".", "", $this->input->post('harga'));
     $harga          = str_replace(",", ".", $harga);
@@ -2249,7 +2250,7 @@ WHERE tgl_pembelian BETWEEN '$dari' AND '$sampai'"
       'kode_cabang' => $cbg
     ];
 
-    $update = $this->db->update('detail_pembelian', $data, array('nobukti_pembelian' => $nobukti, 'kode_barang' => $kodebarang, 'keterangan' => $keteranganold));
+    $update = $this->db->update('detail_pembelian', $data, array('nobukti_pembelian' => $nobukti, 'kode_barang' => $kodebarang, 'keterangan' => $keteranganold, 'no_urut' => $no_urut));
     if ($update) {
       if (!empty($kodecr) && substr($kodeakun, 0, 3) == "6-1" && !empty($cbg) || !empty($kodecr) && substr($kodeakun, 0, 3) == "6-2" && !empty($cbg)) {
         $datacr = [
@@ -2265,13 +2266,13 @@ WHERE tgl_pembelian BETWEEN '$dari' AND '$sampai'"
         $datadetail = [
           'kode_cr' => $kodecr
         ];
-        $updatedetail = $update = $this->db->update('detail_pembelian', $datadetail, array('nobukti_pembelian' => $nobukti, 'kode_barang' => $kodebarang, 'keterangan' => $keteranganold));
+        $updatedetail = $update = $this->db->update('detail_pembelian', $datadetail, array('nobukti_pembelian' => $nobukti, 'kode_barang' => $kodebarang, 'keterangan' => $keteranganold, 'no_urut' => $no_urut));
       } else {
         $datadetail = [
           'kode_cr' => null
         ];
         $hapuscr = $this->db->delete('costratio_biaya', array('kode_cr' => $kodecr));
-        $updatedetail = $update = $this->db->update('detail_pembelian', $datadetail, array('nobukti_pembelian' => $nobukti, 'kode_barang' => $kodebarang, 'keterangan' => $keteranganold));
+        $updatedetail = $update = $this->db->update('detail_pembelian', $datadetail, array('nobukti_pembelian' => $nobukti, 'kode_barang' => $kodebarang, 'keterangan' => $keteranganold, 'no_urut' => $no_urut));
       }
 
       if (empty($kodecr) && substr($kodeakun, 0, 3) == "6-1" && !empty($cbg) || empty($kodecr) && substr($kodeakun, 0, 3) == "6-2" && !empty($cbg)) {
@@ -2304,7 +2305,7 @@ WHERE tgl_pembelian BETWEEN '$dari' AND '$sampai'"
         $datadetail = [
           'kode_cr' => $kodecrnew
         ];
-        $updatedetail = $update = $this->db->update('detail_pembelian', $datadetail, array('nobukti_pembelian' => $nobukti, 'kode_barang' => $kodebarang, 'keterangan' => $keteranganold));
+        $updatedetail = $update = $this->db->update('detail_pembelian', $datadetail, array('nobukti_pembelian' => $nobukti, 'kode_barang' => $kodebarang, 'keterangan' => $keteranganold, 'no_urut' => $no_urut));
       }
       $this->session->set_flashdata(
         'msg',

@@ -1,6 +1,7 @@
 <form autocomplete="off" class="formValidate" id="EditDetailBarang" method="POST" action="<?php echo base_url(); ?>pembelian/update_detailbarang">
   <input type="hidden" name="nobukti" value="<?php echo $brg['nobukti_pembelian']; ?>">
   <input type="hidden" name="kodecr" value="<?php echo $brg['kode_cr']; ?>">
+  <input type="hidden" name="no_urut" value="<?php echo $brg['no_urut']; ?>">
   <input type="hidden" name="cekcbg" id="cekcbg" value="0">
   <input type="hidden" name="tgl_pembelian" value="<?php echo $tglpembelian; ?>">
   <div class="form-group mb-3">

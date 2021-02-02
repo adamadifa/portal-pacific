@@ -119,8 +119,13 @@
 					$piutangbulanini = $k->piutangbulanini;
 					$retur 			 = 0;
 				}
-				
-				$saldoakhir 			= $saldoawal + $piutangbulanini - $k->bayarbulanini - $retur;
+
+				if ($saldoawal > 1) {
+					$saldoakhir 			= $saldoawal - $k->bayarbulanini - $retur;
+				} else {
+					$saldoakhir 			= $saldoawal + $piutangbulanini - $k->bayarbulanini - $retur;
+				}
+
 				$totalsaldoawal 	= $totalsaldoawal + $saldoawal;
 				$totalbruto 			= $totalbruto + $k->subtotal;
 				$totalpeny 				= $totalpeny + $k->penyharga;

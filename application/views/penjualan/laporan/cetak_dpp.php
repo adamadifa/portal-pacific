@@ -50,7 +50,7 @@ function uang($nilai)
 			<th rowspan="2">TANGGAL</th>
 			<th rowspan="2">KODE PELANGGAN</th>
 			<th rowspan="2">NAMA PELANGGAN</th>
-			<th rowspan="2">ALAMAT PELANGGAN</th>
+			<th rowspan="2">PASAR/DAERAH</th>
 			<th rowspan="2">SALESMAN</th>
 			<th colspan="10">PRODUK</th>
 		</tr>
@@ -95,7 +95,7 @@ function uang($nilai)
 				<td><?php echo DateToIndo2($d->tgltransaksi); ?></td>
 				<td><?php echo $d->kode_pelanggan; ?></td>
 				<td><?php echo $d->nama_pelanggan; ?></td>
-				<td><?php echo $d->alamat_pelanggan; ?></td>
+				<td><?php echo $d->pasar; ?></td>
 				<td><?php echo $d->nama_karyawan; ?></td>
 				<td align="right"><?php if ($d->BB != 0) {
 														echo uang($d->BB);

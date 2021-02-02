@@ -144,7 +144,7 @@
                         $lama = "2 Bulan";
                       } else if ($d['jatuhtempo'] == 90) {
                         $lama = "3 Bulan";
-                      } else if ($d['jatuhtempo'] == "180") {
+                      } else if ($d['jatuhtempo'] == 180) {
                         $lama = "6 Bulan";
                       } else if ($d['jatuhtempo'] == 360) {
                         $lama = "1 Tahun";

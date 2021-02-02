@@ -1342,7 +1342,7 @@ class Penjualan extends CI_Controller
     $gantikertas       = $gantilogam['gantikertas'];
     $setoranpuslogam   = $setoranpusat['uanglogam'];
     $saldoawal        = $saldologam + $setoranpenjlogam + $klogam - $llogam - $gantikertas - $setoranpuslogam;
-    echo $saldologam . " +" . $setoranpenjlogam . " +" . $klogam . " -" . $llogam . " - " . $gantikertas . " - " . $setoranpuslogam;
+    //echo $saldologam . " +" . $setoranpenjlogam . " +" . $klogam . " -" . $llogam . " - " . $gantikertas . " - " . $setoranpuslogam;
     echo $saldoawal . "|" . number_format($saldoawal, '0', '', '.');
   }
 

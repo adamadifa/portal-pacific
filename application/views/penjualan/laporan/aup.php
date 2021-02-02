@@ -156,10 +156,28 @@
       });
     }
 
+    function loadPelangganCabang() {
+      var cabang = $("#cabang").val();
+      $.ajax({
+        type: 'POST',
+        url: '<?php echo base_url(); ?>laporanpenjualan/get_pelanggancabang',
+        data: {
+          cabang: cabang
+        },
+        cache: false,
+        success: function(respond) {
+          $('#pelanggan').selectize()[0].selectize.destroy();
+          $("#pelanggan").html(respond);
+          $('#pelanggan').selectize({});
 
+        }
+      });
+    }
+    loadPelangganCabang();
     loadSalesman();
     $("#cabang").change(function() {
       loadSalesman();
+      loadPelangganCabang();
     });
 
     $("#cabangretur").change(function() {

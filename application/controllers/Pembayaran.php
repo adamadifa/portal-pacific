@@ -73,10 +73,11 @@ class Pembayaran extends CI_Controller
 				$rowno = ($rowno - 1) * $rowperpage;
 			}
 
+			$status = 1;
 			// All records count
-			$allcount     = $this->Model_pelanggan->getrecordPelanggan($cbg, $salesman, $namapel, $dari, $sampai);
+			$allcount     = $this->Model_pelanggan->getrecordPelanggan($cbg, $salesman, $namapel, $dari, $sampai, $kodepel = "", $status);
 			// Get records
-			$users_record = $this->Model_pelanggan->getdataPelanggan($rowno, $rowperpage, $cbg, $salesman, $namapel, $dari, $sampai);
+			$users_record = $this->Model_pelanggan->getdataPelanggan($rowno, $rowperpage, $cbg, $salesman, $namapel, $dari, $sampai, $kodepel = "", $status);
 			// Pagination Configuration
 			$config['base_url']         = base_url() . 'pembayaran/index';
 			$config['use_page_numbers'] = TRUE;
