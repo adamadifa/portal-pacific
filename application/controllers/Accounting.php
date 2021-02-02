@@ -316,6 +316,15 @@ class Accounting extends CI_Controller
     $this->load->view('accounting/view_pembelian', $data);
   }
 
+  function view_penjualan()
+  {
+    $kode_akun        = $this->input->post('kode_akun');
+    $bulan              = $this->input->post('bulan');
+    $tahun              = $this->input->post('tahun');
+    $data['penjualan']  = $this->Model_accounting->penjualan($kode_akun, $bulan, $tahun)->result();
+    $this->load->view('accounting/view_penjualan', $data);
+  }
+
   function view_penyesuaian()
   {
     $kode_akun      = $this->input->post('kode_akun');

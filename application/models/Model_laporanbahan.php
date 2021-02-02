@@ -146,7 +146,7 @@ class Model_laporanbahan extends CI_Model
     WHERE MONTH(tgl_pengeluaran) = '$bulan' AND YEAR(tgl_pengeluaran) = '$tahun' 
     GROUP BY detail_pengeluaran_gb.kode_barang) gk ON (master_barang_pembelian.kode_barang = gk.kode_barang)
 
-    WHERE master_barang_pembelian.kode_dept = 'GDB' AND master_barang_pembelian.kode_kategori = '$kode_kategori' ORDER BY nama_barang ASC
+    WHERE master_barang_pembelian.kode_dept = 'GDB' AND master_barang_pembelian.kode_kategori = '$kode_kategori' ORDER BY jenis_barang,urutan ASC
     ";
     return $this->db->query($query);
   }

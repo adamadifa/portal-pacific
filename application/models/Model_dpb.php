@@ -1147,6 +1147,33 @@ class Model_dpb extends CI_Model
     }
   }
 
+  public function getDataRJMDpb($rowno, $rowperpage, $no_dpb = "", $tgl_penjualan = "", $cabang = "", $salesman = "")
+  {
+    $this->db->select('no_mutasi_gudang_cabang,tgl_mutasi_gudang_cabang,mutasi_gudang_cabang.no_dpb,mutasi_gudang_cabang.kode_cabang,
+                      dpb.id_karyawan,nama_karyawan,tujuan,no_kendaraan');
+    $this->db->from('mutasi_gudang_cabang');
+    $this->db->join('dpb', 'mutasi_gudang_cabang.no_dpb = dpb.no_dpb');
+    $this->db->join('karyawan', 'dpb.id_karyawan = karyawan.id_karyawan');
+    $this->db->order_by('tgl_mutasi_gudang_cabang', 'desc');
+    $this->db->where('jenis_mutasi', 'REJECT MOBIL');
+    if ($no_dpb != '') {
+      $this->db->where('mutasi_gudang_cabang.no_dpb', $no_dpb);
+    }
+    if ($tgl_penjualan != '') {
+      $this->db->where('tgl_mutasi_gudang_cabang', $tgl_penjualan);
+    }
+
+    if ($cabang != '') {
+      $this->db->where('mutasi_gudang_cabang.kode_cabang', $cabang);
+    }
+    if ($salesman != '') {
+      $this->db->where('dpb.id_karyawan', $salesman);
+    }
+    $this->db->limit($rowperpage, $rowno);
+    $query = $this->db->get();
+    return $query->result_array();
+  }
+
   public function getDataRJPDpb($rowno, $rowperpage, $no_dpb = "", $tgl_penjualan = "", $cabang = "", $salesman = "")
   {
     $this->db->select('no_mutasi_gudang_cabang,tgl_mutasi_gudang_cabang,mutasi_gudang_cabang.no_dpb,mutasi_gudang_cabang.kode_cabang,
@@ -1183,6 +1210,33 @@ class Model_dpb extends CI_Model
     $this->db->join('dpb', 'mutasi_gudang_cabang.no_dpb = dpb.no_dpb');
     $this->db->join('karyawan', 'dpb.id_karyawan = karyawan.id_karyawan');
     $this->db->where('jenis_mutasi', 'REJECT PASAR');
+    if ($no_dpb != '') {
+      $this->db->where('mutasi_gudang_cabang.no_dpb', $no_dpb);
+    }
+    if ($tgl_penjualan != '') {
+      $this->db->where('tgl_mutasi_gudang_cabang', $tgl_penjualan);
+    }
+
+    if ($cabang != '') {
+      $this->db->where('mutasi_gudang_cabang.kode_cabang', $cabang);
+    }
+    if ($salesman != '') {
+      $this->db->where('dpb.id_karyawan', $salesman);
+    }
+    $query  = $this->db->get();
+    $result = $query->result_array();
+    return $result[0]['allcount'];
+  }
+
+  // Select total records
+  public function getrecordRJMDpbCount($no_dpb = "", $tgl_penjualan = "", $cabang = "", $salesman = "")
+  {
+
+    $this->db->select('count(*) as allcount');
+    $this->db->from('mutasi_gudang_cabang');
+    $this->db->join('dpb', 'mutasi_gudang_cabang.no_dpb = dpb.no_dpb');
+    $this->db->join('karyawan', 'dpb.id_karyawan = karyawan.id_karyawan');
+    $this->db->where('jenis_mutasi', 'REJECT MOBIL');
     if ($no_dpb != '') {
       $this->db->where('mutasi_gudang_cabang.no_dpb', $no_dpb);
     }
@@ -1295,6 +1349,188 @@ class Model_dpb extends CI_Model
       redirect('dpb/inputrejectpasar');
     }
   }
+
+
+  function insert_rejectmobil()
+  {
+    $nodpb            = $this->input->post('nodpb');
+    $no_mutasi        = $this->input->post('no_mutasi');
+    $cabang           = $this->input->post('cabang');
+    $tanggal          = $this->input->post('tanggal');
+    $kondisi          = "BAD";
+    $inout_good       = "OUT";
+    $inout_bad        = "IN";
+    $jenis_mutasi     = "REJECT MOBIL";
+    $order            = 11;
+    $id_admin         = $this->session->userdata('id_user');
+    $jumproduk        = $this->input->post('jumproduk');
+    $tgl              = explode("-", $tanggal);
+    $bulan            = $tgl[1];
+    $tahun            = $tgl[0];
+    if ($bulan == 12) {
+      $bulan = 1;
+      $tahun = $tahun + 1;
+    } else {
+      $bulan = $bulan + 1;
+      $tahun = $tahun;
+    }
+    $data = array(
+      'no_mutasi_gudang_cabang'  => $no_mutasi,
+      'tgl_mutasi_gudang_cabang' => $tanggal,
+      'no_dpb'                   => $nodpb,
+      'kode_cabang'              => $cabang,
+      'kondisi'                  => $kondisi,
+      'inout_good'               => $inout_good,
+      'inout_bad'                => $inout_bad,
+      'jenis_mutasi'             => $jenis_mutasi,
+      'order'                    => $order,
+      'id_admin'                 => $id_admin
+    );
+    $ceksa = $this->db->get_where('saldoawal_bj', array('bulan' => $bulan, 'tahun' => $tahun, 'kode_cabang' => $cabang))->num_rows();
+    if (empty($ceksa)) {
+      $cek            = $this->db->get_where('mutasi_gudang_cabang', array('no_mutasi_gudang_cabang' => $no_mutasi))->num_rows();
+      $cekdpb         = $this->db->get_where('mutasi_gudang_cabang', array('no_dpb' => $nodpb, 'tgl_mutasi_gudang_cabang' => $tanggal, 'jenis_mutasi' => 'REJECT MOBIL'))->num_rows();
+      if (empty($cek) && empty($cekdpb)) {
+        $simpanmutasi   = $this->db->insert('mutasi_gudang_cabang', $data);
+        if ($simpanmutasi) {
+          for ($i = 1; $i <= $jumproduk; $i++) {
+            $kode_produk     = $this->input->post('kode_produk' . $i);
+            $jmldus          = $this->input->post('jmldus' . $i);
+            $jmlpack         = $this->input->post('jmlpack' . $i);
+            $jmlpcs          = $this->input->post('jmlpcs' . $i);
+
+            $isipcsdus       = $this->input->post('isipcsdus' . $i);
+            $isipack         = $this->input->post('isipcspack' . $i);
+            $isipcs          = $this->input->post('isipcs' . $i);
+
+            $jumlah          = ($jmldus * $isipcsdus) + ($jmlpack * $isipcs) + $jmlpcs;
+
+            $detail_mutasi   = array(
+              'no_mutasi_gudang_cabang' => $no_mutasi,
+              'kode_produk'             => $kode_produk,
+              'jumlah'                  => $jumlah
+            );
+            if (!empty($jumlah)) {
+              $simpandetailmutasi = $this->db->insert('detail_mutasi_gudang_cabang', $detail_mutasi);
+            }
+          }
+          $this->session->set_flashdata(
+            'msg',
+            '<div class="alert bg-green text-white text-white alert-dismissible" role="alert">
+              <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+              <i class="fa fa-check"></i> Data Berhasil Disimpan !
+            </div>'
+          );
+          redirect('dpb/rejectmobil');
+        }
+      } else {
+        $this->session->set_flashdata(
+          'msg',
+          '<div class="alert bg-red text-white text-white alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <i class="fa fa-info"></i> Data Sudah Ada !
+          </div>'
+        );
+        redirect('dpb/inputrejectmobil');
+      }
+    } else {
+      $this->session->set_flashdata(
+        'msg',
+        '<div class="alert bg-red text-white text-white alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <i class="fa fa-info"> Data Periode Bulan Ini Sudah di Tutup !
+        </div>'
+      );
+      redirect('dpb/inputrejectmobil');
+    }
+  }
+
+  function update_rejectmobil()
+  {
+    $nodpb            = $this->input->post('nodpb');
+    $no_mutasi        = $this->input->post('no_mutasi');
+    $cabang           = $this->input->post('cabang');
+    $tanggal          = $this->input->post('tanggal');
+    $id_admin         = $this->session->userdata('id_user');
+    $jumproduk        = $this->input->post('jumproduk');
+    $tgl              = explode("-", $tanggal);
+    $bulan            = $tgl[1];
+    $tahun            = $tgl[0];
+    if ($bulan == 12) {
+      $bulan = 1;
+      $tahun = $tahun + 1;
+    } else {
+      $bulan = $bulan + 1;
+      $tahun = $tahun;
+    }
+    $data = array(
+      'tgl_mutasi_gudang_cabang' => $tanggal,
+      'no_dpb'                   => $nodpb,
+      'kode_cabang'              => $cabang,
+      'id_admin'                 => $id_admin
+    );
+    $ceksa = $this->db->get_where('saldoawal_bj', array('bulan' => $bulan, 'tahun' => $tahun, 'kode_cabang' => $cabang))->num_rows();
+    if (empty($ceksa)) {
+      $updatepenjualan  = $this->db->update('mutasi_gudang_cabang', $data, array('no_mutasi_gudang_cabang' => $no_mutasi));
+      if ($updatepenjualan) {
+        for ($i = 1; $i <= $jumproduk; $i++) {
+          $kode_produk     = $this->input->post('kode_produk' . $i);
+          $jmldus          = $this->input->post('jmldus' . $i);
+          $jmlpack         = $this->input->post('jmlpack' . $i);
+          $jmlpcs          = $this->input->post('jmlpcs' . $i);
+
+          $isipcsdus       = $this->input->post('isipcsdus' . $i);
+          $isipack         = $this->input->post('isipcspack' . $i);
+          $isipcs          = $this->input->post('isipcs' . $i);
+
+          $jumlah          = ($jmldus * $isipcsdus) + ($jmlpack * $isipcs) + $jmlpcs;
+          $cek_detail      = $this->db->get_where('detail_mutasi_gudang_cabang', array('no_mutasi_gudang_cabang' => $no_mutasi, 'kode_produk' => $kode_produk))->num_rows();
+
+
+          if (empty($cek_detail) && !empty($jumlah)) {
+            $proses = "A";
+            $detail_mutasi   = array(
+              'no_mutasi_gudang_cabang' => $no_mutasi,
+              'kode_produk'             => $kode_produk,
+              'jumlah'                  => $jumlah
+            );
+            $this->db->insert('detail_mutasi_gudang_cabang', $detail_mutasi);
+          } else if (!empty($cek_detail) && empty($jumlah)) {
+            $proses = "B";
+            $this->db->delete('detail_mutasi_gudang_cabang', array('no_mutasi_gudang_cabang' => $no_mutasi, 'kode_produk' => $kode_produk));
+          } else if (!empty($cek_detail) && !empty($jumlah)) {
+            $proses = "C";
+            $detail_mutasi   = array(
+              'kode_produk'             => $kode_produk,
+              'jumlah'                  => $jumlah
+            );
+            $this->db->update('detail_mutasi_gudang_cabang', $detail_mutasi, array('no_mutasi_gudang_cabang' => $no_mutasi, 'kode_produk' => $kode_produk));
+          } else {
+            $proses = "";
+          }
+          echo $kode_produk . "-" . $cek_detail . "-" . $proses . "<br>";
+        }
+        $this->session->set_flashdata(
+          'msg',
+          '<div class="alert bg-green text-white text-white alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <i class="fa fa-check"></i> Data Berhasil Disimpan !
+          </div>'
+        );
+        redirect('dpb/rejectmobil');
+      }
+    } else {
+      $this->session->set_flashdata(
+        'msg',
+        '<div class="alert bg-red text-white text-white alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <i class="fa fa-info"></i> Data Periode Bulan Ini Sudah di Tutup !
+        </div>'
+      );
+      redirect('dpb/rejectmobil');
+    }
+  }
+
 
   function update_rejectpasar()
   {
@@ -1419,6 +1655,47 @@ class Model_dpb extends CI_Model
         </div>'
       );
       redirect('dpb/rejectpasar');
+    }
+  }
+
+
+  function hapusrejectmobil($no_mutasi, $cabang)
+  {
+    $gettanggal  = $this->db->get_where('mutasi_gudang_cabang', array('no_mutasi_gudang_cabang' => $no_mutasi))->row_array();
+    $hariini     = $gettanggal['tgl_mutasi_gudang_cabang'];
+    $tanggal     = explode("-", $hariini);
+    $bulan       = $tanggal[1];
+    $tahun       = $tanggal[0];
+    if ($bulan == 12) {
+      $bulan = 1;
+      $tahun = $tahun + 1;
+    } else {
+      $bulan = $bulan + 1;
+      $tahun = $tahun;
+    }
+    $ceksa = $this->db->get_where('saldoawal_bj', array('bulan' => $bulan, 'tahun' => $tahun, 'kode_cabang' => $cabang))->num_rows();
+    if (empty($ceksa)) {
+      $hapus = $this->db->delete('mutasi_gudang_cabang', array('no_mutasi_gudang_cabang' => $no_mutasi));
+      if ($hapus) {
+        $hapus_detail = $this->db->delete('detail_mutasi_gudang_cabang', array('no_mutasi_gudang_cabang' => $no_mutasi));
+        $this->session->set_flashdata(
+          'msg',
+          '<div class="alert bg-green text-white text-white alert-dismissible" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <i class="fa fa-check"></i> Data Berhasil Di Hapus !
+          </div>'
+        );
+        redirect('dpb/rejectmobil');
+      }
+    } else {
+      $this->session->set_flashdata(
+        'msg',
+        '<div class="alert bg-red text-white text-white alert-dismissible" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <i class="fa fa-info"></i> Data Periode Bulan Ini Sudah di Tutup !
+        </div>'
+      );
+      redirect('dpb/rejectmobil');
     }
   }
 

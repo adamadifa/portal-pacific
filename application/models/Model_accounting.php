@@ -89,7 +89,6 @@ class Model_accounting extends CI_Model
   function insert_penyesuaian()
   {
 
-
     $tahun            = $this->input->post('tahun');
     $bulan            = $this->input->post('bulan');
     $tanggal          = $this->input->post('tanggal');
@@ -311,6 +310,49 @@ class Model_accounting extends CI_Model
     ");
   }
 
+
+  function penjualan($kode_akun = "", $bulan, $tahun)
+  {
+
+    if ($kode_akun == "4-1202") {
+      $kode_akun = "AND kode_produk = 'AB' ";
+    } elseif ($kode_akun == "4-1203") {
+      $kode_akun = "AND kode_produk = 'AS' ";
+    } elseif ($kode_akun == "4-1205") {
+      $kode_akun = "AND kode_produk = 'AR' ";
+    } elseif ($kode_akun == "4-1102") {
+      $kode_akun = "AND kode_produk = 'BB' ";
+    } elseif ($kode_akun == "4-1204") {
+      $kode_akun = "AND kode_produk = 'CGG' AND kode_produk = 'CG' ";
+    } elseif ($kode_akun == "4-1101") {
+      $kode_akun = "AND kode_produk = 'DB' ";
+    } elseif ($kode_akun == "4-1107") {
+      $kode_akun = "AND kode_produk = 'DEP' ";
+    } elseif ($kode_akun == "4-1301") {
+      $kode_akun = "AND kode_produk = 'DK' ";
+    } elseif ($kode_akun == "4-1105") {
+      $kode_akun = "AND kode_produk = 'DS' ";
+    }
+
+    return $this->db->query("SELECT 
+    tgltransaksi,
+    kode_produk,
+    nama_barang,
+    penjualan.no_fak_penj,
+    LEFT(penjualan.no_fak_penj,3) AS cabang,
+    detailpenjualan.subtotal
+
+    FROM penjualan 
+    INNER JOIN detailpenjualan ON detailpenjualan.no_fak_penj=penjualan.no_fak_penj
+    INNER JOIN barang ON barang.kode_barang=detailpenjualan.kode_barang
+    WHERE MONTH(tgltransaksi) = '$bulan'
+    AND YEAR(tgltransaksi) = '$tahun' "
+      . $kode_akun
+      . "
+    ORDER BY tgltransaksi ASC
+    ");
+  }
+
   function penyesuaian($kode_akun = "", $bulan, $tahun)
   {
 
@@ -332,7 +374,7 @@ class Model_accounting extends CI_Model
   {
 
     $thn = substr($tahun, 2, 2);
-    $qbukubesar        = "SELECT no_bukti FROM buku_besar WHERE LEFT(no_bukti,6) = 'BB$bulan$thn' ORDER BY no_bukti DESC LIMIT 1 ";
+    $qbukubesar        = "SELECT no_bukti FROM buku_besar WHERE LEFT(no_bukti,6) = 'GJ$bulan$thn' ORDER BY no_bukti DESC LIMIT 1 ";
     // $datapemb = $this->db->query("SELECT detail_pembelian.kode_akun,coa.nama_akun,kode_dept,tgl_pembelian,detail_pembelian.nobukti_pembelian,qty,harga,status,keterangan,detail_pembelian.kode_barang,nama_barang,ket_penjualan,penyesuaian 
     // FROM detail_pembelian 
     // INNER JOIN pembelian ON pembelian.nobukti_pembelian = detail_pembelian.nobukti_pembelian
@@ -371,7 +413,7 @@ class Model_accounting extends CI_Model
 
       $ceknolast      = $this->db->query($qbukubesar)->row_array();
       $nobuktilast    = $ceknolast['no_bukti'];
-      $nobukti        = buatkode($nobuktilast, 'GJLK' . $bulan . $thn, 6);
+      $nobukti        = buatkode($nobuktilast, 'GJ' . $bulan . $thn, 6);
       //var_dump($ceknolast);
       // /die;
       if ($d->status_dk == "D") {
@@ -415,7 +457,7 @@ class Model_accounting extends CI_Model
     foreach ($dataledger as $d) {
       $ceknolast      = $this->db->query($qbukubesar)->row_array();
       $nobuktilast    = $ceknolast['no_bukti'];
-      $nobukti        = buatkode($nobuktilast, 'GJLK' . $bulan . $thn, 6);
+      $nobukti        = buatkode($nobuktilast, 'GJ' . $bulan . $thn, 6);
       if (in_array($kode_akun, $this->akunbank)) {
         if ($d->status_dk == "D") {
           $kredit = $d->jumlah;
@@ -448,6 +490,66 @@ class Model_accounting extends CI_Model
       );
       $this->db->insert('buku_besar', $dataledger2);
     }
+
+    $kode_produk = $kode_akun;
+
+    if ($kode_produk == "4-1202") {
+      $kode_produk = "AND kode_produk = 'AB' ";
+    } elseif ($kode_produk == "4-1203") {
+      $kode_produk = "AND kode_produk = 'AS' ";
+    } elseif ($kode_produk == "4-1205") {
+      $kode_produk = "AND kode_produk = 'AR' ";
+    } elseif ($kode_produk == "4-1102") {
+      $kode_produk = "AND kode_produk = 'BB' ";
+    } elseif ($kode_produk == "4-1204") {
+      $kode_produk = "AND kode_produk = 'CGG' AND kode_produk = 'CG' ";
+    } elseif ($kode_produk == "4-1101") {
+      $kode_produk = "AND kode_produk = 'DB' ";
+    } elseif ($kode_produk == "4-1107") {
+      $kode_produk = "AND kode_produk = 'DEP' ";
+    } elseif ($kode_produk == "4-1301") {
+      $kode_produk = "AND kode_produk = 'DK' ";
+    } elseif ($kode_produk == "4-1105") {
+      $kode_produk = "AND kode_produk = 'DS' ";
+    }
+
+    $datapenjualan = $this->db->query("SELECT 
+    tgltransaksi,
+    kode_produk,
+    nama_barang,
+    penjualan.no_fak_penj,
+    LEFT(penjualan.no_fak_penj,3) AS cabang,
+    detailpenjualan.subtotal
+
+    FROM penjualan 
+    INNER JOIN detailpenjualan ON detailpenjualan.no_fak_penj=penjualan.no_fak_penj
+    INNER JOIN barang ON barang.kode_barang=detailpenjualan.kode_barang
+    WHERE MONTH(tgltransaksi) = '$bulan'
+    AND YEAR(tgltransaksi) = '$tahun' "
+      . $kode_produk
+      . "
+    ORDER BY tgltransaksi ASC
+    ")->result();
+
+    foreach ($datapenjualan as $d) {
+
+      $ceknolast      = $this->db->query($qbukubesar)->row_array();
+      $nobuktilast    = $ceknolast['no_bukti'];
+      $nobukti        = buatkode($nobuktilast, 'GJ' . $bulan . $thn, 6);
+
+      $datapenjualan = array(
+        'no_bukti' => $nobukti,
+        'tanggal' => $d->tgltransaksi,
+        'sumber' => "Penjualan",
+        'keterangan' => $d->nama_barang,
+        'kode_akun' => $kode_akun,
+        'debet' => "",
+        'kredit' => $d->subtotal,
+        'nobukti_transaksi' => $d->no_fak_penj,
+        'no_ref' => ""
+      );
+      $this->db->insert('buku_besar', $datapenjualan);
+    }
   }
 
 
@@ -456,7 +558,7 @@ class Model_accounting extends CI_Model
     $tanggal = $this->input->post('tgl_transaksi');
     $id_user   = $this->session->userdata('id_user');
     $keterangan = $this->input->post('keterangan');
-    
+
     $dataledger = $this->db->query("SELECT costratio_temp.kode_cabang,id,jumlah,nama_cabang,nama_akun,costratio_temp.kode_akun FROM costratio_temp 
     INNER JOIN coa ON coa.kode_akun=costratio_temp.kode_akun
     INNER JOIN cabang ON cabang.kode_cabang=costratio_temp.kode_cabang
@@ -479,8 +581,8 @@ class Model_accounting extends CI_Model
       $ceknolast = $this->db->query($qcr)->row_array();
       $nobuktilast = $ceknolast['kode_cr'];
       $kodecr = buatkode($nobuktilast, "CR" . $bulan . $thn, 4);
-  
-  
+
+
       $datacr = [
         'kode_cr' => $kodecr,
         'tgl_transaksi' => $tanggal,
@@ -493,6 +595,10 @@ class Model_accounting extends CI_Model
       $simpan = $this->db->insert('costratio_biaya', $datacr);
     }
     if ($simpan) {
+
+      $id_user       = $this->session->userdata('id_user');
+      $this->db->query("DELETE FROM costratio_temp WHERE id_user = '$id_user' ");
+
       $this->session->set_flashdata(
         'msg',
 

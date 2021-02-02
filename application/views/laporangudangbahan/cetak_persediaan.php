@@ -69,8 +69,8 @@ function uang($nilai)
     $saldoakhirberat2 = 0;
     $totalretur       = 0;
     foreach ($data as $key => $d) {
-      $saldoakhirberat     = $d->qtyberatsa + $d->qtypemb2 + $d->qtylainnya2 - $d->qtyprod4 - $d->qtyseas4 - $d->qtypdqc4 - $d->qtylain4 - $d->qtysus4 - $d->qtycabang4;
-      $saldoakhirunit      = $d->qtyunitsa + $d->qtypemb1 + $d->qtylainnya1 - $d->qtyprod3 - $d->qtyseas3 - $d->qtypdqc3 - $d->qtylain3 - $d->qtysus3 - $d->qtycabang3;
+      $saldoakhirberat     = $d->qtyberatsa + $d->qtypemb2 + $d->qtylainnya2 + $d->qtypengganti2 - $d->qtyprod4 - $d->qtyseas4 - $d->qtypdqc4 - $d->qtylain4 - $d->qtysus4 - $d->qtycabang4;
+      $saldoakhirunit      = $d->qtyunitsa + $d->qtypemb1 + $d->qtylainnya1 + $d->qtypengganti1 - $d->qtyprod3 - $d->qtyseas3 - $d->qtypdqc3 - $d->qtylain3 - $d->qtysus3 - $d->qtycabang3;
 
       if ($d->satuan != 'KG') {
         $totalpembelian     += $d->qtypemb1;
@@ -116,8 +116,10 @@ function uang($nilai)
 
       if ($d->satuan != 'KG') {
         $totalsusut         += $d->qtysus3;
+        $totalretur       = $totalretur + $d->qtypengganti1;
       } else {
         $totalsusut         += $d->qtysus4;
+        $totalretur       = $totalretur + $d->qtypengganti2;
       }
 
       $totalqtyunitsa   = $totalqtyunitsa + $d->qtyunitsa;
@@ -125,7 +127,6 @@ function uang($nilai)
 
       $saldoakhirunit2  = $saldoakhirunit2 + $saldoakhirunit;
       $saldoakhirberat2 = $saldoakhirberat2 + $saldoakhirberat;
-      $totalretur       = $totalretur + $d->qtypengganti2;
 
 
     ?>
@@ -183,12 +184,22 @@ function uang($nilai)
           </td>
         <?php } ?>
 
-        <td align="center">
-          <?php if (!empty($d->qtypengganti2)) {
-            echo uang($d->qtypengganti2, 2);
-          }
-          ?>
-        </td>
+        <?php if ($d->satuan != 'KG') { ?>
+          <td align="center">
+            <?php if (!empty($d->qtypengganti1)) {
+              echo uang($d->qtypengganti1, 2);
+            }
+            ?>
+          </td>
+        <?php } else { ?>
+          <td align="center">
+            <?php if (!empty($d->qtypengganti2)) {
+              echo uang($d->qtypengganti2, 2);
+            }
+            ?>
+          </td>
+        <?php } ?>
+
 
         <?php if ($d->satuan != 'KG') { ?>
           <td align="center">

@@ -139,28 +139,56 @@
         <div class="col-md-12">
           <div class="card">
             <div class="card-body">
+              <table class="table table-bordered table-striped table-hover" style="width:100%" id="mytable">
+                <thead class="thead-dark">
+                  <tr>
+                    <th colspan="8">Penjualan</th>
+                  </tr>
+                  <tr>
+                    <th>No</th>
+                    <th>Tgl</th>
+                    <th>No Bukti</th>
+                    <th style="width: 30% !important;">Keterangan</th>
+                    <th>Kode Akun</th>
+                    <th>Debet</th>
+                    <th>Kredit</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="loadpenjualan">
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+            <div class="card-body">
 
               <p>
-                <table class="table table-bordered table-striped table-hover" style="width:100%" id="mytable">
-                  <thead class="thead-dark">
-                    <tr>
-                      <th colspan="8">Jurnal Penyesuaiian</th>
-                    </tr>
-                    <tr>
-                      <th>No</th>
-                      <th>Tgl</th>
-                      <th>No Bukti</th>
-                      <th style="width: 25% !important;">Keterangan</th>
-                      <th>Kode Akun</th>
-                      <th>Debet</th>
-                      <th>Kredit</th>
-                      <th>Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody id="loadpenyesuaian">
+              <table class="table table-bordered table-striped table-hover" style="width:100%" id="mytable">
+                <thead class="thead-dark">
+                  <tr>
+                    <th colspan="8">Jurnal Penyesuaiian</th>
+                  </tr>
+                  <tr>
+                    <th>No</th>
+                    <th>Tgl</th>
+                    <th>No Bukti</th>
+                    <th style="width: 25% !important;">Keterangan</th>
+                    <th>Kode Akun</th>
+                    <th>Debet</th>
+                    <th>Kredit</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="loadpenyesuaian">
 
-                  </tbody>
-                </table>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -224,6 +252,7 @@
         }
       });
     }
+
 
     function loadPenyesuaian() {
       var bulan = $('#bulan').val();
@@ -408,6 +437,20 @@
           cache: false,
           success: function(respond) {
             $("#loadpenyesuaian").html(respond);
+          }
+        });
+
+        $.ajax({
+          type: 'POST',
+          url: '<?php echo base_url(); ?>accounting/view_penjualan',
+          data: {
+            kode_akun: kode_akun,
+            tahun: tahun,
+            bulan: bulan
+          },
+          cache: false,
+          success: function(respond) {
+            $("#loadpenjualan").html(respond);
           }
         });
 
