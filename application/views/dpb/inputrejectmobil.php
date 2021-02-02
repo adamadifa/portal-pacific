@@ -4,7 +4,7 @@
     <div class="row align-items-center">
       <div class="col-auto">
         <h2 class="page-title">
-          UPDATE DATA REKAP RETUR DPB
+          INPUT DATA REKAP REJECT PASAR DPB
         </h2>
       </div>
     </div>
@@ -17,16 +17,16 @@
 
           <div class="card">
             <div class="card-header">
-              <h4 class="card-title">UPDATE DATA REKAP RETUR DPB </h4>
+              <h4 class="card-title">INPUT DATA REKAP REJECT MOBIL DPB </h4>
             </div>
             <div class="card-body">
-              <form name="autoSumForm" autocomplete="off" class="formValidate" id="formValidate" method="POST" action="<?php echo base_url(); ?>dpb/update_retur">
+              <form name="autoSumForm" autocomplete="off" class="formValidate" id="formValidate" method="POST" action="<?php echo base_url(); ?>dpb/input_rejectmobil">
                 <div class="form-group mb-3">
                   <div class="input-icon">
                     <span class="input-icon-addon">
                       <i class="fa fa-barcode"></i>
                     </span>
-                    <input type="text" readonly value="<?php echo $mutasi['no_mutasi_gudang_cabang'] ?>" id="no_mutasi" name="no_mutasi" class="form-control" placeholder="No Mutasi Penjualan" data-error=".errorTxt19" />
+                    <input type="text" readonly value="" id="no_mutasi" name="no_mutasi" class="form-control" placeholder="No Mutasi Reject Pasar" data-error=".errorTxt19" />
                   </div>
                 </div>
                 <div class="form-group mb-3">
@@ -34,7 +34,7 @@
                     <span class="input-icon-addon">
                       <i class="fa fa-barcode"></i>
                     </span>
-                    <input type="text" readonly value="<?php echo $mutasi['no_dpb']; ?>" id="nodpb" name="nodpb" class="form-control" placeholder="No DPB" data-error=".errorTxt19" />
+                    <input type="text" readonly value="" id="nodpb" name="nodpb" class="form-control" placeholder="No DPB" data-error=".errorTxt19" />
                   </div>
                 </div>
                 <div class="form-group mb-3">
@@ -42,7 +42,7 @@
                     <span class="input-icon-addon">
                       <i class="fa fa-calendar-o"></i>
                     </span>
-                    <input type="text" readonly value="<?php echo $mutasi['tgl_pengambilan']; ?>" id="tgl_pengambilan" name="tgl_pengambilan" class="form-control" placeholder="Tanggal Pengambilan" data-error=".errorTxt19" />
+                    <input type="text" readonly value="" id="tgl_pengambilan" name="tgl_pengambilan" class="form-control" placeholder="Tanggal Pengambilan" data-error=".errorTxt19" />
                   </div>
                 </div>
                 <div class="form-group mb-3">
@@ -50,7 +50,7 @@
                     <span class="input-icon-addon">
                       <i class="fa fa-building-o"></i>
                     </span>
-                    <input type="text" readonly value="<?php echo $mutasi['kode_cabang']; ?>" id="cabang" name="cabang" class="form-control" placeholder="Cabang" data-error=".errorTxt19" />
+                    <input type="text" readonly value="" id="cabang" name="cabang" class="form-control" placeholder="Cabang" data-error=".errorTxt19" />
                   </div>
                 </div>
                 <div class="form-group mb-3">
@@ -58,8 +58,8 @@
                     <span class="input-icon-addon">
                       <i class="fa fa-users"></i>
                     </span>
-                    <input type="text" readonly value="<?php echo $mutasi['nama_karyawan']; ?>" id="salesman" name="salesman" class="form-control" placeholder="Salesman" data-error=".errorTxt19" />
-                    <input type="hidden" readonly value="<?php echo $mutasi['id_karyawan']; ?>" id="id_karyawan" name="id_karyawan" class="form-control" placeholder="ID" data-error=".errorTxt19" />
+                    <input type="text" readonly value="" id="salesman" name="salesman" class="form-control" placeholder="Salesman" data-error=".errorTxt19" />
+                    <input type="hidden" readonly value="" id="id_karyawan" name="id_karyawan" class="form-control" placeholder="ID" data-error=".errorTxt19" />
                   </div>
                 </div>
                 <div class="form-group mb-3">
@@ -67,7 +67,7 @@
                     <span class="input-icon-addon">
                       <i class="fa fa-map"></i>
                     </span>
-                    <input type="text" readonly value="<?php echo $mutasi['tujuan']; ?>" id="tujuan" name="tujuan" class="form-control" placeholder="Tujuan" data-error=".errorTxt19" />
+                    <input type="text" readonly value="" id="tujuan" name="tujuan" class="form-control" placeholder="Tujuan" data-error=".errorTxt19" />
                   </div>
                 </div>
                 <div class="form-group mb-3">
@@ -75,7 +75,7 @@
                     <span class="input-icon-addon">
                       <i class="fa fa-truck"></i>
                     </span>
-                    <input type="text" readonly value="<?php echo $mutasi['no_kendaraan']; ?>" id="nokendaraan" name="nokendaraan" class="form-control" placeholder="No Kendaraan" data-error=".errorTxt19" />
+                    <input type="text" readonly value="" id="nokendaraan" name="nokendaraan" class="form-control" placeholder="No Kendaraan" data-error=".errorTxt19" />
                   </div>
                 </div>
                 <div class="form-group mb-3">
@@ -83,7 +83,7 @@
                     <span class="input-icon-addon">
                       <i class="fa fa-calendar-o"></i>
                     </span>
-                    <input type="text" readonly value="<?php echo $mutasi['tgl_mutasi_gudang_cabang']; ?>" id="tgl_retur" name="tgl_retur" class="form-control datepicker" placeholder="Tanggal Retur" data-error=".errorTxt19" />
+                    <input type="text" readonly value="" id="tgl_gb" name="tanggal" class="form-control datepicker" placeholder="Tanggal Reject Mobil" data-error=".errorTxt19" />
                   </div>
                 </div>
                 <table class="table table-bordered table-striped">
@@ -91,7 +91,7 @@
                     <tr>
                       <th rowspan="3" align="">No</th>
                       <th rowspan="3" style="text-align:center">Nama Barang</th>
-                      <th colspan="6" style="text-align:center">Retur</th>
+                      <th colspan="6" style="text-align:center">Reject Mobil</th>
                     </tr>
                     <tr>
                       <th colspan="6" style="text-align:center">Kuantitas</th>
@@ -109,27 +109,6 @@
                     <?php
                     $no = 1;
                     foreach ($barang as $b) {
-                      $jml = $this->db->get_where('detail_mutasi_gudang_cabang', array('no_mutasi_gudang_cabang' => $mutasi['no_mutasi_gudang_cabang'], 'kode_produk' => $b->kode_produk))->row_array();
-                      //RETUR
-                      $jmldus = floor($jml['jumlah'] / $b->isipcsdus);
-                      if ($jml['jumlah'] != 0) {
-                        $sisadus   = $jml['jumlah'] % $b->isipcsdus;
-                      } else {
-                        $sisadus = 0;
-                      }
-                      if ($b->isipack == 0) {
-                        $jmlpack    = 0;
-                        $sisapack   = $sisadus;
-                        $s          = "A";
-                      } else {
-                        $jmlpack    = floor($sisadus / $b->isipcs);
-                        $sisapack   = $sisadus % $b->isipcs;
-                        $s          = "B";
-                      }
-                      $jmlpcs = $sisapack;
-
-                      // echo $sisadus."-".$s."-".$sisapack."-".$jmlpcs."<br>";
-
                     ?>
                       <tr>
                         <td style="width:10px"><?php echo $no; ?></td>
@@ -143,9 +122,7 @@
                         <td style="width:100px">
                           <div class="input-group demo-masked-input" style="margin-bottom:0px !important; ">
                             <div class="form-line">
-                              <input type="text" style="text-align:right" value="<?php if (!empty($jmldus)) {
-                                                                                    echo $jmldus;
-                                                                                  } ?>" id="jmldus" name="jmldus<?php echo $no; ?>" class="form-control" data-error=".errorTxt19" />
+                              <input type="text" style="text-align:right" value="" id="jmldus" name="jmldus<?php echo $no; ?>" class="form-control" data-error=".errorTxt19" />
                             </div>
                           </div>
                         </td>
@@ -154,9 +131,7 @@
                           <?php if (!empty($b->isipack)) { ?>
                             <div class="input-group demo-masked-input" style="margin-bottom:0px !important; ">
                               <div class="form-line">
-                                <input type="text" style="text-align:right" value="<?php if (!empty($jmlpack)) {
-                                                                                      echo $jmlpack;
-                                                                                    } ?>" id="jmlpack" name="jmlpack<?php echo $no; ?>" class="form-control" data-error=".errorTxt19" />
+                                <input type="text" style="text-align:right" value="" id="jmlpack" name="jmlpack<?php echo $no; ?>" class="form-control" data-error=".errorTxt19" />
                               </div>
                             </div>
                           <?php } ?>
@@ -165,9 +140,7 @@
                         <td style="width:100px">
                           <div class="input-group demo-masked-input" style="margin-bottom:0px !important; ">
                             <div class="form-line">
-                              <input type="text" style="text-align:right" value="<?php if (!empty($jmlpcs)) {
-                                                                                    echo $jmlpcs;
-                                                                                  } ?>" id="jmlpcs" name="jmlpcs<?php echo $no; ?>" class="form-control" data-error=".errorTxt19" />
+                              <input type="text" style="text-align:right" value="" id="jmlpcs" name="jmlpcs<?php echo $no; ?>" class="form-control" data-error=".errorTxt19" />
                             </div>
                           </div>
                         </td>
@@ -225,5 +198,124 @@
 </div>
 
 <script>
-  flatpickr(document.getElementById('tgl_retur'), {});
+  flatpickr(document.getElementById('tgl_gb'), {});
+</script>
+<script type="text/javascript">
+  $(function() {
+
+    function loadNoMutasi() {
+      var nodpb = $("#nodpb").val();
+      $.ajax({
+        url: '<?php echo base_url(); ?>dpb/getNomutasiRJM',
+        type: 'POST',
+        data: {
+          nodpb: nodpb
+        },
+        cache: false,
+        success: function(respond) {
+          $("#no_mutasi").val(respond);
+          console.log(respond);
+        }
+      });
+    }
+    $(".formValidate").submit(function() {
+      var nodpb = $("#nodpb").val();
+      var tanggal = $("#tgl_gb").val();
+      if (nodpb == "") {
+        swal("Oops!", "No DPB Harus Diisi!", "warning");
+        return false;
+      } else if (tanggal == "") {
+        swal("Oops!", "Tanggal Reject Pasar Harus Diisi!", "warning");
+        return false;
+      }
+    });
+    $("#nodpb").click(function() {
+      $("#datadpb").modal("show");
+    });
+
+    //Datatable Dpb
+    $.fn.dataTableExt.oApi.fnPagingInfo = function(oSettings) {
+      return {
+        "iStart": oSettings._iDisplayStart,
+        "iEnd": oSettings.fnDisplayEnd(),
+        "iLength": oSettings._iDisplayLength,
+        "iTotal": oSettings.fnRecordsTotal(),
+        "iFilteredTotal": oSettings.fnRecordsDisplay(),
+        "iPage": Math.ceil(oSettings._iDisplayStart / oSettings._iDisplayLength),
+        "iTotalPages": Math.ceil(oSettings.fnRecordsDisplay() / oSettings._iDisplayLength)
+      };
+    };
+
+    var t = $("#mytable").dataTable({
+      initComplete: function() {
+        var api = this.api();
+        $('#mytable_filter input').off('.DT').on('keyup.DT', function(e) {
+          if (e.keyCode == 13) {
+            api.search(this.value).draw();
+          }
+        });
+      },
+      oLanguage: {
+        sProcessing: "loading..."
+      },
+      processing: true,
+      serverSide: true,
+      bLengthChange: false,
+      ajax: {
+        "url": "<?php echo base_url(); ?>dpb/jsondpb",
+        "type": "POST"
+      },
+      columns: [{
+          "data": "no_dpb",
+          "orderable": false
+        },
+        {
+          "data": "no_dpb"
+        },
+        {
+          "data": "tgl_pengambilan"
+        },
+        {
+          "data": "nama_karyawan"
+        },
+        {
+          "data": "kode_cabang"
+        },
+        {
+          "data": "tujuan"
+        },
+        {
+          "data": "no_kendaraan"
+        },
+        {
+          "data": "view"
+        }
+      ],
+      order: [
+        [1, 'desc']
+      ],
+      rowCallback: function(row, data, iDisplayIndex) {
+        var info = this.fnPagingInfo();
+        var page = info.iPage;
+        var length = info.iLength;
+        var index = page * length + (iDisplayIndex + 1);
+        $('td:eq(0)', row).html(index);
+      }
+
+
+    });
+    $('#mytable tbody').on('click', 'a', function() {
+      $("#nodpb").val($(this).attr("data-nodpb"));
+      $("#tgl_pengambilan").val($(this).attr("data-tglpengambilan"));
+      $("#cabang").val($(this).attr("data-cabang"));
+      $("#salesman").val($(this).attr("data-salesman"));
+      $("#tujuan").val($(this).attr("data-tujuan"));
+      $("#nokendaraan").val($(this).attr("data-nokendaraan"));
+      $("#id_karyawan").val($(this).attr("data-idkaryawan"));
+      $("#datadpb").modal("hide");
+      loadNoMutasi();
+    });
+
+
+  });
 </script>

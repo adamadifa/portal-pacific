@@ -4,7 +4,7 @@
     <div class="row align-items-center">
       <div class="col-auto">
         <h2 class="page-title">
-          DATA REKAP RETUR DPB
+          DATA REKAP REJECT MOBIL DPB
         </h2>
       </div>
     </div>
@@ -15,10 +15,10 @@
       <div class="row">
         <div class="card">
           <div class="card-header">
-            <h4 class="card-title">DATA REKAP RETUR DPB </h4>
+            <h4 class="card-title">DATA REKAP REJECT MOBIL DPB</h4>
           </div>
           <div class="card-body">
-            <form class="form-horizontal" method="post" action="<?php echo base_url(); ?>dpb/retur" autocomplete="off">
+            <form class="form-horizontal" method="post" action="<?php echo base_url(); ?>dpb/rejectmobil" autocomplete="off">
               <div class="form-group mb-3">
                 <div class="input-icon">
                   <span class="input-icon-addon">
@@ -32,7 +32,7 @@
                   <span class="input-icon-addon">
                     <i class="fa fa-calendar-o"></i>
                   </span>
-                  <input type="text" value="<?php echo $tgl_penjualan; ?>" id="tgl_penjualan" name="tgl_penjualan" class="datepicker form-control date" placeholder="Tanggal" data-error=".errorTxt19" />
+                  <input type="text" value="<?php echo $tanggal; ?>" id="tanggal" name="tanggal" class="datepicker form-control date" placeholder="Tanggal" data-error=".errorTxt19" />
                 </div>
               </div>
               <?php if ($cb == 'pusat') { ?>
@@ -61,14 +61,15 @@
               </div>
             </form>
             <hr>
-            <a href="<?php echo base_url(); ?>dpb/inputretur" class="btn btn-danger mb-3">Tambah Data</a>
+            <a href="<?php echo base_url(); ?>dpb/inputrejectmobil" class="btn btn-danger mb-3">Tambah Data</a>
+
             <div class="table-responsive">
               <table class="table table-bordered table-striped table-hover" style="width:100%" id="mytable">
                 <thead class="thead-dark">
                   <tr>
                     <th width="10px">No</th>
                     <th>No DPB</th>
-                    <th>Tanggal Retur</th>
+                    <th>Tanggal</th>
                     <th>Nama Salesman</th>
                     <th>Nama Cabang</th>
                     <th>Tujuan</th>
@@ -91,8 +92,8 @@
                       <td><?php echo $d['no_kendaraan']; ?></td>
                       <td>
                         <a href="#" class="btn btn-sm btn-info detail" data-nomutasi="<?php echo $d['no_mutasi_gudang_cabang']; ?>">Detail</a>
-                        <a href="<?php echo base_url(); ?>dpb/updateretur/<?php echo $d['no_mutasi_gudang_cabang']; ?>" class="btn btn-sm btn-blue">Update</a>
-                        <a data-href="<?php echo base_url(); ?>dpb/hapusretur/<?php echo $d['no_mutasi_gudang_cabang']; ?>/<?php echo $d['kode_cabang']; ?>" class="btn btn-sm btn-red text-white hapus">Hapus</a>
+                        <a href="<?php echo base_url(); ?>dpb/updaterejectmobil/<?php echo $d['no_mutasi_gudang_cabang']; ?>" class="btn btn-sm btn-blue">Update</a>
+                        <a data-href="<?php echo base_url(); ?>dpb/hapusrejectmobil/<?php echo $d['no_mutasi_gudang_cabang']; ?>/<?php echo $d['kode_cabang']; ?>" class="btn btn-sm btn-red text-white hapus">Hapus</a>
                       </td>
                     </tr>
                   <?php
@@ -130,7 +131,7 @@
   </div>
 </div>
 <script>
-  flatpickr(document.getElementById('tgl_penjualan'), {});
+  flatpickr(document.getElementById('tanggal'), {});
 </script>
 <script type="text/javascript">
   $(function() {
@@ -145,7 +146,7 @@
         cache: false,
         success: function(respond) {
           $("#salesman").html(respond);
-          //$("#salesman").selectpicker("refresh");
+          $("#salesman").selectpicker("refresh");
         }
       });
     }
@@ -156,7 +157,7 @@
       var nomutasi = $(this).attr('data-nomutasi');
       $.ajax({
         type: 'POST',
-        url: '<?php echo base_url(); ?>dpb/detail_returdpb',
+        url: '<?php echo base_url(); ?>dpb/detail_penjualandpb',
         data: {
           nomutasi: nomutasi
         },

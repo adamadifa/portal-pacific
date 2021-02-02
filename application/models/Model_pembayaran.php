@@ -1239,7 +1239,16 @@ class Model_pembayaran extends CI_Model
 
 
     foreach ($datatransfer as $t) {
+<<<<<<< HEAD
+      $batas  = date('Y-m-d', strtotime("+3 day", strtotime(date($t->tgltransaksi))));
+      // echo $tglcair . "-" . $t->tgltransaksi;
+
+      // echo $tglcair . "-" . $t->tgltransaksi;
+      //gi echo $tglcair . "-" . $t->tgltransaksi;
+      // die;
+=======
       $batas  = date('Y-m-d', strtotime("+5 day", strtotime(date($t->tgltransaksi))));
+>>>>>>> 5acb44e351094749c5a9d6540fb2347624fdd11f
       if ($status == 1) {
         if ($t->total == $t->jumlah && $tglcair <= $batas) {
           $datatransfer = array(

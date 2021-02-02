@@ -648,6 +648,95 @@ class Dpb extends CI_Controller
     $this->Model_dpb->hapusgb($no_mutasi, $cabang);
   }
 
+  //REJECT MOBIL
+  function rejectmobil($rowno = 0)
+  {
+    // Search text
+    $no_dpb           = "";
+    $tanggal          = "";
+    $cab  = $this->session->userdata('cabang');
+    if ($cab != 'pusat') {
+      $cabang = $cab;
+    } else {
+      $cabang = "";
+    }
+    $salesman         = "";
+    if ($this->input->post('submit') != NULL) {
+      $no_dpb              = $this->input->post('no_dpb');
+      $tanggal             = $this->input->post('tanggal');
+      $cabang              = $this->input->post('cabang');
+      $salesman            = $this->input->post('salesman');
+      $data   = array(
+        'no_dpb'               => $no_dpb,
+        'tanggal'              => $tanggal,
+        'cbg'                  => $cabang,
+        'salesman'             => $salesman
+      );
+      $this->session->set_userdata($data);
+    } else {
+      if ($this->session->userdata('no_dpb') != NULL) {
+        $no_dpb = $this->session->userdata('no_dpb');
+      }
+      if ($this->session->userdata('tanggal') != NULL) {
+        $tanggal = $this->session->userdata('tanggal');
+      }
+      if ($this->session->userdata('cbg') != NULL) {
+        $cabang = $this->session->userdata('cbg');
+      }
+      if ($this->session->userdata('salesman') != NULL) {
+        $salesman = $this->session->userdata('salesman');
+      }
+    }
+    // Row per page
+    $rowperpage = 10;
+    // Row position
+    if ($rowno != 0) {
+      $rowno = ($rowno - 1) * $rowperpage;
+    }
+    // All records count
+    $allcount     = $this->Model_dpb->getrecordRJMDpbCount($no_dpb, $tanggal, $cabang, $salesman);
+    // Get records
+    $users_record = $this->Model_dpb->getDataRJMDpb($rowno, $rowperpage, $no_dpb, $tanggal, $cabang, $salesman);
+    // Pagination Configuration
+    $config['base_url']           = base_url() . 'dpb/rejectpasar';
+    $config['use_page_numbers']   = TRUE;
+    $config['total_rows']         = $allcount;
+    $config['per_page']           = $rowperpage;
+    $config['first_link']         = 'First';
+    $config['last_link']          = 'Last';
+    $config['next_link']          = 'Next';
+    $config['prev_link']          = 'Prev';
+    $config['full_tag_open']      = '<div class="pagging text-center"><nav><ul class="pagination justify-content-center">';
+    $config['full_tag_close']     = '</ul></nav></div>';
+    $config['num_tag_open']       = '<li class="page-item"><span class="page-link">';
+    $config['num_tag_close']      = '</span></li>';
+    $config['cur_tag_open']       = '<li class="page-item active"><span class="page-link">';
+    $config['cur_tag_close']      = '<span class="sr-only">(current)</span></span></li>';
+    $config['next_tag_open']      = '<li class="page-item"><span class="page-link">';
+    $config['next_tagl_close']    = '<span aria-hidden="true">&raquo;</span></span></li>';
+    $config['prev_tag_open']      = '<li class="page-item"><span class="page-link">';
+    $config['prev_tagl_close']    = '</span>Next</li>';
+    $config['first_tag_open']     = '<li class="page-item"><span class="page-link">';
+    $config['first_tagl_close']   = '</span></li>';
+    $config['last_tag_open']      = '<li class="page-item"><span class="page-link">';
+    $config['last_tagl_close']    = '</span></li>';
+    // Initialize
+    $this->pagination->initialize($config);
+    $data['pagination']           = $this->pagination->create_links();
+    $data['result']               = $users_record;
+    $data['row']                   = $rowno;
+    $data['no_dpb']               = $no_dpb;
+    $data['tanggal']              = $tanggal;
+    $data['salesman']              = $salesman;
+    $data['cbg']                  = $cabang;
+    // Load view
+    $data['cabang']               = $this->Model_cabang->view_cabang()->result();
+    $data['cb']                   = $this->session->userdata('cabang');
+    $data['sales']                = $this->Model_sales->get_sales($salesman)->row_array();
+    //echo $data['cb'];
+    $this->template->load('template/template', 'dpb/rejectmobil', $data);
+  }
+
   //REJECT PASAR
   function rejectpasar($rowno = 0)
   {
@@ -745,6 +834,14 @@ class Dpb extends CI_Controller
     $this->template->load('template/template', 'dpb/inputrejectpasar', $data);
   }
 
+  function inputrejectmobil()
+  {
+    $data['barang']    = $this->Model_oman->listproduk()->result();
+    $data['cabang']     = $this->Model_cabang->view_cabang()->result();
+    $data['cb']         = $this->session->userdata('cabang');
+    $this->template->load('template/template', 'dpb/inputrejectmobil', $data);
+  }
+
   function getNomutasiRJP()
   {
     $nodpb = $this->input->post('nodpb');
@@ -759,10 +856,31 @@ class Dpb extends CI_Controller
     echo $no_mutasi;
   }
 
+
+  function getNomutasiRJM()
+  {
+    $nodpb = $this->input->post('nodpb');
+    $query            = "SELECT no_mutasi_gudang_cabang
+                        FROM mutasi_gudang_cabang
+                        WHERE jenis_mutasi = 'REJECT MOBIL' AND no_dpb  ='$nodpb'
+                        ORDER BY no_mutasi_gudang_cabang DESC LIMIT 1
+                         ";
+    $nomor            = $this->db->query($query)->row_array();
+    $nomor_terakhir   = $nomor['no_mutasi_gudang_cabang'];
+    $no_mutasi        = buatkode($nomor_terakhir, "RJM" . $nodpb, 2);
+    echo $no_mutasi;
+  }
+
   function input_rejectpasar()
   {
     $this->Model_dpb->insert_rejectpasar();
   }
+
+  function input_rejectmobil()
+  {
+    $this->Model_dpb->insert_rejectmobil();
+  }
+
 
   function updaterejectpasar()
   {
@@ -772,9 +890,23 @@ class Dpb extends CI_Controller
     $this->template->load('template/template', 'dpb/updaterejectpasar', $data);
   }
 
+  function updaterejectmobil()
+  {
+    $nomutasi           = $this->uri->segment(3);
+    $data['mutasi']     = $this->Model_dpb->getMutasiPenjualan($nomutasi)->row_array();
+    $data['barang']     = $this->Model_oman->listproduk()->result();
+    $this->template->load('template/template', 'dpb/updaterejectmobil', $data);
+  }
+
+
   function update_rejectpasar()
   {
     $this->Model_dpb->update_rejectpasar();
+  }
+
+  function update_rejectmobil()
+  {
+    $this->Model_dpb->update_rejectmobil();
   }
 
   function hapusrejectpasar()
@@ -782,6 +914,13 @@ class Dpb extends CI_Controller
     $no_mutasi = $this->uri->segment(3);
     $cabang = $this->uri->segment(4);
     $this->Model_dpb->hapusrejectpasar($no_mutasi, $cabang);
+  }
+
+  function hapusrejectmobil()
+  {
+    $no_mutasi = $this->uri->segment(3);
+    $cabang = $this->uri->segment(4);
+    $this->Model_dpb->hapusrejectmobil($no_mutasi, $cabang);
   }
 
   function hutangkirim($rowno = 0)

@@ -247,6 +247,8 @@ class Model_gudangbahan extends CI_Model
     sa.qtyberatsa,
     gm.qtypemb1,
     gm.qtylainnya1,
+    gm.qtyreturpengganti1,
+    gm.qtyreturpengganti2,
     gm.qtypemb2,
     gm.qtylainnya2,
     gk.qtyprod3,
@@ -272,9 +274,11 @@ class Model_gudangbahan extends CI_Model
     detail_pemasukan_gb.kode_barang,
     SUM( IF( departemen = 'Pembelian' , qty_unit ,0 )) AS qtypemb1,
     SUM( IF( departemen = 'Lainnya' , qty_unit ,0 )) AS qtylainnya1,
+    SUM( IF( departemen = 'Retur Pengganti' , qty_unit ,0 )) AS qtyreturpengganti1,
 
     SUM( IF( departemen = 'Pembelian' , qty_berat ,0 )) AS qtypemb2,
     SUM( IF( departemen = 'Lainnya' , qty_berat ,0 )) AS qtylainnya2,
+    SUM( IF( departemen = 'Retur Pengganti' , qty_berat ,0 )) AS qtyreturpengganti2,
     SUM( (IF( departemen = 'Pembelian' , qty_berat ,0 )) + (IF( departemen = 'Lainnya' , qty_berat ,0 ))) AS pemasukanqtyberat
     FROM 
     detail_pemasukan_gb 

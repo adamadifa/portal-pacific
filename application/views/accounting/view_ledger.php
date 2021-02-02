@@ -77,8 +77,6 @@ foreach ($ledger as $key => $l) {
         <?php
         }
         ?>
-
-
       <?php } ?>
     </td>
 

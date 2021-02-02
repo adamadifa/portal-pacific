@@ -4,7 +4,7 @@
     <div class="row align-items-center">
       <div class="col-auto">
         <h2 class="page-title">
-          UPDATE DATA REKAP RETUR DPB
+          UPDATE DATA REKAP REJECT MOBIL DPB
         </h2>
       </div>
     </div>
@@ -17,10 +17,10 @@
 
           <div class="card">
             <div class="card-header">
-              <h4 class="card-title">UPDATE DATA REKAP RETUR DPB </h4>
+              <h4 class="card-title"> UPDATE DATA REKAP REJECT MOBIL DPB</h4>
             </div>
             <div class="card-body">
-              <form name="autoSumForm" autocomplete="off" class="formValidate" id="formValidate" method="POST" action="<?php echo base_url(); ?>dpb/update_retur">
+              <form name="autoSumForm" autocomplete="off" class="formValidate" id="formValidate" method="POST" action="<?php echo base_url(); ?>dpb/update_rejectmobil">
                 <div class="form-group mb-3">
                   <div class="input-icon">
                     <span class="input-icon-addon">
@@ -83,7 +83,7 @@
                     <span class="input-icon-addon">
                       <i class="fa fa-calendar-o"></i>
                     </span>
-                    <input type="text" readonly value="<?php echo $mutasi['tgl_mutasi_gudang_cabang']; ?>" id="tgl_retur" name="tgl_retur" class="form-control datepicker" placeholder="Tanggal Retur" data-error=".errorTxt19" />
+                    <input type="text" readonly value="<?php echo $mutasi['tgl_mutasi_gudang_cabang']; ?>" id="tgl_gb" name="tanggal" class="form-control datepicker" placeholder="Tanggal Penjualan" data-error=".errorTxt19" />
                   </div>
                 </div>
                 <table class="table table-bordered table-striped">
@@ -91,7 +91,7 @@
                     <tr>
                       <th rowspan="3" align="">No</th>
                       <th rowspan="3" style="text-align:center">Nama Barang</th>
-                      <th colspan="6" style="text-align:center">Retur</th>
+                      <th colspan="6" style="text-align:center">Reject Mobil</th>
                     </tr>
                     <tr>
                       <th colspan="6" style="text-align:center">Kuantitas</th>
@@ -195,35 +195,7 @@
     </div>
   </div>
 </div>
-<div class="modal modal-blur fade" id="datadpb" tabindex="-1" role="dialog" aria-hidden="true">
-  <div class="modal-dialog modal-xl  modal-dialog-centered" role="document">
-    <div class="modal-content ">
-      <div class="modal-header">
-        <h5 class="modal-title">Detail</h5>
-      </div>
-      <div class="modal-body">
-        <table class="table table-bordered table-striped table-hover" id="mytable">
-          <thead class="thead-dark">
-            <tr>
-              <th width="10px">No</th>
-              <th>No DPB</th>
-              <th>Tanggal Pengambilan</th>
-              <th>Nama Salesman</th>
-              <th>Nama Cabang</th>
-              <th>Tujuan</th>
-              <th>No Kendaraan</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-        </table>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-white mr-auto" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <script>
-  flatpickr(document.getElementById('tgl_retur'), {});
+  flatpickr(document.getElementById('tgl_gb'), {});
 </script>
